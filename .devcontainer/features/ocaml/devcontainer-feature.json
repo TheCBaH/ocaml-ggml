@@ -1,0 +1,31 @@
+{
+    "name": "ocaml/opam toolchains",
+    "id": "ocaml",
+    "version": "0.0.1",
+    "description": "Install ocaml/opam toolchains",
+    "options": {
+        "packages": {
+            "type": "string",
+            "default": "",
+            "description": "additional packages"
+        },
+        "version": {
+            "type": "string",
+            "default": "4.14.2",
+            "description": "OCaml version"
+        },
+        "options": {
+            "type": "string",
+            "default": "",
+            "description": "OPAM switch options"
+        },
+        "system-packages": {
+            "type": "string",
+            "default": "",
+            "description": "additional system packages"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

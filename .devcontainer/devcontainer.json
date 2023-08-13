@@ -1,0 +1,33 @@
+// For format details, see https://aka.ms/devcontainer.json.
+{
+    "name": "OCaml GGML bindings",
+    "build":  {
+        "dockerfile": "Dockerfile"
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": "true",
+            "username": "vscode",
+            "userUid": "1000",
+            "userGid": "1000",
+            "upgradePackages": "false"
+        },
+        "./features/ocaml": {
+            "packages": "utop ctypes ctypes-foreign ppx_expect",
+            "system-packages": "valgrind cmake ninja-build"
+        }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ocamllabs.ocaml-platform"
+            ]
+        }
+    },
+    "remoteUser": "vscode",
+    "postCreateCommand": {
+        "opam": "sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\"",
+        "submodules": "git submodule update --recursive --init --depth=1"
+    },
+    "waitFor": "postCreateCommand"
+}

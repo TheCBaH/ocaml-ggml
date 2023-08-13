@@ -1,0 +1,14 @@
+{
+    "ocaml.repl.path": "make",
+    "ocaml.repl.args": ["utop"],
+    "ocaml.sandbox": {
+        "kind": "opam",
+        "switch": "default"
+    },
+    "cSpell.words": [
+        "ocamlformat",
+        "opam",
+        "OPAMROOT",
+        "utop"
+    ]
+}
