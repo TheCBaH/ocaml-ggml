@@ -1,0 +1,16 @@
+{
+    "name": "ocaml/opam toolchains",
+    "id": "ocaml",
+    "version": "0.0.1",
+    "description": "Install ocaml/opam toolchains",
+    "options": {
+        "packages": {
+            "type": "string",
+            "default": "",
+            "description": "additional packages"
+        }
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils"
+    ]
+}

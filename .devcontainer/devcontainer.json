@@ -1,0 +1,32 @@
+// For format details, see https://aka.ms/devcontainer.json.
+{
+    "name": "ocaml decontainers examples",
+    "build":  {
+        "dockerfile": "Dockerfile",
+        "cacheFrom": [
+            "ghcr.io/thecbah/ocaml-devcontainer/devcontainer:master"
+        ]
+    },
+    "features": {
+        "ghcr.io/devcontainers/features/common-utils:2": {
+            "installZsh": "true",
+            "username": "vscode",
+            "userUid": "1000",
+            "userGid": "1000",
+            "upgradePackages": "false"
+        },
+        "./features/ocaml": { }
+    },
+    "customizations": {
+        "vscode": {
+            "extensions": [
+                "ocamllabs.ocaml-platform"
+            ]
+        }
+    },
+    "remoteUser": "vscode",
+    "postCreateCommand": {
+        "opam": "sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\""
+    },
+    "waitFor": "postCreateCommand"
+}

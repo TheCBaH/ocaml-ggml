@@ -1,0 +1,7 @@
+(executable
+ (name main)
+ (libraries example))
+
+(toplevel
+ (name example_top)
+ (libraries example))
