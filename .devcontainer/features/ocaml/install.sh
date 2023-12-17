@@ -83,15 +83,16 @@ opam init --no-setup --disable-sandboxing --bare
 eval $(opam env)
 opam switch create $OCAML_VERSION
 opam install -y depext
-PACKAGES="\
+BASE_PACKAGES="\
  dune\
  ocaml-lsp-server\
  ocamlformat\
  ocamlformat-rpc\
- utop\
 "
-opam depext ${PACKAGES}
-opam install ${PACKAGES}
+ALL_PACKAGES="${BASE_PACKAGES} ${PACKAGES}"
+
+opam depext ${ALL_PACKAGES}
+opam install ${ALL_PACKAGES}
 
 opam clean --repo-cache
 opam list

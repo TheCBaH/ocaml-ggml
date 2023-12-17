@@ -15,7 +15,9 @@
             "userGid": "1000",
             "upgradePackages": "false"
         },
-        "./features/ocaml": { }
+        "./features/ocaml": {
+            "packages": "utop"
+        },
     },
     "customizations": {
         "vscode": {
