@@ -3,10 +3,14 @@ set -eu
 set -x
 
 echo "Activating feature 'OCaml'"
-
 PACKAGES=${PACKAGES:-$@}
-OCAML_VERSION=${OCAML_VERSION:-4.14.1}
-echo "Selected ocaml:$OCAML_VERSION packages: $PACKAGES "
+SYSTEM_PACKAGES=${SYSTEM_PACKAGES:-}
+OCAML_VERSION=${VERSION:-4.14.1}
+OPAM_OPTIONS=''
+if [ -n "${SWITCH:-}" ]; then
+    OPAM_OPTIONS="--packages ${SWITCH}"
+fi
+echo "Selected OCaml:$OCAML_VERSION packages: $PACKAGES with ${OPAM_OPTIONS} ${SYSTEM_PACKAGES}"
 
 # From https://github.com/devcontainers/features/blob/main/src/git/install.sh
 apt_get_update()
@@ -74,6 +78,7 @@ EOF
 updaterc "$rc"
 
 check_packages\
+ ${SYSTEM_PACKAGES}\
  libffi-dev\
  m4\
  opam\
@@ -81,7 +86,7 @@ check_packages\
 
 opam init --no-setup --disable-sandboxing --bare
 eval $(opam env)
-opam switch create $OCAML_VERSION
+opam switch create $OCAML_VERSION ${OPAM_OPTIONS}
 opam install -y depext
 BASE_PACKAGES="\
  dune\

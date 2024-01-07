@@ -8,7 +8,22 @@
             "type": "string",
             "default": "",
             "description": "additional packages"
-        }
+        },
+        "version": {
+            "type": "string",
+            "default": "4.14.1",
+            "description": "OCaml version"
+        },
+        "switch": {
+            "type": "string",
+            "default": "",
+            "description": "OPAM switch invariants"
+        },
+        "system-packages": {
+            "type": "string",
+            "default": "",
+            "description": "additional system packages"
+        },
     },
     "installsAfter": [
         "ghcr.io/devcontainers/features/common-utils"
