@@ -22,6 +22,8 @@ jobs:
     - name: build
       run: |
         ${{ env.EXEC }} make
+        file _build/default/main.exe
+        ls -lh _build/default/main.exe
     - name: run
       run: |
         ${{ env.EXEC }} make run
@@ -31,3 +33,9 @@ jobs:
     - name: utop
       run: |
         echo 'Example.Hello.print ();;' | ${{ env.EXEC }} make utop
+    - name: static
+      run: |
+        ${{ env.EXEC }} make static
+        file _build/default/main.exe
+        ls -lh _build/default/main.exe
+        _build/default/main.exe

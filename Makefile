@@ -2,6 +2,9 @@
 default:
 	opam exec dune build
 
+static:
+	opam exec -- dune build --profile static
+
 format:
 	opam exec dune fmt
 

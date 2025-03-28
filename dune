@@ -5,3 +5,10 @@
 (toplevel
  (name example_top)
  (libraries example))
+
+(env
+ (shared)
+ (static
+  (ocamlopt_flags
+   (:standard -O3))
+  (link_flags :standard -cclib -static)))
