@@ -7,8 +7,8 @@ PACKAGES=${PACKAGES:-$@}
 SYSTEM_PACKAGES=${SYSTEM_PACKAGES:-}
 OCAML_VERSION=${VERSION:-4.14.1}
 OPAM_OPTIONS=''
-if [ -n "${SWITCH:-}" ]; then
-    OPAM_OPTIONS="--packages ${SWITCH}"
+if [ -n "${OPTIONS:-}" ]; then
+    OPAM_OPTIONS="--packages=ocaml-variants.${OCAML_VERSION}+options,${OPTIONS}"
 fi
 echo "Selected OCaml:$OCAML_VERSION packages: $PACKAGES with ${OPAM_OPTIONS} ${SYSTEM_PACKAGES}"
 
@@ -87,7 +87,6 @@ check_packages\
 opam init --no-setup --disable-sandboxing --bare
 eval $(opam env)
 opam switch create $OCAML_VERSION ${OPAM_OPTIONS}
-opam install -y depext
 BASE_PACKAGES="\
  dune\
  ocaml-lsp-server\
@@ -96,12 +95,12 @@ BASE_PACKAGES="\
 "
 ALL_PACKAGES="${BASE_PACKAGES} ${PACKAGES}"
 
-opam depext ${ALL_PACKAGES}
 opam install ${ALL_PACKAGES}
 
 opam clean --repo-cache
 opam list
 chown -R ${USERNAME} $OPAMROOT
 
-apt-get clean
+apt-get autoremove -y
+apt-get clean -y
 rm -rf /var/lib/apt/lists/*
