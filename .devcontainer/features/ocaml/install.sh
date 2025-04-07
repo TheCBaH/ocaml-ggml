@@ -68,6 +68,7 @@ updaterc() {
 
 export OPAMROOT="/opt/opam"
 export OPAMYES="true"
+export OPAMCONFIRMLEVEL="unsafe-yes"
 
 rc="$(cat << EOF
 # >>> OCaml >>>
@@ -79,10 +80,7 @@ updaterc "$rc"
 
 check_packages\
  ${SYSTEM_PACKAGES}\
- libffi-dev\
- m4\
  opam\
- pkg-config\
 
 opam init --no-setup --disable-sandboxing --bare
 eval $(opam env)
