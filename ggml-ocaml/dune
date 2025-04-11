@@ -1,0 +1,33 @@
+(data_only_dirs ggml)
+
+(rule
+ (deps
+  (file Makefile)
+  (source_tree ggml))
+ (targets ggml.h libggml.a dllggml.so)
+ (action
+  (no-infer
+   (progn
+    (run make)
+    (copy ggml/build.ml.static/src/libggml.a libggml.a)
+    (copy ggml/build.ml.shared/src/libggml.so dllggml.so)
+    (copy ggml/include/ggml.h ggml.h)
+    ))))
+
+(executable
+ (name foo)
+ (foreign_archives ggml)
+ (ctypes
+  (external_library_name libggml)
+  (build_flags_resolver (vendored (c_flags :standard) (c_library_flags :standard)))
+  (headers (preamble "#include \"ggml.h\""))
+  (type_description
+   (instance Types)
+   (functor Type_description))
+  (function_description
+   (concurrency unlocked)
+   (instance Functions)
+   (functor Function_description))
+  (generated_types Types_generated)
+  (generated_entry_point C))
+)

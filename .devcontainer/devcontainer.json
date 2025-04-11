@@ -16,10 +16,9 @@
             "upgradePackages": "false"
         },
         "./features/ocaml": {
-            "packages": "utop",
-            "options": "ocaml-option-static",
-            "system-packages": "musl-dev musl-tools"
-        },
+            "packages": "utop ctypes ctypes-foreign",
+            "system-packages": "valgrind cmake ninja-build"
+        }
     },
     "customizations": {
         "vscode": {
@@ -30,7 +29,8 @@
     },
     "remoteUser": "vscode",
     "postCreateCommand": {
-        "opam": "sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\""
+        "opam": "sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\"",
+        "submodules": "git submodule update --recursive --init --depth=1"
     },
     "waitFor": "postCreateCommand"
 }

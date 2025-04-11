@@ -1,6 +1,6 @@
 
 default:
-	opam exec dune build
+	opam exec -- dune build
 
 static:
 	opam exec -- dune build --profile static
