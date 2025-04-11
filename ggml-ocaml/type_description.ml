@@ -21,9 +21,12 @@ module Types (F : Ctypes.TYPE) = struct
   let tensor_flag = make_enum "tensor_flag" Types.TensorFlag.values
   let op_pool = make_enum "op_pool" Types.OpPool.values
   let sort_order = make_enum "sort_order" Types.SortOrder.values
-  let object' : [ `Object ] structure typ = structure (ns "object")
-  let context : [ `Context ] structure typ = structure (ns "context")
-  let cgraph : [ `Cgraph ] structure typ = structure (ns "cgraph")
+  let _object' : [ `Object ] structure typ = structure (ns "object")
+  let object' = ptr _object'
+  let _context : [ `Context ] structure typ = structure (ns "context")
+  let context = ptr _context
+  let _cgraph : [ `Cgraph ] structure typ = structure (ns "cgraph")
+  let cgraph = ptr _cgraph
   let backend_buffer : [ `BackendBuffer ] structure typ = structure (ns "backend_buffer")
 
   module InitParams = struct
@@ -50,8 +53,7 @@ module Types (F : Ctypes.TYPE) = struct
     let nb = field t "nb" (array max_dims size_t)
     let op_ = field t "op" op
 
-    (* GGML_MAX_OP_PARAMS is 64, sizeof(int32_t) is 4, so array size is 16 *)
-    let op_params = field t "op_params" (array 16 int32_t)
+    let op_params = field t "op_params" (array (max_op_params / 4) int32_t)
     let flags = field t "flags" int32_t
     let src = field t "src" (array max_src (ptr t))
     let view_src = field t "view_src" (ptr t)
@@ -62,4 +64,8 @@ module Types (F : Ctypes.TYPE) = struct
     let padding = field t "padding" (array 8 char)
     let () = seal t
   end
+
+  let guid = array 16 uint8_t
+  let guid_t = ptr guid
+
 end

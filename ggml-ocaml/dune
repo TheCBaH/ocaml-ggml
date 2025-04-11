@@ -9,13 +9,14 @@
   (no-infer
    (progn
     (run make)
-    (copy ggml/build.ml.static/src/libggml.a libggml.a)
+    (run ar -rcT libggml.a ggml/build.ml.static/src/libggml.a ggml/build.ml.static/src/libggml-base.a ggml/build.ml.static/src/libggml-cpu.a )
     (copy ggml/build.ml.shared/src/libggml.so dllggml.so)
     (copy ggml/include/ggml.h ggml.h)))))
 
 (executable
  (name foo)
  (libraries ggml_const)
+ (foreign_archives ggml)
  (ctypes
   (external_library_name libggml)
   (build_flags_resolver
