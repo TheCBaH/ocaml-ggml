@@ -28,4 +28,12 @@ module Types (F : Ctypes.TYPE) = struct
   let status = make_enum "status" Types.Status.values
   let typ = make_enum "type" Types.Type.values
   let prec = make_enum "prec" Types.Prec.values
+  let ftype = make_enum "ftype" Types.Ftype.values
+  let op = make_enum "op" Types.Op.values
+  let unary_op = make_enum "unary_op" Types.Unary_op.values
+  let object_type = make_enum "object_type" Types.Object_type.values
+  let log_level = make_enum "log_level" Types.Log_level.values
+  let tensor_flag = make_enum "tensor_flag" Types.Tensor_flag.values
+  let op_pool = make_enum "op_pool" Types.Op_pool.values
+  let sort_order = make_enum "sort_order" Types.Sort_order.values
 end
