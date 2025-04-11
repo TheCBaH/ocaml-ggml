@@ -1,4 +1,4 @@
-(* open Ctypes *)
+open Ctypes
 
 module Types (F : Ctypes.TYPE) = struct
   open F
@@ -36,4 +36,14 @@ module Types (F : Ctypes.TYPE) = struct
   let tensor_flag = make_enum "tensor_flag" Types.TensorFlag.values
   let op_pool = make_enum "op_pool" Types.OpPool.values
   let sort_order = make_enum "sort_order" Types.SortOrder.values
+
+  module InitParams = struct
+    type t
+
+    let t : t structure typ = structure (ns "init_params")
+    let mem_size = field t "mem_size" size_t
+    let mem_buffer = field t "mem_buffer" @@ ptr void
+    let no_alloc = field t "no_alloc" bool
+    let () = seal t
+  end
 end
