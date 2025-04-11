@@ -316,7 +316,7 @@ module Op = struct
     ]
 end
 
-module Unary_op = struct
+module UnaryOp = struct
   type t =
     | Abs
     | Sgn
@@ -354,31 +354,31 @@ module Unary_op = struct
     ]
 end
 
-module Object_type = struct
+module ObjectType = struct
   type t = Tensor | Graph | Work_Buffer
 
   let values = [ (Tensor, "TENSOR"); (Graph, "GRAPH"); (Work_Buffer, "WORK_BUFFER") ]
 end
 
-module Log_level = struct
+module LogLevel = struct
   type t = None | Debug | Info | Warn | Error | Cont
 
   let values = [ (None, "NONE"); (Debug, "DEBUG"); (Info, "INFO"); (Warn, "WARN"); (Error, "ERROR"); (Cont, "CONT") ]
 end
 
-module Tensor_flag = struct
+module TensorFlag = struct
   type t = Input | Output | Param | Loss
 
   let values = [ (Input, "INPUT"); (Output, "OUTPUT"); (Param, "PARAM"); (Loss, "LOSS") ]
 end
 
-module Op_pool = struct
+module OpPool = struct
   type t = Max | Avg | Count
 
   let values = [ (Max, "MAX"); (Avg, "AVG"); (Count, "COUNT") ]
 end
 
-module Sort_order = struct
+module SortOrder = struct
   type t = Asc | Desc
 
   let values = [ (Asc, "ASC"); (Desc, "DESC") ]
