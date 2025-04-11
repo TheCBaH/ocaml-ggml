@@ -36,6 +36,10 @@ module Types (F : Ctypes.TYPE) = struct
   let tensor_flag = make_enum "tensor_flag" Types.TensorFlag.values
   let op_pool = make_enum "op_pool" Types.OpPool.values
   let sort_order = make_enum "sort_order" Types.SortOrder.values
+  let object' : [ `Object ] structure typ = structure (ns "object")
+  let context : [ `Context ] structure typ = structure (ns "context")
+  let cgraph : [ `Cgraph ] structure typ = structure (ns "cgraph")
+  let backend_buffer : [ `BackendBuffer ] structure typ = structure (ns "backend_buffer")
 
   module InitParams = struct
     type t
