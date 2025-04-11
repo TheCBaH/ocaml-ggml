@@ -2,6 +2,7 @@ open Ctypes
 
 module Types (F : Ctypes.TYPE) = struct
   open F
+
   let ns name = "ggml_" ^ name
   let _NS name = "GGML_" ^ name
 
@@ -25,7 +26,6 @@ module Types (F : Ctypes.TYPE) = struct
   let cgraph : [ `Cgraph ] structure typ = structure (ns "cgraph")
   let backend_buffer : [ `BackendBuffer ] structure typ = structure (ns "backend_buffer")
 
-  (*
   module InitParams = struct
     type t
 
@@ -37,14 +37,19 @@ module Types (F : Ctypes.TYPE) = struct
   end
 
   module Tensor = struct
+    open Ggml_const.C.Types
+
     type t
+
     let t : t structure typ = structure (ns "tensor")
+
     (* Need to declare t before using it recursively in src and view_src *)
     let typ_ = field t "type" typ
     let buffer = field t "buffer" (ptr backend_buffer)
     let ne = field t "ne" (array max_dims int64_t)
     let nb = field t "nb" (array max_dims size_t)
     let op_ = field t "op" op
+
     (* GGML_MAX_OP_PARAMS is 64, sizeof(int32_t) is 4, so array size is 16 *)
     let op_params = field t "op_params" (array 16 int32_t)
     let flags = field t "flags" int32_t
@@ -57,5 +62,4 @@ module Types (F : Ctypes.TYPE) = struct
     let padding = field t "padding" (array 8 char)
     let () = seal t
   end
-  *)
 end

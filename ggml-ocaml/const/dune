@@ -3,8 +3,7 @@
  (foreign_archives ../ggml)
  (ctypes
   (external_library_name libggml)
-  (build_flags_resolver
-   (vendored))
+  (build_flags_resolver (vendored))
   (headers
    (preamble "#include \"../ggml.h\""))
   (type_description
