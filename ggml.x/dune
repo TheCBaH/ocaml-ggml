@@ -1,0 +1,12 @@
+(data_only_dirs libfoo)
+(rule
+ (deps (source_tree ggml))
+ (targets libggml.a)
+ (action
+ (no-infer
+ (chdir ggml
+  (system "mkdir build && cd build && cmake .. && cmake --build . --config Release")))))
+
+(library
+(name ggml)
+(foreign_archives ggml))

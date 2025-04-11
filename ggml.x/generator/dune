@@ -1,0 +1,11 @@
+(executable
+ (name generate)
+ (modules generate)
+ (libraries ctypes ctypes-stubgen dune.configurator))
+
+; Rule to run the generator and output the types file locally
+(rule
+ (targets ggml_types_generated.ml) ; Output file in this directory
+ (deps ../ggml/include/ggml.h) ; Depends on the header
+ (action
+  (run ./generate.exe %{deps}))) ; Run the generator with the header path
