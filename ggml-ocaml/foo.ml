@@ -1,1 +1,1 @@
-let () = Printf.printf "max_dims: %d\n" C.Types.max_dims
+let () = Printf.printf "max_dims: %d\n" Ggml_const.C.Types.max_dims
