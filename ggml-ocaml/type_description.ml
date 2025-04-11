@@ -18,6 +18,14 @@ module Types (F : Ctypes.TYPE) = struct
   let mem_align = constant "GGML_MEM_ALIGN" int
   let exit_success = constant "GGML_EXIT_SUCCESS" int
   let exit_aborted = constant "GGML_EXIT_ABORTED" int
-  let make_enum name values = enum ("ggml_" ^ name) @@ List.map (fun (t, name) -> (t, constant name int64_t)) values
+  let ns name = "ggml_" ^ name
+  let _NS name = "GGML_" ^ name
+
+  let make_enum name values =
+    let _NAME v = _NS @@ String.uppercase_ascii name ^ "_" ^ v in
+    enum (ns name) @@ List.map (fun (t, name) -> (t, constant (_NAME name) int64_t)) values
+
   let status = make_enum "status" Types.Status.values
+  let typ = make_enum "type" Types.Type.values
+  let prec = make_enum "prec" Types.Prec.values
 end

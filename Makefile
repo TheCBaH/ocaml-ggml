@@ -1,6 +1,8 @@
 
-default:
-	opam exec -- dune build
+default: build
+
+build:
+	opam exec -- dune $@
 
 static:
 	opam exec -- dune build --profile static
