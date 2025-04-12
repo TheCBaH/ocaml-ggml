@@ -34,7 +34,6 @@ module Types (F : Ctypes.TYPE) = struct
   let opt_params : [ `OptParams ] structure typ = structure (ns "opt_params")
   let opt_context : [ `OptContext ] structure typ = structure (ns "opt_context")
   let scratch : [ `Scratch ] structure typ = structure (ns "scratch")
-  let cplan : [ `Cplan ] structure typ = structure (ns "cplan")
   let type_traits : [ `TypeTraits ] structure typ = structure (ns "type_traits")
   let thread_pool : [ `ThreadPool ] structure typ = structure (ns "thread_pool")
 
@@ -46,6 +45,21 @@ module Types (F : Ctypes.TYPE) = struct
 
   (* Function pointer types *)
   let abort_callback = static_funptr (ptr void @-> returning bool)
+
+  module Cplan = struct
+    type t
+
+    let t : t structure typ = structure (ns "cplan")
+    let work_size = field t "work_size" size_t
+    let work_data = field t "work_data" (ptr uint8_t)
+    let n_threads = field t "n_threads" int
+    let threadpool = field t "threadpool" (ptr thread_pool)
+    let abort_callback = field t "abort_callback" abort_callback
+    let abort_callback_data = field t "abort_callback_data" (ptr void)
+    let () = seal t
+  end
+
+  let cplan = Cplan.t (* Keep the alias for compatibility if needed *)
   let log_callback = static_funptr (log_level @-> string @-> ptr void @-> returning void) (* string for const char* *)
   let thread_task = static_funptr (ptr void @-> int @-> returning void)
   let cgraph_eval_callback = static_funptr (ptr cgraph @-> ptr void @-> returning bool)
