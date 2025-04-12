@@ -147,6 +147,162 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let mul_mat = foreign (ns "mul_mat") (context @-> tensor @-> tensor @-> returning tensor)
   let mul_mat_set_prec = foreign (ns "mul_mat_set_prec") (tensor @-> prec @-> returning void)
   let mul_mat_id = foreign (ns "mul_mat_id") (context @-> tensor @-> tensor @-> tensor @-> returning tensor)
+  let out_prod = foreign (ns "out_prod") (context @-> tensor @-> tensor @-> returning tensor)
+
+  (* Operations without backpropagation *)
+  let scale = foreign (ns "scale") (context @-> tensor @-> float @-> returning tensor)
+  let scale_inplace = foreign (ns "scale_inplace") (context @-> tensor @-> float @-> returning tensor)
+
+  let set =
+    foreign (ns "set") (context @-> tensor @-> tensor @-> size_t @-> size_t @-> size_t @-> size_t @-> returning tensor)
+
+  let set_inplace =
+    foreign (ns "set_inplace")
+      (context @-> tensor @-> tensor @-> size_t @-> size_t @-> size_t @-> size_t @-> returning tensor)
+
+  let set_1d = foreign (ns "set_1d") (context @-> tensor @-> tensor @-> size_t @-> returning tensor)
+  let set_1d_inplace = foreign (ns "set_1d_inplace") (context @-> tensor @-> tensor @-> size_t @-> returning tensor)
+  let set_2d = foreign (ns "set_2d") (context @-> tensor @-> tensor @-> size_t @-> size_t @-> returning tensor)
+
+  let set_2d_inplace =
+    foreign (ns "set_2d_inplace") (context @-> tensor @-> tensor @-> size_t @-> size_t @-> returning tensor)
+
+  let cpy = foreign (ns "cpy") (context @-> tensor @-> tensor @-> returning tensor)
+  let cast = foreign (ns "cast") (context @-> tensor @-> typ @-> returning tensor)
+  let cont = foreign (ns "cont") (context @-> tensor @-> returning tensor)
+  let cont_1d = foreign (ns "cont_1d") (context @-> tensor @-> int64_t @-> returning tensor)
+  let cont_2d = foreign (ns "cont_2d") (context @-> tensor @-> int64_t @-> int64_t @-> returning tensor)
+  let cont_3d = foreign (ns "cont_3d") (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> returning tensor)
+
+  let cont_4d =
+    foreign (ns "cont_4d") (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning tensor)
+
+  let reshape = foreign (ns "reshape") (context @-> tensor @-> tensor @-> returning tensor)
+  let reshape_1d = foreign (ns "reshape_1d") (context @-> tensor @-> int64_t @-> returning tensor)
+  let reshape_2d = foreign (ns "reshape_2d") (context @-> tensor @-> int64_t @-> int64_t @-> returning tensor)
+
+  let reshape_3d =
+    foreign (ns "reshape_3d") (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> returning tensor)
+
+  let reshape_4d =
+    foreign (ns "reshape_4d") (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning tensor)
+
+  let view_1d = foreign (ns "view_1d") (context @-> tensor @-> int64_t @-> size_t @-> returning tensor)
+
+  let view_2d =
+    foreign (ns "view_2d") (context @-> tensor @-> int64_t @-> int64_t @-> size_t @-> size_t @-> returning tensor)
+
+  let view_3d =
+    foreign (ns "view_3d")
+      (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> size_t @-> size_t @-> size_t @-> returning tensor)
+
+  let view_4d =
+    foreign (ns "view_4d")
+      (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> size_t @-> size_t @-> size_t @-> size_t
+     @-> returning tensor)
+
+  let permute = foreign (ns "permute") (context @-> tensor @-> int @-> int @-> int @-> int @-> returning tensor)
+  let transpose = foreign (ns "transpose") (context @-> tensor @-> returning tensor)
+  let get_rows = foreign (ns "get_rows") (context @-> tensor @-> tensor @-> returning tensor)
+  let get_rows_back = foreign (ns "get_rows_back") (context @-> tensor @-> tensor @-> tensor @-> returning tensor)
+  let diag = foreign (ns "diag") (context @-> tensor @-> returning tensor)
+  let diag_mask_inf = foreign (ns "diag_mask_inf") (context @-> tensor @-> int @-> returning tensor)
+  let diag_mask_inf_inplace = foreign (ns "diag_mask_inf_inplace") (context @-> tensor @-> int @-> returning tensor)
+  let diag_mask_zero = foreign (ns "diag_mask_zero") (context @-> tensor @-> int @-> returning tensor)
+  let diag_mask_zero_inplace = foreign (ns "diag_mask_zero_inplace") (context @-> tensor @-> int @-> returning tensor)
+  let soft_max = foreign (ns "soft_max") (context @-> tensor @-> returning tensor)
+  let soft_max_inplace = foreign (ns "soft_max_inplace") (context @-> tensor @-> returning tensor)
+  let soft_max_ext = foreign (ns "soft_max_ext") (context @-> tensor @-> tensor @-> float @-> float @-> returning tensor)
+
+  let soft_max_ext_back =
+    foreign (ns "soft_max_ext_back") (context @-> tensor @-> tensor @-> float @-> float @-> returning tensor)
+
+  let soft_max_ext_back_inplace =
+    foreign (ns "soft_max_ext_back_inplace") (context @-> tensor @-> tensor @-> float @-> float @-> returning tensor)
+
+  let rope = foreign (ns "rope") (context @-> tensor @-> tensor @-> int @-> int @-> returning tensor)
+  let rope_inplace = foreign (ns "rope_inplace") (context @-> tensor @-> tensor @-> int @-> int @-> returning tensor)
+
+  let rope_ext =
+    foreign (ns "rope_ext")
+      (context @-> tensor @-> tensor @-> tensor @-> int @-> int @-> int @-> float @-> float @-> float @-> float
+     @-> float @-> float @-> returning tensor)
+
+  let rope_multi =
+    foreign (ns "rope_multi")
+      (context @-> tensor @-> tensor @-> tensor @-> int @-> ptr int @-> int @-> int @-> float @-> float @-> float
+     @-> float @-> float @-> float @-> returning tensor)
+
+  let rope_ext_inplace =
+    foreign (ns "rope_ext_inplace")
+      (context @-> tensor @-> tensor @-> tensor @-> int @-> int @-> int @-> float @-> float @-> float @-> float
+     @-> float @-> float @-> returning tensor)
+
+  let rope_yarn_corr_dims =
+    foreign (ns "rope_yarn_corr_dims") (int @-> int @-> float @-> float @-> float @-> ptr float @-> returning void)
+
+  let rope_ext_back =
+    foreign (ns "rope_ext_back")
+      (context @-> tensor @-> tensor @-> tensor @-> int @-> int @-> int @-> float @-> float @-> float @-> float
+     @-> float @-> float @-> returning tensor)
+
+  let rope_multi_back =
+    foreign (ns "rope_multi_back")
+      (context @-> tensor @-> tensor @-> tensor @-> int @-> ptr int @-> int @-> int @-> float @-> float @-> float
+     @-> float @-> float @-> float @-> returning tensor)
+
+  let clamp = foreign (ns "clamp") (context @-> tensor @-> float @-> float @-> returning tensor)
+
+  let im2col =
+    foreign (ns "im2col")
+      (context @-> tensor @-> tensor @-> int @-> int @-> int @-> int @-> int @-> int @-> bool @-> typ
+     @-> returning tensor)
+
+  let im2col_back =
+    foreign (ns "im2col_back")
+      (context @-> tensor @-> tensor @-> ptr int64_t @-> int @-> int @-> int @-> int @-> int @-> int @-> bool
+     @-> returning tensor)
+
+  let conv_1d = foreign (ns "conv_1d") (context @-> tensor @-> tensor @-> int @-> int @-> int @-> returning tensor)
+  let conv_1d_ph = foreign (ns "conv_1d_ph") (context @-> tensor @-> tensor @-> int @-> int @-> returning tensor)
+  let conv_1d_dw = foreign (ns "conv_1d_dw") (context @-> tensor @-> tensor @-> int @-> int @-> int @-> returning tensor)
+  let conv_1d_dw_ph = foreign (ns "conv_1d_dw_ph") (context @-> tensor @-> tensor @-> int @-> int @-> returning tensor)
+
+  let conv_transpose_1d =
+    foreign (ns "conv_transpose_1d") (context @-> tensor @-> tensor @-> int @-> int @-> int @-> returning tensor)
+
+  let conv_2d =
+    foreign (ns "conv_2d")
+      (context @-> tensor @-> tensor @-> int @-> int @-> int @-> int @-> int @-> int @-> returning tensor)
+
+  let conv_2d_sk_p0 = foreign (ns "conv_2d_sk_p0") (context @-> tensor @-> tensor @-> returning tensor)
+  let conv_2d_s1_ph = foreign (ns "conv_2d_s1_ph") (context @-> tensor @-> tensor @-> returning tensor)
+
+  let conv_2d_dw =
+    foreign (ns "conv_2d_dw")
+      (context @-> tensor @-> tensor @-> int @-> int @-> int @-> int @-> int @-> int @-> returning tensor)
+
+  let conv_transpose_2d_p0 =
+    foreign (ns "conv_transpose_2d_p0") (context @-> tensor @-> tensor @-> int @-> returning tensor)
+
+  let pool_1d = foreign (ns "pool_1d") (context @-> tensor @-> op_pool @-> int @-> int @-> int @-> returning tensor)
+
+  let pool_2d =
+    foreign (ns "pool_2d")
+      (context @-> tensor @-> op_pool @-> int @-> int @-> int @-> int @-> float @-> float @-> returning tensor)
+
+  let pool_2d_back =
+    foreign (ns "pool_2d_back")
+      (context @-> tensor @-> tensor @-> op_pool @-> int @-> int @-> int @-> int @-> float @-> float
+     @-> returning tensor)
+
+  let upscale = foreign (ns "upscale") (context @-> tensor @-> int @-> returning tensor)
+  let upscale_ext = foreign (ns "upscale_ext") (context @-> tensor @-> int @-> int @-> int @-> int @-> returning tensor)
+  let pad = foreign (ns "pad") (context @-> tensor @-> int @-> int @-> int @-> int @-> returning tensor)
+  let pad_reflect_1d = foreign (ns "pad_reflect_1d") (context @-> tensor @-> int @-> int @-> returning tensor)
+  let timestep_embedding = foreign (ns "timestep_embedding") (context @-> tensor @-> int @-> int @-> returning tensor)
+  let argsort = foreign (ns "argsort") (context @-> tensor @-> sort_order @-> returning tensor)
+  let arange = foreign (ns "arange") (context @-> float @-> float @-> float @-> returning tensor)
 
   (* Graph Computation *)
   let new_graph = foreign (ns "new_graph") (context @-> returning cgraph)
