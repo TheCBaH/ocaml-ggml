@@ -343,6 +343,15 @@ module Functions (F : Ctypes.FOREIGN) = struct
     foreign (ns "rwkv_wkv7")
       (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
 
+  (* Quantization *)
+  let quantize_init = foreign (ns "quantize_init") (typ @-> returning void)
+  let quantize_free = foreign (ns "quantize_free") (void @-> returning void)
+  let quantize_requires_imatrix = foreign (ns "quantize_requires_imatrix") (typ @-> returning bool)
+
+  let quantize_chunk =
+    foreign (ns "quantize_chunk")
+      (typ @-> ptr float @-> ptr void @-> int64_t @-> int64_t @-> int64_t @-> ptr float @-> returning size_t)
+
   (* Loss Functions *)
   let cross_entropy_loss = foreign (ns "cross_entropy_loss") (context @-> tensor @-> tensor @-> returning tensor)
 
