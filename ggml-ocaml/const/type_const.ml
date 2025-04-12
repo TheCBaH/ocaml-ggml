@@ -16,7 +16,5 @@ module Types (F : Ctypes.TYPE) = struct
   let mem_align = constant "GGML_MEM_ALIGN" int
   let exit_success = constant "GGML_EXIT_SUCCESS" int
   let exit_aborted = constant "GGML_EXIT_ABORTED" int
-
   let tensor_size = constant "GGML_TENSOR_SIZE" int
-
 end

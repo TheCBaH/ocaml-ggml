@@ -52,7 +52,6 @@ module Types (F : Ctypes.TYPE) = struct
     let ne = field t "ne" (array max_dims int64_t)
     let nb = field t "nb" (array max_dims size_t)
     let op_ = field t "op" op
-
     let op_params = field t "op_params" (array (max_op_params / 4) int32_t)
     let flags = field t "flags" int32_t
     let src = field t "src" (array max_src (ptr t))
@@ -67,5 +66,4 @@ module Types (F : Ctypes.TYPE) = struct
 
   let guid = array 16 uint8_t
   let guid_t = ptr guid
-
 end
