@@ -303,6 +303,45 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let timestep_embedding = foreign (ns "timestep_embedding") (context @-> tensor @-> int @-> int @-> returning tensor)
   let argsort = foreign (ns "argsort") (context @-> tensor @-> sort_order @-> returning tensor)
   let arange = foreign (ns "arange") (context @-> float @-> float @-> float @-> returning tensor)
+  let top_k = foreign (ns "top_k") (context @-> tensor @-> int @-> returning tensor)
+
+  let flash_attn_ext =
+    foreign (ns "flash_attn_ext")
+      (context @-> tensor @-> tensor @-> tensor @-> tensor @-> float @-> float @-> float @-> returning tensor)
+
+  let flash_attn_ext_set_prec = foreign (ns "flash_attn_ext_set_prec") (tensor @-> prec @-> returning void)
+  let flash_attn_ext_get_prec = foreign (ns "flash_attn_ext_get_prec") (tensor @-> returning prec)
+
+  let flash_attn_back =
+    foreign (ns "flash_attn_back") (context @-> tensor @-> tensor @-> tensor @-> tensor @-> bool @-> returning tensor)
+
+  let ssm_conv = foreign (ns "ssm_conv") (context @-> tensor @-> tensor @-> returning tensor)
+
+  let ssm_scan =
+    foreign (ns "ssm_scan")
+      (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
+  let win_part = foreign (ns "win_part") (context @-> tensor @-> int @-> returning tensor)
+  let win_unpart = foreign (ns "win_unpart") (context @-> tensor @-> int @-> int @-> int @-> returning tensor)
+  let unary = foreign (ns "unary") (context @-> tensor @-> unary_op @-> returning tensor)
+  let unary_inplace = foreign (ns "unary_inplace") (context @-> tensor @-> unary_op @-> returning tensor)
+  let get_rel_pos = foreign (ns "get_rel_pos") (context @-> tensor @-> int @-> int @-> returning tensor)
+  let add_rel_pos = foreign (ns "add_rel_pos") (context @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
+  let add_rel_pos_inplace =
+    foreign (ns "add_rel_pos_inplace") (context @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
+  let rwkv_wkv6 =
+    foreign (ns "rwkv_wkv6")
+      (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
+  let gated_linear_attn =
+    foreign (ns "gated_linear_attn")
+      (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> float @-> returning tensor)
+
+  let rwkv_wkv7 =
+    foreign (ns "rwkv_wkv7")
+      (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
 
   (* Graph Computation *)
   let new_graph = foreign (ns "new_graph") (context @-> returning cgraph)
