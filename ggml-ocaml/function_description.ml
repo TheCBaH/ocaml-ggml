@@ -78,6 +78,41 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let cont = foreign (ns "cont") (context @-> tensor @-> returning tensor)
   let cast = foreign (ns "cast") (context @-> tensor @-> typ @-> returning tensor)
 
+  (* Buffer Creation *)
+  let new_buffer = foreign (ns "new_buffer") (context @-> size_t @-> returning (ptr void))
+
+  (* Tensor Duplication / Viewing *)
+  let dup_tensor = foreign (ns "dup_tensor") (context @-> tensor @-> returning tensor)
+  let view_tensor = foreign (ns "view_tensor") (context @-> tensor @-> returning tensor)
+
+  (* Context Tensor Enumeration and Lookup *)
+  let get_first_tensor = foreign (ns "get_first_tensor") (context @-> returning tensor)
+  let get_next_tensor = foreign (ns "get_next_tensor") (context @-> tensor @-> returning tensor)
+  let get_tensor = foreign (ns "get_tensor") (context @-> string @-> returning tensor)
+
+  (* Indexing *)
+  let unravel_index =
+    foreign (ns "unravel_index")
+      (tensor @-> int64_t @-> ptr int64_t @-> ptr int64_t @-> ptr int64_t @-> ptr int64_t @-> returning void)
+
+  (* Op Info *)
+  let get_unary_op = foreign (ns "get_unary_op") (tensor @-> returning unary_op)
+
+  (* Data Access *)
+  let get_data = foreign (ns "get_data") (tensor @-> returning (ptr void))
+  let get_data_f32 = foreign (ns "get_data_f32") (tensor @-> returning (ptr float))
+
+  (* Tensor Naming *)
+  let get_name = foreign (ns "get_name") (tensor @-> returning string)
+  let set_name = foreign (ns "set_name") (tensor @-> string @-> returning tensor)
+  (* ggml_format_name is variadic, skipping *)
+
+  (* Tensor Flags *)
+  let set_input = foreign (ns "set_input") (tensor @-> returning void)
+  let set_output = foreign (ns "set_output") (tensor @-> returning void)
+  let set_param = foreign (ns "set_param") (context @-> tensor @-> returning void)
+  let set_loss = foreign (ns "set_loss") (tensor @-> returning void)
+
   (* Graph Computation *)
   let new_graph = foreign (ns "new_graph") (context @-> returning cgraph)
   let build_forward_expand = foreign (ns "build_forward_expand") (cgraph @-> tensor @-> returning void)
