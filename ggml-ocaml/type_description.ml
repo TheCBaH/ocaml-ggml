@@ -36,6 +36,10 @@ module Types (F : Ctypes.TYPE) = struct
   let scratch : [ `Scratch ] structure typ = structure (ns "scratch")
   let type_traits : [ `TypeTraits ] structure typ = structure (ns "type_traits")
   let threadpool : [ `ThreadPool ] structure typ = structure (ns "threadpool")
+  let backend : [ `Backend ] structure typ = structure (ns "backend")
+  let backend_t = ptr backend
+  let backend_reg : [ `BackendReg ] structure typ = structure (ns "backend_reg")
+  let backend_reg_t = ptr backend_reg
 
   (* Typedefs *)
   let fp16_t = typedef uint16_t (ns "fp16_t")

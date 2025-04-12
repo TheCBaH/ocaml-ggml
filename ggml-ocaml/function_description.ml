@@ -466,4 +466,19 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let cpu_has_vxe = foreign (ns "cpu_has_vxe") (void @-> returning int)
   let cpu_has_wasm_simd = foreign (ns "cpu_has_wasm_simd") (void @-> returning int)
   let cpu_has_llamafile = foreign (ns "cpu_has_llamafile") (void @-> returning int)
+
+  (* CPU Backend / Type Traits *)
+  let get_type_traits_cpu = foreign (ns "get_type_traits_cpu") (typ @-> returning (ptr @@ const TypeTraitsCpu.t))
+  let cpu_init = foreign (ns "cpu_init") (void @-> returning void)
+  let backend_cpu_init = foreign (ns "backend_cpu_init") (void @-> returning backend_t)
+  let backend_is_cpu = foreign (ns "backend_is_cpu") (backend_t @-> returning bool)
+  let backend_cpu_set_n_threads = foreign (ns "backend_cpu_set_n_threads") (backend_t @-> int @-> returning void)
+
+  let backend_cpu_set_threadpool =
+    foreign (ns "backend_cpu_set_threadpool") (backend_t @-> ptr threadpool @-> returning void)
+
+  let backend_cpu_set_abort_callback =
+    foreign (ns "backend_cpu_set_abort_callback") (backend_t @-> abort_callback @-> ptr void @-> returning void)
+
+  let backend_cpu_reg = foreign (ns "backend_cpu_reg") (void @-> returning backend_reg_t)
 end

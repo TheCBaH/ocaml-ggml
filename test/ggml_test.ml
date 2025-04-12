@@ -59,6 +59,7 @@ let%expect_test "compute" =
   let result = Functions.mul_mat context a b in
   Functions.build_forward_expand graph result;
 
+  (* Functions.graph_co *)
   Functions.free context;
   [%expect {||}];
   ()
