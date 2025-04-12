@@ -56,9 +56,8 @@ let%expect_test "compute" =
   set_fp32 b matrix_B;
 
   let graph = Functions.new_graph context in
-  (if false then
-     let result = Functions.mul context a b in
-     Functions.build_forward_expand graph result);
+  let result = Functions.mul_mat context a b in
+  Functions.build_forward_expand graph result;
 
   Functions.free context;
   [%expect {||}];
