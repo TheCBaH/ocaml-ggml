@@ -29,6 +29,26 @@ module Types (F : Ctypes.TYPE) = struct
   let cgraph = ptr _cgraph
   let backend_buffer : [ `BackendBuffer ] structure typ = structure (ns "backend_buffer")
 
+  (* Opaque struct types *)
+  let opt_params : [ `OptParams ] structure typ = structure (ns "opt_params")
+  let opt_context : [ `OptContext ] structure typ = structure (ns "opt_context")
+  let scratch : [ `Scratch ] structure typ = structure (ns "scratch")
+  let cplan : [ `Cplan ] structure typ = structure (ns "cplan")
+  let type_traits : [ `TypeTraits ] structure typ = structure (ns "type_traits")
+  let thread_pool : [ `ThreadPool ] structure typ = structure (ns "thread_pool")
+
+  (* Typedefs *)
+  let fp16_t = typedef uint16_t (ns "fp16_t")
+  let bf16_t = typedef uint16_t (ns "bf16_t") (* C struct { uint16_t bits; } - treat as uint16_t for binding *)
+  let guid = typedef (array 16 uint8_t) (ns "guid")
+  let guid_t = typedef (ptr guid) (ns "guid_t")
+
+  (* Function pointer types *)
+  let abort_callback = static_funptr (ptr void @-> returning bool)
+  let log_callback = static_funptr (log_level @-> string @-> ptr void @-> returning void) (* string for const char* *)
+  let thread_task = static_funptr (ptr void @-> int @-> returning void)
+  let cgraph_eval_callback = static_funptr (ptr cgraph @-> ptr void @-> returning bool)
+
   module InitParams = struct
     type t
 
@@ -66,5 +86,4 @@ module Types (F : Ctypes.TYPE) = struct
 
   let tensor = ptr Tensor.t
   let guid = array 16 uint8_t
-  let guid_t = ptr guid
 end
