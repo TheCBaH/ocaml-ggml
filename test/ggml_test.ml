@@ -49,6 +49,13 @@ let%expect_test "compute" =
     CArray.iteri (CArray.set dst) src;
     ()
   in
+  let get_fp32 tensor =
+    let len = Int64.to_int @@ Functions.nelements tensor in
+    let ptr = !@(tensor |-> Types.Tensor.data) in
+    let fp32 = from_voidp float ptr in
+    let src = CArray.from_ptr fp32 len in
+    CArray.to_list src
+  in
 
   let a = Functions.new_tensor_2d context Ggml.Types.Type.F32 (Int64.of_int cols_A) (Int64.of_int rows_A) in
   let b = Functions.new_tensor_2d context Ggml.Types.Type.F32 (Int64.of_int cols_B) (Int64.of_int rows_B) in
@@ -59,7 +66,12 @@ let%expect_test "compute" =
   let result = Functions.mul_mat context a b in
   Functions.build_forward_expand graph result;
 
-  (* Functions.graph_co *)
+  ignore @@ Functions.graph_compute_with_ctx context graph 1;
+  let computed = get_fp32 result in
+  Format.printf "@[[%a]@]%!"
+    (Format.pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ";@ ") Format.pp_print_float)
+    computed;
   Functions.free context;
-  [%expect {||}];
+  [%expect {|
+    [60.; 55.; 50.; 110.; 90.; 54.; 54.; 126.; 42.; 29.; 28.; 64.] |}];
   ()
