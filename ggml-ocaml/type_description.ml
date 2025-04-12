@@ -35,7 +35,7 @@ module Types (F : Ctypes.TYPE) = struct
   let opt_context : [ `OptContext ] structure typ = structure (ns "opt_context")
   let scratch : [ `Scratch ] structure typ = structure (ns "scratch")
   let type_traits : [ `TypeTraits ] structure typ = structure (ns "type_traits")
-  let thread_pool : [ `ThreadPool ] structure typ = structure (ns "thread_pool")
+  let threadpool : [ `ThreadPool ] structure typ = structure (ns "threadpool")
 
   (* Typedefs *)
   let fp16_t = typedef uint16_t (ns "fp16_t")
@@ -45,6 +45,11 @@ module Types (F : Ctypes.TYPE) = struct
 
   (* Function pointer types *)
   let abort_callback = static_funptr (ptr void @-> returning bool)
+  let from_float_t = static_funptr (ptr float @-> ptr void @-> int64_t @-> returning void)
+
+  let vec_dot_t =
+    static_funptr
+      (int @-> ptr float @-> size_t @-> ptr void @-> size_t @-> ptr void @-> size_t @-> int @-> returning void)
 
   module Cplan = struct
     type t
@@ -53,7 +58,7 @@ module Types (F : Ctypes.TYPE) = struct
     let work_size = field t "work_size" size_t
     let work_data = field t "work_data" (ptr uint8_t)
     let n_threads = field t "n_threads" int
-    let threadpool = field t "threadpool" (ptr thread_pool)
+    let threadpool = field t "threadpool" (ptr threadpool)
     let abort_callback = field t "abort_callback" abort_callback
     let abort_callback_data = field t "abort_callback_data" (ptr void)
     let () = seal t
@@ -63,6 +68,17 @@ module Types (F : Ctypes.TYPE) = struct
   let log_callback = static_funptr (log_level @-> string @-> ptr void @-> returning void) (* string for const char* *)
   let thread_task = static_funptr (ptr void @-> int @-> returning void)
   let cgraph_eval_callback = static_funptr (ptr cgraph @-> ptr void @-> returning bool)
+
+  module TypeTraitsCpu = struct
+    type t
+
+    let t : t structure typ = structure (ns "type_traits_cpu")
+    let from_float = field t "from_float" from_float_t
+    let vec_dot = field t "vec_dot" vec_dot_t
+    let vec_dot_type = field t "vec_dot_type" typ
+    let nrows = field t "nrows" int64_t
+    let () = seal t
+  end
 
   module InitParams = struct
     type t
