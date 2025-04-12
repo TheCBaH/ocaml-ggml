@@ -21,6 +21,7 @@ module Types (F : Ctypes.TYPE) = struct
   let tensor_flag = make_enum "tensor_flag" Types.TensorFlag.values
   let op_pool = make_enum "op_pool" Types.OpPool.values
   let sort_order = make_enum "sort_order" Types.SortOrder.values
+  let numa_strategy = make_enum "numa_strategy" Types.NumaStrategy.values
   let _object' : [ `Object ] structure typ = structure (ns "object")
   let object' = ptr _object'
   let _context : [ `Context ] structure typ = structure (ns "context")

@@ -4,13 +4,16 @@
  (deps
   (file Makefile)
   (source_tree ggml))
- (targets ggml.h libggml.a dllggml.so)
+ (targets ggml.h ggml-alloc.h ggml-backend.h ggml-cpu.h libggml.a dllggml.so)
  (action
   (no-infer
    (progn
     (run make)
     (copy ggml/libggml.a libggml.a)
     (copy ggml/build.ml.shared/src/libggml.so dllggml.so)
+    (copy ggml/include/ggml-alloc.h ggml-alloc.h)
+    (copy ggml/include/ggml-backend.h ggml-backend.h)
+    (copy ggml/include/ggml-cpu.h ggml-cpu.h)
     (copy ggml/include/ggml.h ggml.h)))))
 
 (library
@@ -24,7 +27,7 @@
     (c_flags :standard)
     (c_library_flags :standard -lstdc++)))
   (headers
-   (preamble "#include \"ggml.h\""))
+   (preamble "#include \"ggml.h\"\n#include \"ggml-cpu.h\""))
   (type_description
    (instance Types)
    (functor Type_description))

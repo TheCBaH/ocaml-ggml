@@ -383,3 +383,17 @@ module SortOrder = struct
 
   let values = [ (Asc, "ASC"); (Desc, "DESC") ]
 end
+
+module NumaStrategy = struct
+  type t = Disabled | Distribute | Isolate | Numactl | Mirror | Count
+
+  let values =
+    [
+      (Disabled, "DISABLED");
+      (Distribute, "DISTRIBUTE");
+      (Isolate, "ISOLATE");
+      (Numactl, "NUMACTL");
+      (Mirror, "MIRROR");
+      (Count, "COUNT");
+    ]
+end
