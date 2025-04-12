@@ -1,0 +1,6 @@
+(library
+ (name ggml_test_lib)
+ (libraries ggml)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests))

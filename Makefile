@@ -4,6 +4,9 @@ default: build
 build:
 	opam exec -- dune $@
 
+runtest:
+	opam exec -- dune $@ --auto-promote
+
 static:
 	opam exec -- dune build --profile static
 

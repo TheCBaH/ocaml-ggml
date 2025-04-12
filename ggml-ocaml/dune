@@ -9,12 +9,12 @@
   (no-infer
    (progn
     (run make)
-    (run ar -rcT libggml.a ggml/build.ml.static/src/libggml.a ggml/build.ml.static/src/libggml-base.a ggml/build.ml.static/src/libggml-cpu.a )
+    (copy ggml/libggml.a libggml.a)
     (copy ggml/build.ml.shared/src/libggml.so dllggml.so)
     (copy ggml/include/ggml.h ggml.h)))))
 
-(executable
- (name foo)
+(library
+ (name ggml)
  (libraries ggml_const)
  (foreign_archives ggml)
  (ctypes
@@ -22,7 +22,7 @@
   (build_flags_resolver
    (vendored
     (c_flags :standard)
-    (c_library_flags :standard)))
+    (c_library_flags :standard -lstdc++)))
   (headers
    (preamble "#include \"ggml.h\""))
   (type_description

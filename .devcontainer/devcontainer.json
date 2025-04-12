@@ -16,7 +16,7 @@
             "upgradePackages": "false"
         },
         "./features/ocaml": {
-            "packages": "utop ctypes ctypes-foreign",
+            "packages": "utop ctypes ctypes-foreign ppx_expect",
             "system-packages": "valgrind cmake ninja-build"
         }
     },
