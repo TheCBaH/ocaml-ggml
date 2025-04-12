@@ -343,7 +343,55 @@ module Functions (F : Ctypes.FOREIGN) = struct
     foreign (ns "rwkv_wkv7")
       (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
 
-  (* Graph Computation *)
-  let new_graph = foreign (ns "new_graph") (context @-> returning cgraph)
+  (* Loss Functions *)
+  let cross_entropy_loss = foreign (ns "cross_entropy_loss") (context @-> tensor @-> tensor @-> returning tensor)
+
+  let cross_entropy_loss_back =
+    foreign (ns "cross_entropy_loss_back") (context @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
+  (* Optimization *)
+  let opt_step_adamw =
+    foreign (ns "opt_step_adamw") (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
+  (* Automatic Differentiation / Graph Computation *)
   let build_forward_expand = foreign (ns "build_forward_expand") (cgraph @-> tensor @-> returning void)
+
+  let build_backward_expand =
+    foreign (ns "build_backward_expand") (context @-> context @-> cgraph @-> bool @-> returning void)
+
+  (* Graph Allocation / Management *)
+  let new_graph = foreign (ns "new_graph") (context @-> returning cgraph)
+  let new_graph_custom = foreign (ns "new_graph_custom") (context @-> size_t @-> bool @-> returning cgraph)
+  let graph_dup = foreign (ns "graph_dup") (context @-> cgraph @-> returning cgraph)
+  let graph_cpy = foreign (ns "graph_cpy") (cgraph @-> cgraph @-> returning void)
+  let graph_reset = foreign (ns "graph_reset") (cgraph @-> returning void)
+  let graph_clear = foreign (ns "graph_clear") (cgraph @-> returning void)
+
+  (* Graph Info *)
+  let graph_size = foreign (ns "graph_size") (cgraph @-> returning int)
+  let graph_node = foreign (ns "graph_node") (cgraph @-> int @-> returning tensor)
+  let graph_nodes = foreign (ns "graph_nodes") (cgraph @-> returning (ptr tensor)) (* Returns ptr to the first tensor *)
+  let graph_n_nodes = foreign (ns "graph_n_nodes") (cgraph @-> returning int)
+
+  (* Graph Modification *)
+  let graph_add_node = foreign (ns "graph_add_node") (cgraph @-> tensor @-> returning void)
+
+  (* Graph Overhead *)
+  let graph_overhead = foreign (ns "graph_overhead") (void @-> returning size_t)
+  let graph_overhead_custom = foreign (ns "graph_overhead_custom") (size_t @-> bool @-> returning size_t)
+
+  (* Graph Tensor Access *)
+  let graph_get_tensor = foreign (ns "graph_get_tensor") (cgraph @-> string @-> returning tensor)
+  let graph_get_grad = foreign (ns "graph_get_grad") (cgraph @-> tensor @-> returning tensor)
+  let graph_get_grad_acc = foreign (ns "graph_get_grad_acc") (cgraph @-> tensor @-> returning tensor)
+
+  (*
+  (* Graph Import/Export *)
+  let graph_export = foreign (ns "graph_export") (cgraph @-> string @-> returning void)
+  let graph_import = foreign (ns "graph_import") (string @-> ptr context @-> ptr context @-> returning cgraph)
+  *)
+
+  (* Graph Debugging *)
+  let graph_print = foreign (ns "graph_print") (cgraph @-> returning void)
+  let graph_dump_dot = foreign (ns "graph_dump_dot") (cgraph @-> cgraph @-> string @-> returning void)
 end
