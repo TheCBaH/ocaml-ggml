@@ -64,6 +64,7 @@ module Types (F : Ctypes.TYPE) = struct
     let () = seal t
   end
 
+  let tensor = ptr Tensor.t
   let guid = array 16 uint8_t
   let guid_t = ptr guid
 end
