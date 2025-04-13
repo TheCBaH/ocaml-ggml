@@ -1,39 +1,4 @@
-(data_only_dirs ggml)
-
-(rule
- (deps
-  (file Makefile)
-  (source_tree %{project_root}/vendored/ggml))
- (targets ggml.h ggml-alloc.h ggml-backend.h ggml-cpu.h libggml.a dllggml.so)
- (action
-  (no-infer
-   (progn
-    (run make GGML=%{project_root}/vendored/ggml)
-    (copy %{project_root}/vendored/ggml/libggml.a libggml.a)
-    (copy %{project_root}/vendored/ggml/build.ml.shared/src/libggml.so dllggml.so)
-    (copy %{project_root}/vendored/ggml/include/ggml-alloc.h ggml-alloc.h)
-    (copy %{project_root}/vendored/ggml/include/ggml-backend.h ggml-backend.h)
-    (copy %{project_root}/vendored/ggml/include/ggml-cpu.h ggml-cpu.h)
-    (copy %{project_root}/vendored/ggml/include/ggml.h ggml.h)))))
-
 (library
- (name ggml)
- (libraries ggml_const)
- (foreign_archives ggml)
- (ctypes
-  (external_library_name libggml)
-  (build_flags_resolver
-   (vendored
-    (c_flags :standard)
-    (c_library_flags :standard -lstdc++ -fopenmp)))
-  (headers
-   (preamble "#include \"ggml.h\"\n#include \"ggml-cpu.h\""))
-  (type_description
-   (instance Types)
-   (functor Type_description))
-  (function_description
-   (concurrency unlocked)
-   (instance Functions)
-   (functor Function_description))
-  (generated_types Types_generated)
-  (generated_entry_point C)))
+ (name model_explorer)
+ (wrapped false)
+ (libraries jsont))
