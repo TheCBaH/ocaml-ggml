@@ -41,11 +41,11 @@ export default defineConfig({
   ],
 
   /* Run your local dev server before starting the tests */
-  /*
   webServer: {
-    command: 'make server.image-explorer.ts &',
-    url: 'http://127.0.0.1:8000/dist',
+    command: 'make server.image-explorer.ts',
+    url: 'http://127.0.0.1:8080/dist',
     reuseExistingServer: !process.env.CI,
+    ignoreHTTPSErrors: true,
+    stderr: "pipe"
   },
-  */
 });
