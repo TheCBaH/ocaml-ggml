@@ -19,9 +19,15 @@ jobs:
     - name: setup
       run: |
         echo 'EXEC=${{ steps.devcontainer.outputs.exec }}' >> $GITHUB_ENV
-    - name: build
-      run: |
-        ${{ env.EXEC }} make
-    - name: runtest
-      run: |
-        ${{ env.EXEC }} make runtest
+    - name: Install dependencies
+      run:  ${{ env.EXEC }} npm ci
+    - name: Install Playwright Browsers
+      run:  ${{ env.EXEC }} npx playwright install --with-deps
+    - name: Run Playwright tests
+      run:  ${{ env.EXEC }} npx playwright test
+    - uses: actions/upload-artifact@v4
+      if: ${{ !cancelled() }}
+      with:
+        name: playwright-report
+        path: playwright-report/
+        retention-days: 30
