@@ -1,6 +1,6 @@
 // For format details, see https://aka.ms/devcontainer.json.
 {
-    "name": "ocaml decontainers examples",
+    "name": "ocaml devcontainers examples",
     "build":  {
         "dockerfile": "Dockerfile",
         "cacheFrom": [
@@ -15,9 +15,9 @@
             "userGid": "1000",
             "upgradePackages": "false"
         },
-        "./features/ocaml": {
-            "packages": "utop ctypes ctypes-foreign ppx_expect",
-            "system-packages": "valgrind cmake ninja-build"
+        "ghcr.io/devcontainers/features/node:1": {},
+        "./features/playwright": {
+            "browsers": "chromium"
         }
     },
     "customizations": {
@@ -29,7 +29,7 @@
     },
     "remoteUser": "vscode",
     "postCreateCommand": {
-        "opam": "sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\"",
+        "opam": "echo sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\"",
         "submodules": "git submodule update --recursive --init --depth=1"
     },
     "waitFor": "postCreateCommand"

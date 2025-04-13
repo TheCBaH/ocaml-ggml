@@ -1,0 +1,17 @@
+{
+    "name": "playwright browsers",
+    "id": "playwright",
+    "version": "0.0.1",
+    "description": "Install playwright host dependencies",
+    "options": {
+        "browsers": {
+            "type": "string",
+            "default": "",
+            "description": "browsers to install"
+        },
+    },
+    "installsAfter": [
+        "ghcr.io/devcontainers/features/common-utils",
+        "ghcr.io/devcontainers/features/node"
+    ]
+}
