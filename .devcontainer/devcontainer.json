@@ -15,6 +15,9 @@
             "userGid": "1000",
             "upgradePackages": "false"
         },
+        "./features/ocaml": {
+            "packages": "bytesrw jsont ppx_expect utop ppx_expect"
+        },
         "ghcr.io/devcontainers/features/node:1": {},
         "./features/playwright": {
             "browsers": "chromium"
@@ -30,7 +33,7 @@
     },
     "remoteUser": "vscode",
     "postCreateCommand": {
-        "opam": "echo sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\"",
+        "opam": "sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\"",
         "submodules": "echo git submodule update --recursive --init --depth=1"
     },
     "waitFor": "postCreateCommand"

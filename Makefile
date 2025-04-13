@@ -27,11 +27,11 @@ clean:
 
 .PHONY: default clean format run top utop
 
-server.image-explorer.js:
-	cd src/custom_element_demos/vanilla_js; ${CURDIR}/scripts/server.sh ./build_and_deploy.sh
+server.model-explorer.js:
+	cd model-explorer/src/custom_element_demos/vanilla_js; ./build_and_deploy.sh
 
-server.image-explorer.ts:
-	cd src/custom_element_demos/vanilla_ts; npm run build_and_deploy
+server.model-explorer.ts:
+	cd model-explorer/src/custom_element_demos/vanilla_ts; npm run build_and_deploy
 
 server.stop:
 	${CURDIR}/scripts/server.sh stop
