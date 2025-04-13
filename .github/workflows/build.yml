@@ -22,7 +22,7 @@ jobs:
     - name: Install dependencies
       run:  ${{ env.EXEC }} npm ci
     - name: Install Playwright Browsers
-      run:  ${{ env.EXEC }} npx playwright install --with-deps
+      run:  ${{ env.EXEC }} npx playwright install --with-deps chromium
     - name: Run Playwright tests
       run:  ${{ env.EXEC }} npx playwright test
     - uses: actions/upload-artifact@v4
