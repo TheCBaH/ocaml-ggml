@@ -6,7 +6,7 @@ TARGET.shared=src/libggml.so
 FINISH.static=printf "create libggml.a\naddlib build.ml.static/src/libggml.a\n addlib build.ml.static/src/libggml-base.a\naddlib build.ml.static/src/libggml-cpu.a\nsave\nend" | ar -M;
 
 %.build:
-	set -eux;cd ggml;\
+	set -eux;cd ${GGML};\
 	 cmake -B build.ml.$(basename $@) -G Ninja -DCMAKE_BUILD_TYPE=Release $(OPTS.$(basename $@));\
 	 cmake --build build.ml.$(basename $@) --target $(TARGET.$(basename $@)) -j $$(getconf _NPROCESSORS_ONLN);\
 	 $(FINISH.$(basename $@))\

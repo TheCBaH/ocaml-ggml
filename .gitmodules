@@ -1,0 +1,3 @@
+[submodule "vendored/ggml"]
+	path = vendored/ggml
+	url = https://github.com/ggerganov/ggml.git
