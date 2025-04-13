@@ -1,6 +1,6 @@
-# Devcontainer for OCaml
+# OCaml GGML bindings
 
-[![OCaml devcontainer example](https://github.com/TheCBaH/ocaml-devcontainer/actions/workflows/build.yml/badge.svg?branch=master)](https://github.com/TheCBaH/ocaml-devcontainer/actions/workflows/build.yml)
+[![OCaml GGML bindings](https://github.com/TheCBaH/ocaml-ggml/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/TheCBaH/ocaml-ggmk/actions/workflows/build.yml)
 
 Devcontainer to create [OCaml](https://ocaml.org/) development environment.
 

@@ -1,9 +1,0 @@
-(executable
- (name main)
- (libraries example))
-
-(toplevel
- (name example_top)
- (libraries example))
-
-(data_only_dirs ggml.x)
