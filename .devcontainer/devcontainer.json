@@ -31,7 +31,7 @@
     "remoteUser": "vscode",
     "postCreateCommand": {
         "opam": "echo sudo sh -ceux \"chown -R $(id -u):$(id -g) ${OPAMROOT}/log\"",
-        "submodules": "git submodule update --recursive --init --depth=1"
+        "submodules": "echo git submodule update --recursive --init --depth=1"
     },
     "waitFor": "postCreateCommand"
 }
