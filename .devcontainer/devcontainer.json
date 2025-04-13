@@ -23,7 +23,8 @@
     "customizations": {
         "vscode": {
             "extensions": [
-                "ocamllabs.ocaml-platform"
+                "ocamllabs.ocaml-platform",
+                "ms-playwright.playwright"
             ]
         }
     },

@@ -26,3 +26,9 @@ clean:
 	opam exec dune $@
 
 .PHONY: default clean format run top utop
+
+server.image-explorer.js:
+	cd src/custom_element_demos/vanilla_js; ./build_and_deploy.sh
+
+server.image-explorer.ts:
+	cd src/custom_element_demos/vanilla_ts; npm run build_and_deploy
