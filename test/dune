@@ -1,6 +1,6 @@
 (library
- (name ggml_test_lib)
- (libraries ggml)
+ (name model_explorer_test)
+ (libraries model_explorer jsont.bytesrw)
  (preprocess
   (pps ppx_expect))
  (inline_tests))
