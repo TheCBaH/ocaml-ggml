@@ -19,6 +19,12 @@ jobs:
     - name: setup
       run: |
         echo 'EXEC=${{ steps.devcontainer.outputs.exec }}' >> $GITHUB_ENV
+    - name: Build
+      run:  ${{ env.EXEC }} make build
+    - name: Run tests
+      run:  ${{ env.EXEC }} make runtest
+    - name: Format
+      run:  ${{ env.EXEC }} make format
     - name: Install dependencies
       run:  ${{ env.EXEC }} npm ci
     - name: Install Playwright Browsers
