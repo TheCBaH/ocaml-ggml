@@ -1,3 +1,6 @@
 [submodule "vendored/ggml"]
 	path = vendored/ggml
 	url = https://github.com/ggerganov/ggml.git
+[submodule "lib/ocaml-model-explorer"]
+	path = lib/ocaml-model-explorer
+	url = https://github.com/TheCBaH/ocaml-model-explorer.git

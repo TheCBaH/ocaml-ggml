@@ -10,5 +10,5 @@
   * `make build` build ggml and ocaml bindings
   * `make runtest` run test
 
-Bindings are generated using gemmini AI so use it with care.
+Bindings are generated using gemini AI so use it with care.
 
