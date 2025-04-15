@@ -1,6 +1,16 @@
 (library
- (name ggml_test_lib)
+ (name ggml_test)
+ (modules ggml_test)
  (libraries ggml)
  (preprocess
   (pps ppx_expect))
  (inline_tests))
+
+(library
+ (name gpt2_test)
+ (modules gpt2_test)
+ (libraries gpt_2)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests
+  (deps models/gpt-2-117M/ggml-model.bin)))

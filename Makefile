@@ -25,4 +25,9 @@ utop:
 clean:
 	opam exec dune $@
 
-.PHONY: default clean format run top utop
+test/models/gpt-2-117M/ggml-model.bin:
+	cd test;../vendored/ggml/examples/gpt-2/download-ggml-model.sh 117M
+
+models:  test/models/gpt-2-117M/ggml-model.bin
+
+.PHONY: default clean format models run top utop
