@@ -5,8 +5,6 @@ module Functions (F : Ctypes.FOREIGN) = struct
   open F
   open Types
 
-  let ns name = "ggml_" ^ name
-
   (* Context *)
 
   (** [init params] initializes a ggml context.
