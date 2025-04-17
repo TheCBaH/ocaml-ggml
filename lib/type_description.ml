@@ -55,6 +55,7 @@ module Types (F : Ctypes.TYPE) = struct
     static_funptr
       (int @-> ptr float @-> size_t @-> ptr void @-> size_t @-> ptr void @-> size_t @-> int @-> returning void)
 
+  (** Computation plan structure. *)
   module Cplan = struct
     type t
 
@@ -73,6 +74,7 @@ module Types (F : Ctypes.TYPE) = struct
   let thread_task = static_funptr (ptr void @-> int @-> returning void)
   let cgraph_eval_callback = static_funptr (ptr cgraph @-> ptr void @-> returning bool)
 
+  (** CPU-specific type traits structure. *)
   module TypeTraitsCpu = struct
     type t
 
@@ -84,6 +86,7 @@ module Types (F : Ctypes.TYPE) = struct
     let () = seal t
   end
 
+  (** Initialization parameters structure. *)
   module InitParams = struct
     type t
 
@@ -94,6 +97,7 @@ module Types (F : Ctypes.TYPE) = struct
     let () = seal t
   end
 
+  (** n-dimensional tensor structure. *)
   module Tensor = struct
     open Ggml_const.C.Types
 

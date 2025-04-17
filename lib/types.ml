@@ -1,9 +1,11 @@
+(** Status codes for ggml functions. *)
 module Status = struct
   type t = AllocFailed | Failed | Success | Aborted
 
   let values = [ (AllocFailed, "ALLOC_FAILED"); (Failed, "FAILED"); (Success, "SUCCESS"); (Aborted, "ABORTED") ]
 end
 
+(** Available tensor types. NOTE: always add types at the end of the enum to keep backward compatibility. *)
 module Type = struct
   type t =
     | F32
@@ -74,38 +76,40 @@ module Type = struct
     ]
 end
 
+(** Precision levels for matrix multiplication. *)
 module Prec = struct
   type t = Default | F32
 
   let values = [ (Default, "DEFAULT"); (F32, "F32") ]
 end
 
+(** Model file types. *)
 module Ftype = struct
   type t =
     | Unknown
     | All_F32
-    | Mostly_F16
-    | Mostly_Q4_0
-    | Mostly_Q4_1
-    | Mostly_Q4_1_Some_F16
-    | Mostly_Q8_0
-    | Mostly_Q5_0
-    | Mostly_Q5_1
-    | Mostly_Q2_K
-    | Mostly_Q3_K
-    | Mostly_Q4_K
-    | Mostly_Q5_K
-    | Mostly_Q6_K
-    | Mostly_IQ2_XXS
-    | Mostly_IQ2_XS
-    | Mostly_IQ3_XXS
-    | Mostly_IQ1_S
-    | Mostly_IQ4_NL
-    | Mostly_IQ3_S
-    | Mostly_IQ2_S
-    | Mostly_IQ4_XS
-    | Mostly_IQ1_M
-    | Mostly_BF16
+    | Mostly_F16  (** except 1d tensors *)
+    | Mostly_Q4_0  (** except 1d tensors *)
+    | Mostly_Q4_1  (** except 1d tensors *)
+    | Mostly_Q4_1_Some_F16  (** tok_embeddings.weight and output.weight are F16 *)
+    | Mostly_Q8_0  (** except 1d tensors *)
+    | Mostly_Q5_0  (** except 1d tensors *)
+    | Mostly_Q5_1  (** except 1d tensors *)
+    | Mostly_Q2_K  (** except 1d tensors *)
+    | Mostly_Q3_K  (** except 1d tensors *)
+    | Mostly_Q4_K  (** except 1d tensors *)
+    | Mostly_Q5_K  (** except 1d tensors *)
+    | Mostly_Q6_K  (** except 1d tensors *)
+    | Mostly_IQ2_XXS  (** except 1d tensors *)
+    | Mostly_IQ2_XS  (** except 1d tensors *)
+    | Mostly_IQ3_XXS  (** except 1d tensors *)
+    | Mostly_IQ1_S  (** except 1d tensors *)
+    | Mostly_IQ4_NL  (** except 1d tensors *)
+    | Mostly_IQ3_S  (** except 1d tensors *)
+    | Mostly_IQ2_S  (** except 1d tensors *)
+    | Mostly_IQ4_XS  (** except 1d tensors *)
+    | Mostly_IQ1_M  (** except 1d tensors *)
+    | Mostly_BF16  (** except 1d tensors *)
 
   let values =
     [
@@ -136,6 +140,7 @@ module Ftype = struct
     ]
 end
 
+(** Available tensor operations. *)
 module Op = struct
   type t =
     | None
@@ -160,7 +165,7 @@ module Op = struct
     | Repeat_Back
     | Concat
     | Silu_Back
-    | Norm
+    | Norm  (** normalize *)
     | Rms_Norm
     | Rms_Norm_Back
     | Group_Norm
@@ -193,7 +198,7 @@ module Op = struct
     | Pool_1D
     | Pool_2D
     | Pool_2D_Back
-    | Upscale
+    | Upscale  (** nearest interpolate *)
     | Pad
     | Pad_Reflect_1D
     | Arange
@@ -316,6 +321,7 @@ module Op = struct
     ]
 end
 
+(** Available unary operations. *)
 module UnaryOp = struct
   type t =
     | Abs
@@ -354,36 +360,46 @@ module UnaryOp = struct
     ]
 end
 
+(** Object types used by ggml. *)
 module ObjectType = struct
   type t = Tensor | Graph | Work_Buffer
 
   let values = [ (Tensor, "TENSOR"); (Graph, "GRAPH"); (Work_Buffer, "WORK_BUFFER") ]
 end
 
+(** Logging levels. *)
 module LogLevel = struct
-  type t = None | Debug | Info | Warn | Error | Cont
+  type t = None | Debug | Info | Warn | Error | Cont  (** continue previous log *)
 
   let values = [ (None, "NONE"); (Debug, "DEBUG"); (Info, "INFO"); (Warn, "WARN"); (Error, "ERROR"); (Cont, "CONT") ]
 end
 
+(** Tensor flags. Used to mark tensors with special properties. *)
 module TensorFlag = struct
-  type t = Input | Output | Param | Loss
+  type t =
+    | Input  (** is an input for the GGML compute graph *)
+    | Output  (** is an output for the GGML compute graph *)
+    | Param  (** contains trainable parameters *)
+    | Loss  (** defines loss for numerical optimization (multiple loss tensors add up) *)
 
   let values = [ (Input, "INPUT"); (Output, "OUTPUT"); (Param, "PARAM"); (Loss, "LOSS") ]
 end
 
+(** Pooling operations. *)
 module OpPool = struct
   type t = Max | Avg | Count
 
   let values = [ (Max, "MAX"); (Avg, "AVG"); (Count, "COUNT") ]
 end
 
+(** Sort order for argsort. *)
 module SortOrder = struct
   type t = Asc | Desc
 
   let values = [ (Asc, "ASC"); (Desc, "DESC") ]
 end
 
+(** NUMA strategy. *)
 module NumaStrategy = struct
   type t = Disabled | Distribute | Isolate | Numactl | Mirror | Count
 

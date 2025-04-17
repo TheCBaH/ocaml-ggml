@@ -1,5 +1,3 @@
-(data_only_dirs ggml)
-
 (rule
  (deps
   (file Makefile)
