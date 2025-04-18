@@ -8,6 +8,7 @@
 * [![Open in GitHub Codespaces](https://github.com/codespaces/badge.svg)](https://github.com/codespaces/new?hide_repo_select=true&ref=main&repo=965378964)
 * run
   * `make build` build ggml and ocaml bindings
+  * `make models` download models
   * `make runtest` run test
 
 Bindings are generated using gemini AI so use it with care.
