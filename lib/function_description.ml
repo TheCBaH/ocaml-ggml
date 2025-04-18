@@ -21,6 +21,55 @@ module Functions (F : Ctypes.FOREIGN) = struct
       @return Memory used in bytes. *)
   let used_mem = foreign (ns "used_mem") (context @-> returning size_t)
 
+  (** [reset ctx] resets the context, clearing its internal state but keeping allocated memory.
+      @param ctx The context to reset. *)
+  let reset = foreign (ns "reset") (context @-> returning void)
+
+  (** [guid_matches guid_a guid_b] checks if two GUIDs are equal.
+      @param guid_a First GUID.
+      @param guid_b Second GUID.
+      @return True if the GUIDs match, false otherwise. *)
+  let guid_matches = foreign (ns "guid_matches") (guid_t @-> guid_t @-> returning bool)
+
+  (* Time Functions *)
+
+  (** [time_init ()] initializes the internal timer. Call once at program start. *)
+  let time_init = foreign (ns "time_init") (void @-> returning void)
+
+  (** [time_ms ()] returns the current time in milliseconds.
+      @return Time in milliseconds. *)
+  let time_ms = foreign (ns "time_ms") (void @-> returning int64_t)
+
+  (** [time_us ()] returns the current time in microseconds.
+      @return Time in microseconds. *)
+  let time_us = foreign (ns "time_us") (void @-> returning int64_t)
+
+  (** [cycles ()] returns the current CPU cycle count.
+      @return CPU cycle count. *)
+  let cycles = foreign (ns "cycles") (void @-> returning int64_t)
+
+  (** [cycles_per_ms ()] returns the number of CPU cycles per millisecond.
+      @return CPU cycles per millisecond. *)
+  let cycles_per_ms = foreign (ns "cycles_per_ms") (void @-> returning int64_t)
+
+  (* File Handling *)
+
+  (** [fopen fname mode] opens a file, accepting UTF-8 paths even on Windows.
+      @param fname The filename (UTF-8).
+      @param mode The file opening mode (e.g., "rb", "wb").
+      @return A file pointer (represented as `ptr void`), or NULL on failure. *)
+  let fopen = foreign (ns "fopen") (string @-> string @-> returning (ptr void))
+
+  (* Printing *)
+
+  (** [print_object obj] prints information about a ggml object to stderr.
+      @param obj The object to print. *)
+  let print_object = foreign (ns "print_object") (object' @-> returning void)
+
+  (** [print_objects ctx] prints information about all objects in a context to stderr.
+      @param ctx The context. *)
+  let print_objects = foreign (ns "print_objects") (context @-> returning void)
+
   (* Types / Ops Info *)
 
   (** [type_name typ] returns the name of the ggml type.
@@ -32,6 +81,47 @@ module Functions (F : Ctypes.FOREIGN) = struct
       @param op The ggml operation.
       @return The name of the operation. *)
   let op_name = foreign (ns "op_name") (op @-> returning string)
+
+  (** [op_symbol op] returns the symbolic representation of the ggml operation (e.g., "+", "*").
+      @param op The ggml operation.
+      @return The symbol of the operation. *)
+  let op_symbol = foreign (ns "op_symbol") (op @-> returning string)
+
+  (** [unary_op_name op] returns the name of the ggml unary operation.
+      @param op The ggml unary operation.
+      @return The name of the unary operation. *)
+  let unary_op_name = foreign (ns "unary_op_name") (unary_op @-> returning string)
+
+  (** [op_desc tensor] returns a description of the operation that produced the tensor.
+      @param tensor The tensor.
+      @return A description string (unary op name or op name). *)
+  let op_desc = foreign (ns "op_desc") (tensor @-> returning string)
+
+  (** [blck_size typ] returns the block size for a given ggml type.
+      @param typ The ggml type.
+      @return The block size (number of elements in a block). *)
+  let blck_size = foreign (ns "blck_size") (typ @-> returning int64_t)
+
+  (** [type_size typ] returns the size in bytes for all elements in a block of the given type.
+      @param typ The ggml type.
+      @return The size in bytes of a block. *)
+  let type_size = foreign (ns "type_size") (typ @-> returning size_t)
+
+  (** [row_size typ ne] returns the size in bytes for a row containing `ne` elements of the given type.
+      @param typ The ggml type.
+      @param ne The number of elements in the row.
+      @return The size in bytes of the row. *)
+  let row_size = foreign (ns "row_size") (typ @-> int64_t @-> returning size_t)
+
+  (** [is_quantized typ] checks if the ggml type is a quantized type.
+      @param typ The ggml type.
+      @return True if the type is quantized, false otherwise. *)
+  let is_quantized = foreign (ns "is_quantized") (typ @-> returning bool)
+
+  (** [ftype_to_ggml_type ftype] converts a file type enum to a ggml type enum.
+      @param ftype The file type enum value.
+      @return The corresponding ggml type enum value. *)
+  let ftype_to_ggml_type = foreign (ns "ftype_to_ggml_type") (ftype @-> returning typ)
 
   (* Tensor Info *)
 
@@ -49,6 +139,105 @@ module Functions (F : Ctypes.FOREIGN) = struct
       @param tensor The tensor.
       @return The size in bytes. *)
   let nbytes = foreign (ns "nbytes") (tensor @-> returning size_t)
+
+  (** [nbytes_pad tensor] returns the padded size in bytes of the tensor's data (aligned to GGML_MEM_ALIGN).
+      @param tensor The tensor.
+      @return The padded size in bytes. *)
+  let nbytes_pad = foreign (ns "nbytes_pad") (tensor @-> returning size_t)
+
+  (** [nrows tensor] returns the number of rows in the tensor (product of dimensions >= 1).
+      @param tensor The tensor.
+      @return The number of rows. *)
+  let nrows = foreign (ns "nrows") (tensor @-> returning int64_t)
+
+  (** [is_transposed tensor] checks if the tensor is transposed (swapped strides for dims 0 and 1).
+      @param tensor The tensor.
+      @return True if transposed, false otherwise. *)
+  let is_transposed = foreign (ns "is_transposed") (tensor @-> returning bool)
+
+  (** [is_permuted tensor] checks if the tensor is permuted (strides differ from canonical order).
+      @param tensor The tensor.
+      @return True if permuted, false otherwise. *)
+  let is_permuted = foreign (ns "is_permuted") (tensor @-> returning bool)
+
+  (** [is_empty tensor] checks if the tensor has zero elements.
+      @param tensor The tensor.
+      @return True if empty, false otherwise. *)
+  let is_empty = foreign (ns "is_empty") (tensor @-> returning bool)
+
+  (** [is_scalar tensor] checks if the tensor is a scalar (all dimensions are 1).
+      @param tensor The tensor.
+      @return True if scalar, false otherwise. *)
+  let is_scalar = foreign (ns "is_scalar") (tensor @-> returning bool)
+
+  (** [is_vector tensor] checks if the tensor is a vector (one non-unity dimension).
+      @param tensor The tensor.
+      @return True if vector, false otherwise. *)
+  let is_vector = foreign (ns "is_vector") (tensor @-> returning bool)
+
+  (** [is_matrix tensor] checks if the tensor is a matrix (two non-unity dimensions).
+      @param tensor The tensor.
+      @return True if matrix, false otherwise. *)
+  let is_matrix = foreign (ns "is_matrix") (tensor @-> returning bool)
+
+  (** [is_3d tensor] checks if the tensor has exactly three non-unity dimensions.
+      @param tensor The tensor.
+      @return True if 3D, false otherwise. *)
+  let is_3d = foreign (ns "is_3d") (tensor @-> returning bool)
+
+  (** [n_dims tensor] returns the number of dimensions of the tensor (returns 1 for scalars).
+      @param tensor The tensor.
+      @return The number of dimensions. *)
+  let n_dims = foreign (ns "n_dims") (tensor @-> returning int)
+
+  (** [is_contiguous tensor] checks if the tensor's data is laid out contiguously in memory.
+      @param tensor The tensor.
+      @return True if contiguous, false otherwise. *)
+  let is_contiguous = foreign (ns "is_contiguous") (tensor @-> returning bool)
+
+  (** [is_contiguous_0 tensor] alias for `is_contiguous`.
+      @param tensor The tensor.
+      @return True if contiguous, false otherwise. *)
+  let is_contiguous_0 = foreign (ns "is_contiguous_0") (tensor @-> returning bool)
+
+  (** [is_contiguous_1 tensor] checks if the tensor is contiguous for dimensions >= 1.
+      @param tensor The tensor.
+      @return True if contiguous for dims >= 1, false otherwise. *)
+  let is_contiguous_1 = foreign (ns "is_contiguous_1") (tensor @-> returning bool)
+
+  (** [is_contiguous_2 tensor] checks if the tensor is contiguous for dimensions >= 2.
+      @param tensor The tensor.
+      @return True if contiguous for dims >= 2, false otherwise. *)
+  let is_contiguous_2 = foreign (ns "is_contiguous_2") (tensor @-> returning bool)
+
+  (** [are_same_shape t0 t1] checks if two tensors have the same shape.
+      @param t0 First tensor.
+      @param t1 Second tensor.
+      @return True if shapes are identical, false otherwise. *)
+  let are_same_shape = foreign (ns "are_same_shape") (tensor @-> tensor @-> returning bool)
+
+  (** [are_same_stride t0 t1] checks if two tensors have the same strides.
+      @param t0 First tensor.
+      @param t1 Second tensor.
+      @return True if strides are identical, false otherwise. *)
+  let are_same_stride = foreign (ns "are_same_stride") (tensor @-> tensor @-> returning bool)
+
+  (** [can_repeat t0 t1] checks if tensor `t0` can be repeated (broadcasted) to match the shape of `t1`.
+      @param t0 The tensor to potentially repeat.
+      @param t1 The target shape tensor.
+      @return True if `t0` can be repeated to match `t1`, false otherwise. *)
+  let can_repeat = foreign (ns "can_repeat") (tensor @-> tensor @-> returning bool)
+
+  (** [tensor_overhead ()] returns the memory overhead of the ggml_tensor struct itself.
+      @return Overhead in bytes. *)
+  let tensor_overhead = foreign (ns "tensor_overhead") (void @-> returning size_t)
+
+  (** [validate_row_data typ data nbytes] validates if the data buffer is suitable for the given type and size.
+      @param typ The ggml type.
+      @param data Pointer to the data buffer.
+      @param nbytes Size of the data buffer in bytes.
+      @return True if the data is valid, false otherwise. *)
+  let validate_row_data = foreign (ns "validate_row_data") (typ @-> ptr void @-> size_t @-> returning bool)
 
   (* Tensor Creation *)
 
