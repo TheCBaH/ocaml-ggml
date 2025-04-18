@@ -5,7 +5,6 @@ open Model_explorer
 let keep x = ignore (Sys.opaque_identity (List.hd [ x ]))
 let getfp p field = !@(p |-> field)
 let to_string t = Ctypes.(coerce (ptr char) string t)
-
 let attr key value = KeyValue.create ~key ~value
 
 (*
