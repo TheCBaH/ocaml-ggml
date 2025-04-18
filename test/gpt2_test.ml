@@ -6,35 +6,53 @@ let keep x = ignore (Sys.opaque_identity (List.hd [ x ]))
 let getfp p field = !@(p |-> field)
 let to_string t = Ctypes.(coerce (ptr char) string t)
 let attr key value = KeyValue.create ~key ~value
-
 let pp_int64 fmt t = Format.fprintf fmt "%Ld" t
+let pp_list p fmt t = Format.(fprintf fmt "[%a]" (pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ",@ ") p) t)
 
-let pp_shape fmt tensor =
+let pp_shape fmt t =
   let open Ggml.C in
   let rec cut_aux l' l =
-    match l with
-    | [] -> l'
-    | hd::_ when hd = 1L || hd = 0L -> l'
-    | hd::tl -> cut_aux (hd::l') tl in
-  let ne = List.rev @@ cut_aux [] @@ CArray.to_list @@ getfp tensor Types.Tensor.ne in
-  Format.(fprintf fmt "[%a]" (pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ",@ ") pp_int64) ne)
+    match l with [] -> l' | hd :: _ when hd = 1L || hd = 0L -> l' | hd :: tl -> cut_aux (hd :: l') tl
+  in
+  let ne = List.rev @@ cut_aux [] @@ CArray.to_list @@ getfp t Types.Tensor.ne in
+  pp_list pp_int64 fmt ne
+
+let pp_flags fmt t =
+  let open Ggml.C in
+  let flags = getfp t Types.Tensor.flags in
+  let add name c l = if Int32.logand flags c = Int32.zero then l else name :: l in
+  let flags =
+    add "Input" Ggml_const.C.Types.tensor_flag_input []
+    |> add "Output" Ggml_const.C.Types.tensor_flag_output
+    |> add "Param" Ggml_const.C.Types.tensor_flag_param
+    |> add "Loss" Ggml_const.C.Types.tensor_flag_loss
+  in
+  pp_list Format.pp_print_string fmt flags
+
+module PtrMap = Map.Make (Nativeint)
 
 let tensor n t =
   let name = getfp t Ggml.C.Types.Tensor.name in
   let name = to_string @@ CArray.start name in
   let name =
-    let printed_name = if String.length name == 0 || String.starts_with ~prefix:"leaf_" name || String.starts_with ~prefix:"node_" name then ""
-    else name ^ " " in
-    Printf.sprintf "%s(%s)" printed_name @@ Ggml.C.Functions.type_name @@ getfp t Ggml.C.Types.Tensor.typ_ in
+    let printed_name =
+      if String.length name == 0 || String.starts_with ~prefix:"leaf_" name || String.starts_with ~prefix:"node_" name
+      then ""
+      else name ^ " "
+    in
+    Printf.sprintf "%s(%s)" printed_name @@ Ggml.C.Functions.type_name @@ getfp t Ggml.C.Types.Tensor.typ_
+  in
   let tensor_name = attr "tensor_name" name in
   let tensor_index = attr "tensor_index" @@ string_of_int n in
   let tensor_shape =
     let ne = getfp t Ggml.C.Types.Tensor.ne in
     let dims =
-    if Ggml.C.Functions.is_matrix t then Printf.sprintf "[%Ld, %Ld]" (CArray.get ne 0) (CArray.get ne 1)
-    else Printf.sprintf "[%Ld, %Ld, %Ld]" (CArray.get ne 0) (CArray.get ne 1) (CArray.get ne 2) in
-    Printf.sprintf "%d %s %s" n dims (Ggml.C.Functions.op_symbol @@ getfp t Ggml.C.Types.Tensor.op) in
-  ignore (tensor_name,tensor_index);
+      if Ggml.C.Functions.is_matrix t then Printf.sprintf "[%Ld, %Ld]" (CArray.get ne 0) (CArray.get ne 1)
+      else Printf.sprintf "[%Ld, %Ld, %Ld]" (CArray.get ne 0) (CArray.get ne 1) (CArray.get ne 2)
+    in
+    Printf.sprintf "%d %s %s" n dims (Ggml.C.Functions.op_symbol @@ getfp t Ggml.C.Types.Tensor.op)
+  in
+  ignore (tensor_name, tensor_index);
   ignore tensor_shape;
   ignore name;
   tensor_shape
@@ -57,12 +75,21 @@ let%expect_test "gpt2" =
   assert (not @@ Ctypes.is_null gpt2);
   let nodes = Ggml.C.Functions.graph_n_nodes gpt2 in
   Format.printf "nodes:%u" nodes;
-  [%expect "nodes:487" ];
+  [%expect "nodes:487"];
 
   print pp_shape @@ Ggml.C.Functions.graph_node gpt2 0;
-  [%expect "[768, 768]" ];
+  [%expect "[768, 768]"];
   print pp_shape @@ Ggml.C.Functions.graph_node gpt2 6;
-  [%expect "[2304, 768]" ];
+  [%expect "[2304, 768]"];
+
+  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 0;
+  [%expect "[]"];
+  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 1;
+  [%expect "[]"];
+  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 6;
+  [%expect "[]"];
+  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 486;
+  [%expect "[Output]"];
 
   let nodes = Array.init nodes (fun n -> Ggml.C.Functions.graph_node gpt2 n) in
   let names = Array.map (fun t -> Ggml.C.Functions.op_name @@ getfp t Ggml.C.Types.Tensor.op) nodes in
