@@ -7,10 +7,11 @@ let getfp p field = !@(p |-> field)
 let to_string t = Ctypes.(coerce (ptr char) string t)
 let attr key value = KeyValue.create ~key ~value
 
-(*
 let tensor t =
   let name = getfp t Ggml.C.Types.Tensor.name in
   let name = to_string @@ CArray.start name in
+  name
+(*
   let tensor_name = attr "tensor_name" name in
   let tensor_index = attr "tensor_index" "0" in
   let tensor_shape = if Ggml.C.Functions.is_matrix
