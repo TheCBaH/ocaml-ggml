@@ -17,4 +17,8 @@ module Types (F : Ctypes.TYPE) = struct
   let exit_success = constant "GGML_EXIT_SUCCESS" int
   let exit_aborted = constant "GGML_EXIT_ABORTED" int
   let tensor_size = constant "GGML_TENSOR_SIZE" int
+  let tensor_flag_input = constant "GGML_TENSOR_FLAG_INPUT" int32_t
+  let tensor_flag_output = constant "GGML_TENSOR_FLAG_OUTPUT" int32_t
+  let tensor_flag_param = constant "GGML_TENSOR_FLAG_PARAM" int32_t
+  let tensor_flag_loss = constant "GGML_TENSOR_FLAG_LOSS" int32_t
 end
