@@ -14,3 +14,12 @@
   (pps ppx_expect))
  (inline_tests
   (deps models/gpt-2-117M/ggml-model.bin)))
+
+(library
+ (name yolo_test)
+ (modules yolo_test)
+ (libraries yolo)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests
+  (deps models/yolov3-tiny.gguf)))
