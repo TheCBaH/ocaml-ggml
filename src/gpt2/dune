@@ -3,7 +3,7 @@
   (file Makefile)
   (file gpt-2-lib.cpp)
   (file gpt-2-lib.h)
-  (file %{project_root}/lib/ggml.h)
+  (file %{project_root}/lib/ggml/ggml.h)
   (source_tree %{project_root}/vendored/ggml/examples))
  (targets libgpt_2.a dllgpt_2.so)
  (action
