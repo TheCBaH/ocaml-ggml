@@ -12,6 +12,9 @@
             "userGid": "1000",
             "upgradePackages": "false"
         },
+        "./features/pip-packages": {
+            "packages": "gguf tf_keras"
+        },
         "./features/ocaml": {
             "packages": "utop jsont bytesrw ctypes ctypes-foreign ppx_expect",
             "system-packages": "valgrind cmake ninja-build"
