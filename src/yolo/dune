@@ -3,7 +3,7 @@
   (file Makefile)
   (file yolo-lib.cpp)
   (file yolo-lib.h)
-  (file %{project_root}/lib/ggml.h)
+  (file %{project_root}/lib/ggml/ggml.h)
   (source_tree %{project_root}/vendored/ggml/examples))
  (targets libyolo.a dllyolo.so)
  (action

@@ -3,7 +3,7 @@ ROOT=${CURDIR}/../..
 GGML?=${ROOT}/vendored/ggml
 BIN?=${ROOT}/_build/default
 
-CPPFLAGS=-W -Wall -L${BIN}/lib -I${BIN}/lib -I${GGML}/examples -fpic -FPIC
+CPPFLAGS=-W -Wall -L${BIN}/lib/ggml -I${BIN}/lib/ggml -I${GGML}/examples -fpic -FPIC
 
 all: lib
 
