@@ -1,5 +1,5 @@
 
-ROOT=${CURDIR}/..
+ROOT=${CURDIR}/../..
 GGML?=${ROOT}/vendored/ggml
 BIN?=${ROOT}/_build/default
 
