@@ -70,186 +70,34 @@ let%expect_test "gpt2" =
   print TensorId.pp_nodes @@ TensorId.of_graph  gpt2;
   [%expect
     {|
-    {id:637; kind:Constant}
-    {id:638; kind:Constant}
-    {id:487; kind:Constant}
-    {id:489; kind:Constant}
-    {id:491; kind:Constant}
-    {id:492; kind:Constant}
-    {id:499; kind:Constant}
-    {id:500; kind:Constant}
-    {id:493; kind:Constant}
-    {id:494; kind:Constant}
-    {id:497; kind:Constant}
-    {id:498; kind:Constant}
-    {id:501; kind:Constant}
-    {id:502; kind:Constant}
-    {id:503; kind:Constant}
-    {id:504; kind:Constant}
-    {id:505; kind:Constant}
-    {id:506; kind:Constant}
-    {id:511; kind:Constant}
-    {id:512; kind:Constant}
-    {id:507; kind:Constant}
-    {id:508; kind:Constant}
-    {id:509; kind:Constant}
-    {id:510; kind:Constant}
-    {id:513; kind:Constant}
-    {id:514; kind:Constant}
-    {id:515; kind:Constant}
-    {id:516; kind:Constant}
-    {id:517; kind:Constant}
-    {id:518; kind:Constant}
-    {id:523; kind:Constant}
-    {id:524; kind:Constant}
-    {id:519; kind:Constant}
-    {id:520; kind:Constant}
-    {id:521; kind:Constant}
-    {id:522; kind:Constant}
-    {id:525; kind:Constant}
-    {id:526; kind:Constant}
-    {id:527; kind:Constant}
-    {id:528; kind:Constant}
-    {id:529; kind:Constant}
-    {id:530; kind:Constant}
-    {id:535; kind:Constant}
-    {id:536; kind:Constant}
-    {id:531; kind:Constant}
-    {id:532; kind:Constant}
-    {id:533; kind:Constant}
-    {id:534; kind:Constant}
-    {id:537; kind:Constant}
-    {id:538; kind:Constant}
-    {id:539; kind:Constant}
-    {id:540; kind:Constant}
-    {id:541; kind:Constant}
-    {id:542; kind:Constant}
-    {id:547; kind:Constant}
-    {id:548; kind:Constant}
-    {id:543; kind:Constant}
-    {id:544; kind:Constant}
-    {id:545; kind:Constant}
-    {id:546; kind:Constant}
-    {id:549; kind:Constant}
-    {id:550; kind:Constant}
-    {id:551; kind:Constant}
-    {id:552; kind:Constant}
-    {id:553; kind:Constant}
-    {id:554; kind:Constant}
-    {id:559; kind:Constant}
-    {id:560; kind:Constant}
-    {id:555; kind:Constant}
-    {id:556; kind:Constant}
-    {id:557; kind:Constant}
-    {id:558; kind:Constant}
-    {id:561; kind:Constant}
-    {id:562; kind:Constant}
-    {id:563; kind:Constant}
-    {id:564; kind:Constant}
-    {id:565; kind:Constant}
-    {id:566; kind:Constant}
-    {id:571; kind:Constant}
-    {id:572; kind:Constant}
-    {id:567; kind:Constant}
-    {id:568; kind:Constant}
-    {id:569; kind:Constant}
-    {id:570; kind:Constant}
-    {id:573; kind:Constant}
-    {id:574; kind:Constant}
-    {id:575; kind:Constant}
-    {id:576; kind:Constant}
-    {id:577; kind:Constant}
-    {id:578; kind:Constant}
-    {id:583; kind:Constant}
-    {id:584; kind:Constant}
-    {id:579; kind:Constant}
-    {id:580; kind:Constant}
-    {id:581; kind:Constant}
-    {id:582; kind:Constant}
-    {id:585; kind:Constant}
-    {id:586; kind:Constant}
-    {id:587; kind:Constant}
-    {id:588; kind:Constant}
-    {id:589; kind:Constant}
-    {id:590; kind:Constant}
-    {id:595; kind:Constant}
-    {id:596; kind:Constant}
-    {id:591; kind:Constant}
-    {id:592; kind:Constant}
-    {id:593; kind:Constant}
-    {id:594; kind:Constant}
-    {id:597; kind:Constant}
-    {id:598; kind:Constant}
-    {id:599; kind:Constant}
-    {id:600; kind:Constant}
-    {id:601; kind:Constant}
-    {id:602; kind:Constant}
-    {id:607; kind:Constant}
-    {id:608; kind:Constant}
-    {id:603; kind:Constant}
-    {id:604; kind:Constant}
-    {id:605; kind:Constant}
-    {id:606; kind:Constant}
-    {id:609; kind:Constant}
-    {id:610; kind:Constant}
-    {id:611; kind:Constant}
-    {id:612; kind:Constant}
-    {id:613; kind:Constant}
-    {id:614; kind:Constant}
-    {id:619; kind:Constant}
-    {id:620; kind:Constant}
-    {id:615; kind:Constant}
-    {id:616; kind:Constant}
-    {id:617; kind:Constant}
-    {id:618; kind:Constant}
-    {id:621; kind:Constant}
-    {id:622; kind:Constant}
-    {id:623; kind:Constant}
-    {id:624; kind:Constant}
-    {id:625; kind:Constant}
-    {id:626; kind:Constant}
-    {id:631; kind:Constant}
-    {id:632; kind:Constant}
-    {id:627; kind:Constant}
-    {id:628; kind:Constant}
-    {id:629; kind:Constant}
-    {id:630; kind:Constant}
-    {id:633; kind:Constant}
-    {id:634; kind:Constant}
-    {id:635; kind:Constant}
-    {id:636; kind:Constant}
-    {id:495; kind:Constant}
-    {id:496; kind:Constant}
-    {id:488; kind:Input}
-    {id:490; kind:Input}
-    {id:1; kind:Intermediate}
     {id:0; kind:Intermediate}
+    {id:1; kind:Intermediate}
     {id:2; kind:Intermediate}
     {id:3; kind:Intermediate}
     {id:4; kind:Intermediate}
     {id:5; kind:Intermediate}
     {id:6; kind:Intermediate}
     {id:7; kind:Intermediate}
-    {id:21; kind:Intermediate}
     {id:8; kind:Intermediate}
-    {id:11; kind:Intermediate}
     {id:9; kind:Intermediate}
-    {id:12; kind:Intermediate}
     {id:10; kind:Intermediate}
+    {id:11; kind:Intermediate}
+    {id:12; kind:Intermediate}
     {id:13; kind:Intermediate}
-    {id:22; kind:Intermediate}
-    {id:23; kind:Intermediate}
-    {id:18; kind:Intermediate}
-    {id:19; kind:Intermediate}
-    {id:20; kind:Intermediate}
-    {id:24; kind:Intermediate}
-    {id:25; kind:Intermediate}
-    {id:26; kind:Intermediate}
-    {id:27; kind:Intermediate}
     {id:14; kind:Intermediate}
     {id:15; kind:Intermediate}
     {id:16; kind:Intermediate}
     {id:17; kind:Intermediate}
+    {id:18; kind:Intermediate}
+    {id:19; kind:Intermediate}
+    {id:20; kind:Intermediate}
+    {id:21; kind:Intermediate}
+    {id:22; kind:Intermediate}
+    {id:23; kind:Intermediate}
+    {id:24; kind:Intermediate}
+    {id:25; kind:Intermediate}
+    {id:26; kind:Intermediate}
+    {id:27; kind:Intermediate}
     {id:28; kind:Intermediate}
     {id:29; kind:Intermediate}
     {id:30; kind:Intermediate}
@@ -270,26 +118,26 @@ let%expect_test "gpt2" =
     {id:45; kind:Intermediate}
     {id:46; kind:Intermediate}
     {id:47; kind:Intermediate}
-    {id:61; kind:Intermediate}
     {id:48; kind:Intermediate}
-    {id:51; kind:Intermediate}
     {id:49; kind:Intermediate}
-    {id:52; kind:Intermediate}
     {id:50; kind:Intermediate}
+    {id:51; kind:Intermediate}
+    {id:52; kind:Intermediate}
     {id:53; kind:Intermediate}
-    {id:62; kind:Intermediate}
-    {id:63; kind:Intermediate}
-    {id:58; kind:Intermediate}
-    {id:59; kind:Intermediate}
-    {id:60; kind:Intermediate}
-    {id:64; kind:Intermediate}
-    {id:65; kind:Intermediate}
-    {id:66; kind:Intermediate}
-    {id:67; kind:Intermediate}
     {id:54; kind:Intermediate}
     {id:55; kind:Intermediate}
     {id:56; kind:Intermediate}
     {id:57; kind:Intermediate}
+    {id:58; kind:Intermediate}
+    {id:59; kind:Intermediate}
+    {id:60; kind:Intermediate}
+    {id:61; kind:Intermediate}
+    {id:62; kind:Intermediate}
+    {id:63; kind:Intermediate}
+    {id:64; kind:Intermediate}
+    {id:65; kind:Intermediate}
+    {id:66; kind:Intermediate}
+    {id:67; kind:Intermediate}
     {id:68; kind:Intermediate}
     {id:69; kind:Intermediate}
     {id:70; kind:Intermediate}
@@ -310,26 +158,26 @@ let%expect_test "gpt2" =
     {id:85; kind:Intermediate}
     {id:86; kind:Intermediate}
     {id:87; kind:Intermediate}
-    {id:101; kind:Intermediate}
     {id:88; kind:Intermediate}
-    {id:91; kind:Intermediate}
     {id:89; kind:Intermediate}
-    {id:92; kind:Intermediate}
     {id:90; kind:Intermediate}
+    {id:91; kind:Intermediate}
+    {id:92; kind:Intermediate}
     {id:93; kind:Intermediate}
-    {id:102; kind:Intermediate}
-    {id:103; kind:Intermediate}
-    {id:98; kind:Intermediate}
-    {id:99; kind:Intermediate}
-    {id:100; kind:Intermediate}
-    {id:104; kind:Intermediate}
-    {id:105; kind:Intermediate}
-    {id:106; kind:Intermediate}
-    {id:107; kind:Intermediate}
     {id:94; kind:Intermediate}
     {id:95; kind:Intermediate}
     {id:96; kind:Intermediate}
     {id:97; kind:Intermediate}
+    {id:98; kind:Intermediate}
+    {id:99; kind:Intermediate}
+    {id:100; kind:Intermediate}
+    {id:101; kind:Intermediate}
+    {id:102; kind:Intermediate}
+    {id:103; kind:Intermediate}
+    {id:104; kind:Intermediate}
+    {id:105; kind:Intermediate}
+    {id:106; kind:Intermediate}
+    {id:107; kind:Intermediate}
     {id:108; kind:Intermediate}
     {id:109; kind:Intermediate}
     {id:110; kind:Intermediate}
@@ -350,26 +198,26 @@ let%expect_test "gpt2" =
     {id:125; kind:Intermediate}
     {id:126; kind:Intermediate}
     {id:127; kind:Intermediate}
-    {id:141; kind:Intermediate}
     {id:128; kind:Intermediate}
-    {id:131; kind:Intermediate}
     {id:129; kind:Intermediate}
-    {id:132; kind:Intermediate}
     {id:130; kind:Intermediate}
+    {id:131; kind:Intermediate}
+    {id:132; kind:Intermediate}
     {id:133; kind:Intermediate}
-    {id:142; kind:Intermediate}
-    {id:143; kind:Intermediate}
-    {id:138; kind:Intermediate}
-    {id:139; kind:Intermediate}
-    {id:140; kind:Intermediate}
-    {id:144; kind:Intermediate}
-    {id:145; kind:Intermediate}
-    {id:146; kind:Intermediate}
-    {id:147; kind:Intermediate}
     {id:134; kind:Intermediate}
     {id:135; kind:Intermediate}
     {id:136; kind:Intermediate}
     {id:137; kind:Intermediate}
+    {id:138; kind:Intermediate}
+    {id:139; kind:Intermediate}
+    {id:140; kind:Intermediate}
+    {id:141; kind:Intermediate}
+    {id:142; kind:Intermediate}
+    {id:143; kind:Intermediate}
+    {id:144; kind:Intermediate}
+    {id:145; kind:Intermediate}
+    {id:146; kind:Intermediate}
+    {id:147; kind:Intermediate}
     {id:148; kind:Intermediate}
     {id:149; kind:Intermediate}
     {id:150; kind:Intermediate}
@@ -390,26 +238,26 @@ let%expect_test "gpt2" =
     {id:165; kind:Intermediate}
     {id:166; kind:Intermediate}
     {id:167; kind:Intermediate}
-    {id:181; kind:Intermediate}
     {id:168; kind:Intermediate}
-    {id:171; kind:Intermediate}
     {id:169; kind:Intermediate}
-    {id:172; kind:Intermediate}
     {id:170; kind:Intermediate}
+    {id:171; kind:Intermediate}
+    {id:172; kind:Intermediate}
     {id:173; kind:Intermediate}
-    {id:182; kind:Intermediate}
-    {id:183; kind:Intermediate}
-    {id:178; kind:Intermediate}
-    {id:179; kind:Intermediate}
-    {id:180; kind:Intermediate}
-    {id:184; kind:Intermediate}
-    {id:185; kind:Intermediate}
-    {id:186; kind:Intermediate}
-    {id:187; kind:Intermediate}
     {id:174; kind:Intermediate}
     {id:175; kind:Intermediate}
     {id:176; kind:Intermediate}
     {id:177; kind:Intermediate}
+    {id:178; kind:Intermediate}
+    {id:179; kind:Intermediate}
+    {id:180; kind:Intermediate}
+    {id:181; kind:Intermediate}
+    {id:182; kind:Intermediate}
+    {id:183; kind:Intermediate}
+    {id:184; kind:Intermediate}
+    {id:185; kind:Intermediate}
+    {id:186; kind:Intermediate}
+    {id:187; kind:Intermediate}
     {id:188; kind:Intermediate}
     {id:189; kind:Intermediate}
     {id:190; kind:Intermediate}
@@ -430,26 +278,26 @@ let%expect_test "gpt2" =
     {id:205; kind:Intermediate}
     {id:206; kind:Intermediate}
     {id:207; kind:Intermediate}
-    {id:221; kind:Intermediate}
     {id:208; kind:Intermediate}
-    {id:211; kind:Intermediate}
     {id:209; kind:Intermediate}
-    {id:212; kind:Intermediate}
     {id:210; kind:Intermediate}
+    {id:211; kind:Intermediate}
+    {id:212; kind:Intermediate}
     {id:213; kind:Intermediate}
-    {id:222; kind:Intermediate}
-    {id:223; kind:Intermediate}
-    {id:218; kind:Intermediate}
-    {id:219; kind:Intermediate}
-    {id:220; kind:Intermediate}
-    {id:224; kind:Intermediate}
-    {id:225; kind:Intermediate}
-    {id:226; kind:Intermediate}
-    {id:227; kind:Intermediate}
     {id:214; kind:Intermediate}
     {id:215; kind:Intermediate}
     {id:216; kind:Intermediate}
     {id:217; kind:Intermediate}
+    {id:218; kind:Intermediate}
+    {id:219; kind:Intermediate}
+    {id:220; kind:Intermediate}
+    {id:221; kind:Intermediate}
+    {id:222; kind:Intermediate}
+    {id:223; kind:Intermediate}
+    {id:224; kind:Intermediate}
+    {id:225; kind:Intermediate}
+    {id:226; kind:Intermediate}
+    {id:227; kind:Intermediate}
     {id:228; kind:Intermediate}
     {id:229; kind:Intermediate}
     {id:230; kind:Intermediate}
@@ -470,26 +318,26 @@ let%expect_test "gpt2" =
     {id:245; kind:Intermediate}
     {id:246; kind:Intermediate}
     {id:247; kind:Intermediate}
-    {id:261; kind:Intermediate}
     {id:248; kind:Intermediate}
-    {id:251; kind:Intermediate}
     {id:249; kind:Intermediate}
-    {id:252; kind:Intermediate}
     {id:250; kind:Intermediate}
+    {id:251; kind:Intermediate}
+    {id:252; kind:Intermediate}
     {id:253; kind:Intermediate}
-    {id:262; kind:Intermediate}
-    {id:263; kind:Intermediate}
-    {id:258; kind:Intermediate}
-    {id:259; kind:Intermediate}
-    {id:260; kind:Intermediate}
-    {id:264; kind:Intermediate}
-    {id:265; kind:Intermediate}
-    {id:266; kind:Intermediate}
-    {id:267; kind:Intermediate}
     {id:254; kind:Intermediate}
     {id:255; kind:Intermediate}
     {id:256; kind:Intermediate}
     {id:257; kind:Intermediate}
+    {id:258; kind:Intermediate}
+    {id:259; kind:Intermediate}
+    {id:260; kind:Intermediate}
+    {id:261; kind:Intermediate}
+    {id:262; kind:Intermediate}
+    {id:263; kind:Intermediate}
+    {id:264; kind:Intermediate}
+    {id:265; kind:Intermediate}
+    {id:266; kind:Intermediate}
+    {id:267; kind:Intermediate}
     {id:268; kind:Intermediate}
     {id:269; kind:Intermediate}
     {id:270; kind:Intermediate}
@@ -510,26 +358,26 @@ let%expect_test "gpt2" =
     {id:285; kind:Intermediate}
     {id:286; kind:Intermediate}
     {id:287; kind:Intermediate}
-    {id:301; kind:Intermediate}
     {id:288; kind:Intermediate}
-    {id:291; kind:Intermediate}
     {id:289; kind:Intermediate}
-    {id:292; kind:Intermediate}
     {id:290; kind:Intermediate}
+    {id:291; kind:Intermediate}
+    {id:292; kind:Intermediate}
     {id:293; kind:Intermediate}
-    {id:302; kind:Intermediate}
-    {id:303; kind:Intermediate}
-    {id:298; kind:Intermediate}
-    {id:299; kind:Intermediate}
-    {id:300; kind:Intermediate}
-    {id:304; kind:Intermediate}
-    {id:305; kind:Intermediate}
-    {id:306; kind:Intermediate}
-    {id:307; kind:Intermediate}
     {id:294; kind:Intermediate}
     {id:295; kind:Intermediate}
     {id:296; kind:Intermediate}
     {id:297; kind:Intermediate}
+    {id:298; kind:Intermediate}
+    {id:299; kind:Intermediate}
+    {id:300; kind:Intermediate}
+    {id:301; kind:Intermediate}
+    {id:302; kind:Intermediate}
+    {id:303; kind:Intermediate}
+    {id:304; kind:Intermediate}
+    {id:305; kind:Intermediate}
+    {id:306; kind:Intermediate}
+    {id:307; kind:Intermediate}
     {id:308; kind:Intermediate}
     {id:309; kind:Intermediate}
     {id:310; kind:Intermediate}
@@ -550,26 +398,26 @@ let%expect_test "gpt2" =
     {id:325; kind:Intermediate}
     {id:326; kind:Intermediate}
     {id:327; kind:Intermediate}
-    {id:341; kind:Intermediate}
     {id:328; kind:Intermediate}
-    {id:331; kind:Intermediate}
     {id:329; kind:Intermediate}
-    {id:332; kind:Intermediate}
     {id:330; kind:Intermediate}
+    {id:331; kind:Intermediate}
+    {id:332; kind:Intermediate}
     {id:333; kind:Intermediate}
-    {id:342; kind:Intermediate}
-    {id:343; kind:Intermediate}
-    {id:338; kind:Intermediate}
-    {id:339; kind:Intermediate}
-    {id:340; kind:Intermediate}
-    {id:344; kind:Intermediate}
-    {id:345; kind:Intermediate}
-    {id:346; kind:Intermediate}
-    {id:347; kind:Intermediate}
     {id:334; kind:Intermediate}
     {id:335; kind:Intermediate}
     {id:336; kind:Intermediate}
     {id:337; kind:Intermediate}
+    {id:338; kind:Intermediate}
+    {id:339; kind:Intermediate}
+    {id:340; kind:Intermediate}
+    {id:341; kind:Intermediate}
+    {id:342; kind:Intermediate}
+    {id:343; kind:Intermediate}
+    {id:344; kind:Intermediate}
+    {id:345; kind:Intermediate}
+    {id:346; kind:Intermediate}
+    {id:347; kind:Intermediate}
     {id:348; kind:Intermediate}
     {id:349; kind:Intermediate}
     {id:350; kind:Intermediate}
@@ -590,26 +438,26 @@ let%expect_test "gpt2" =
     {id:365; kind:Intermediate}
     {id:366; kind:Intermediate}
     {id:367; kind:Intermediate}
-    {id:381; kind:Intermediate}
     {id:368; kind:Intermediate}
-    {id:371; kind:Intermediate}
     {id:369; kind:Intermediate}
-    {id:372; kind:Intermediate}
     {id:370; kind:Intermediate}
+    {id:371; kind:Intermediate}
+    {id:372; kind:Intermediate}
     {id:373; kind:Intermediate}
-    {id:382; kind:Intermediate}
-    {id:383; kind:Intermediate}
-    {id:378; kind:Intermediate}
-    {id:379; kind:Intermediate}
-    {id:380; kind:Intermediate}
-    {id:384; kind:Intermediate}
-    {id:385; kind:Intermediate}
-    {id:386; kind:Intermediate}
-    {id:387; kind:Intermediate}
     {id:374; kind:Intermediate}
     {id:375; kind:Intermediate}
     {id:376; kind:Intermediate}
     {id:377; kind:Intermediate}
+    {id:378; kind:Intermediate}
+    {id:379; kind:Intermediate}
+    {id:380; kind:Intermediate}
+    {id:381; kind:Intermediate}
+    {id:382; kind:Intermediate}
+    {id:383; kind:Intermediate}
+    {id:384; kind:Intermediate}
+    {id:385; kind:Intermediate}
+    {id:386; kind:Intermediate}
+    {id:387; kind:Intermediate}
     {id:388; kind:Intermediate}
     {id:389; kind:Intermediate}
     {id:390; kind:Intermediate}
@@ -630,26 +478,26 @@ let%expect_test "gpt2" =
     {id:405; kind:Intermediate}
     {id:406; kind:Intermediate}
     {id:407; kind:Intermediate}
-    {id:421; kind:Intermediate}
     {id:408; kind:Intermediate}
-    {id:411; kind:Intermediate}
     {id:409; kind:Intermediate}
-    {id:412; kind:Intermediate}
     {id:410; kind:Intermediate}
+    {id:411; kind:Intermediate}
+    {id:412; kind:Intermediate}
     {id:413; kind:Intermediate}
-    {id:422; kind:Intermediate}
-    {id:423; kind:Intermediate}
-    {id:418; kind:Intermediate}
-    {id:419; kind:Intermediate}
-    {id:420; kind:Intermediate}
-    {id:424; kind:Intermediate}
-    {id:425; kind:Intermediate}
-    {id:426; kind:Intermediate}
-    {id:427; kind:Intermediate}
     {id:414; kind:Intermediate}
     {id:415; kind:Intermediate}
     {id:416; kind:Intermediate}
     {id:417; kind:Intermediate}
+    {id:418; kind:Intermediate}
+    {id:419; kind:Intermediate}
+    {id:420; kind:Intermediate}
+    {id:421; kind:Intermediate}
+    {id:422; kind:Intermediate}
+    {id:423; kind:Intermediate}
+    {id:424; kind:Intermediate}
+    {id:425; kind:Intermediate}
+    {id:426; kind:Intermediate}
+    {id:427; kind:Intermediate}
     {id:428; kind:Intermediate}
     {id:429; kind:Intermediate}
     {id:430; kind:Intermediate}
@@ -670,26 +518,26 @@ let%expect_test "gpt2" =
     {id:445; kind:Intermediate}
     {id:446; kind:Intermediate}
     {id:447; kind:Intermediate}
-    {id:461; kind:Intermediate}
     {id:448; kind:Intermediate}
-    {id:451; kind:Intermediate}
     {id:449; kind:Intermediate}
-    {id:452; kind:Intermediate}
     {id:450; kind:Intermediate}
+    {id:451; kind:Intermediate}
+    {id:452; kind:Intermediate}
     {id:453; kind:Intermediate}
-    {id:462; kind:Intermediate}
-    {id:463; kind:Intermediate}
-    {id:458; kind:Intermediate}
-    {id:459; kind:Intermediate}
-    {id:460; kind:Intermediate}
-    {id:464; kind:Intermediate}
-    {id:465; kind:Intermediate}
-    {id:466; kind:Intermediate}
-    {id:467; kind:Intermediate}
     {id:454; kind:Intermediate}
     {id:455; kind:Intermediate}
     {id:456; kind:Intermediate}
     {id:457; kind:Intermediate}
+    {id:458; kind:Intermediate}
+    {id:459; kind:Intermediate}
+    {id:460; kind:Intermediate}
+    {id:461; kind:Intermediate}
+    {id:462; kind:Intermediate}
+    {id:463; kind:Intermediate}
+    {id:464; kind:Intermediate}
+    {id:465; kind:Intermediate}
+    {id:466; kind:Intermediate}
+    {id:467; kind:Intermediate}
     {id:468; kind:Intermediate}
     {id:469; kind:Intermediate}
     {id:470; kind:Intermediate}
@@ -708,7 +556,159 @@ let%expect_test "gpt2" =
     {id:483; kind:Intermediate}
     {id:484; kind:Intermediate}
     {id:485; kind:Intermediate}
-    {id:486; kind:Output} |}];
+    {id:486; kind:Output}
+    {id:487; kind:Constant}
+    {id:488; kind:Input}
+    {id:489; kind:Constant}
+    {id:490; kind:Input}
+    {id:491; kind:Constant}
+    {id:492; kind:Constant}
+    {id:493; kind:Constant}
+    {id:494; kind:Constant}
+    {id:495; kind:Constant}
+    {id:496; kind:Constant}
+    {id:497; kind:Constant}
+    {id:498; kind:Constant}
+    {id:499; kind:Constant}
+    {id:500; kind:Constant}
+    {id:501; kind:Constant}
+    {id:502; kind:Constant}
+    {id:503; kind:Constant}
+    {id:504; kind:Constant}
+    {id:505; kind:Constant}
+    {id:506; kind:Constant}
+    {id:507; kind:Constant}
+    {id:508; kind:Constant}
+    {id:509; kind:Constant}
+    {id:510; kind:Constant}
+    {id:511; kind:Constant}
+    {id:512; kind:Constant}
+    {id:513; kind:Constant}
+    {id:514; kind:Constant}
+    {id:515; kind:Constant}
+    {id:516; kind:Constant}
+    {id:517; kind:Constant}
+    {id:518; kind:Constant}
+    {id:519; kind:Constant}
+    {id:520; kind:Constant}
+    {id:521; kind:Constant}
+    {id:522; kind:Constant}
+    {id:523; kind:Constant}
+    {id:524; kind:Constant}
+    {id:525; kind:Constant}
+    {id:526; kind:Constant}
+    {id:527; kind:Constant}
+    {id:528; kind:Constant}
+    {id:529; kind:Constant}
+    {id:530; kind:Constant}
+    {id:531; kind:Constant}
+    {id:532; kind:Constant}
+    {id:533; kind:Constant}
+    {id:534; kind:Constant}
+    {id:535; kind:Constant}
+    {id:536; kind:Constant}
+    {id:537; kind:Constant}
+    {id:538; kind:Constant}
+    {id:539; kind:Constant}
+    {id:540; kind:Constant}
+    {id:541; kind:Constant}
+    {id:542; kind:Constant}
+    {id:543; kind:Constant}
+    {id:544; kind:Constant}
+    {id:545; kind:Constant}
+    {id:546; kind:Constant}
+    {id:547; kind:Constant}
+    {id:548; kind:Constant}
+    {id:549; kind:Constant}
+    {id:550; kind:Constant}
+    {id:551; kind:Constant}
+    {id:552; kind:Constant}
+    {id:553; kind:Constant}
+    {id:554; kind:Constant}
+    {id:555; kind:Constant}
+    {id:556; kind:Constant}
+    {id:557; kind:Constant}
+    {id:558; kind:Constant}
+    {id:559; kind:Constant}
+    {id:560; kind:Constant}
+    {id:561; kind:Constant}
+    {id:562; kind:Constant}
+    {id:563; kind:Constant}
+    {id:564; kind:Constant}
+    {id:565; kind:Constant}
+    {id:566; kind:Constant}
+    {id:567; kind:Constant}
+    {id:568; kind:Constant}
+    {id:569; kind:Constant}
+    {id:570; kind:Constant}
+    {id:571; kind:Constant}
+    {id:572; kind:Constant}
+    {id:573; kind:Constant}
+    {id:574; kind:Constant}
+    {id:575; kind:Constant}
+    {id:576; kind:Constant}
+    {id:577; kind:Constant}
+    {id:578; kind:Constant}
+    {id:579; kind:Constant}
+    {id:580; kind:Constant}
+    {id:581; kind:Constant}
+    {id:582; kind:Constant}
+    {id:583; kind:Constant}
+    {id:584; kind:Constant}
+    {id:585; kind:Constant}
+    {id:586; kind:Constant}
+    {id:587; kind:Constant}
+    {id:588; kind:Constant}
+    {id:589; kind:Constant}
+    {id:590; kind:Constant}
+    {id:591; kind:Constant}
+    {id:592; kind:Constant}
+    {id:593; kind:Constant}
+    {id:594; kind:Constant}
+    {id:595; kind:Constant}
+    {id:596; kind:Constant}
+    {id:597; kind:Constant}
+    {id:598; kind:Constant}
+    {id:599; kind:Constant}
+    {id:600; kind:Constant}
+    {id:601; kind:Constant}
+    {id:602; kind:Constant}
+    {id:603; kind:Constant}
+    {id:604; kind:Constant}
+    {id:605; kind:Constant}
+    {id:606; kind:Constant}
+    {id:607; kind:Constant}
+    {id:608; kind:Constant}
+    {id:609; kind:Constant}
+    {id:610; kind:Constant}
+    {id:611; kind:Constant}
+    {id:612; kind:Constant}
+    {id:613; kind:Constant}
+    {id:614; kind:Constant}
+    {id:615; kind:Constant}
+    {id:616; kind:Constant}
+    {id:617; kind:Constant}
+    {id:618; kind:Constant}
+    {id:619; kind:Constant}
+    {id:620; kind:Constant}
+    {id:621; kind:Constant}
+    {id:622; kind:Constant}
+    {id:623; kind:Constant}
+    {id:624; kind:Constant}
+    {id:625; kind:Constant}
+    {id:626; kind:Constant}
+    {id:627; kind:Constant}
+    {id:628; kind:Constant}
+    {id:629; kind:Constant}
+    {id:630; kind:Constant}
+    {id:631; kind:Constant}
+    {id:632; kind:Constant}
+    {id:633; kind:Constant}
+    {id:634; kind:Constant}
+    {id:635; kind:Constant}
+    {id:636; kind:Constant}
+    {id:637; kind:Constant}
+    {id:638; kind:Constant} |}];
 
   let nodes = Array.init (Ggml.C.Functions.graph_n_nodes gpt2) (fun n -> Ggml.C.Functions.graph_node gpt2 n) in
   let names = Array.mapi tensor nodes in

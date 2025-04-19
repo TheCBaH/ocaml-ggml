@@ -35,6 +35,7 @@ module TensorId = struct
     match kind with Input -> "Input" | Output -> "Output" | Constant -> "Constant" | Intermediate -> "Intermediate"
 
   type t = { id : int; kind : kind }
+  let compare a b = Int.compare a.id b.id
   type nodes = { map : t PtrMap.t; node_count : int; next : int }
 
   let empty node_count = { map = PtrMap.empty; node_count; next = node_count }
@@ -88,7 +89,7 @@ module TensorId = struct
   let pp_nodes fmt t =
     let nodes = PtrMap.bindings t.map in
     if false then Format.(pp_print_list ~pp_sep:pp_print_newline (pp_pair pp_addr pp)) fmt nodes
-    else Format.(pp_print_list ~pp_sep:pp_print_newline pp) fmt @@ List.map snd nodes
+    else Format.(pp_print_list ~pp_sep:pp_print_newline pp) fmt @@ List.sort compare @@ List.map snd nodes
 
   let of_graph graph =
     let nodes = Array.init (Functions.graph_n_nodes graph) (fun n -> Functions.graph_node graph n) in

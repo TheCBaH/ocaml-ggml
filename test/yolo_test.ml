@@ -27,69 +27,9 @@ let%expect_test "yolo" =
   print TensorId.pp_nodes @@ TensorId.of_graph  yolo;
   [%expect
     {|
-      {id:218; kind:Constant}
-      {id:217; kind:Constant}
-      {id:215; kind:Constant}
-      {id:216; kind:Constant}
-      {id:213; kind:Constant}
-      {id:223; kind:Constant}
-      {id:222; kind:Constant}
-      {id:220; kind:Constant}
-      {id:221; kind:Constant}
-      {id:219; kind:Constant}
-      {id:228; kind:Constant}
-      {id:227; kind:Constant}
-      {id:225; kind:Constant}
-      {id:226; kind:Constant}
-      {id:224; kind:Constant}
-      {id:233; kind:Constant}
-      {id:232; kind:Constant}
-      {id:230; kind:Constant}
-      {id:231; kind:Constant}
-      {id:229; kind:Constant}
-      {id:238; kind:Constant}
-      {id:237; kind:Constant}
-      {id:235; kind:Constant}
-      {id:236; kind:Constant}
-      {id:234; kind:Constant}
-      {id:243; kind:Constant}
-      {id:242; kind:Constant}
-      {id:240; kind:Constant}
-      {id:241; kind:Constant}
-      {id:239; kind:Constant}
-      {id:248; kind:Constant}
-      {id:247; kind:Constant}
-      {id:245; kind:Constant}
-      {id:246; kind:Constant}
-      {id:244; kind:Constant}
-      {id:253; kind:Constant}
-      {id:252; kind:Constant}
-      {id:250; kind:Constant}
-      {id:251; kind:Constant}
-      {id:249; kind:Constant}
-      {id:258; kind:Constant}
-      {id:257; kind:Constant}
-      {id:255; kind:Constant}
-      {id:256; kind:Constant}
-      {id:254; kind:Constant}
-      {id:260; kind:Constant}
-      {id:259; kind:Constant}
-      {id:265; kind:Constant}
-      {id:264; kind:Constant}
-      {id:262; kind:Constant}
-      {id:263; kind:Constant}
-      {id:261; kind:Constant}
-      {id:270; kind:Constant}
-      {id:269; kind:Constant}
-      {id:267; kind:Constant}
-      {id:268; kind:Constant}
-      {id:266; kind:Constant}
-      {id:272; kind:Constant}
-      {id:271; kind:Constant}
-      {id:214; kind:Constant}
       {id:0; kind:Intermediate}
-      {id:2; kind:Intermediate}
       {id:1; kind:Intermediate}
+      {id:2; kind:Intermediate}
       {id:3; kind:Intermediate}
       {id:4; kind:Intermediate}
       {id:5; kind:Intermediate}
@@ -106,8 +46,8 @@ let%expect_test "yolo" =
       {id:16; kind:Intermediate}
       {id:17; kind:Intermediate}
       {id:18; kind:Intermediate}
-      {id:20; kind:Intermediate}
       {id:19; kind:Intermediate}
+      {id:20; kind:Intermediate}
       {id:21; kind:Intermediate}
       {id:22; kind:Intermediate}
       {id:23; kind:Intermediate}
@@ -124,8 +64,8 @@ let%expect_test "yolo" =
       {id:34; kind:Intermediate}
       {id:35; kind:Intermediate}
       {id:36; kind:Intermediate}
-      {id:38; kind:Intermediate}
       {id:37; kind:Intermediate}
+      {id:38; kind:Intermediate}
       {id:39; kind:Intermediate}
       {id:40; kind:Intermediate}
       {id:41; kind:Intermediate}
@@ -142,8 +82,8 @@ let%expect_test "yolo" =
       {id:52; kind:Intermediate}
       {id:53; kind:Intermediate}
       {id:54; kind:Intermediate}
-      {id:56; kind:Intermediate}
       {id:55; kind:Intermediate}
+      {id:56; kind:Intermediate}
       {id:57; kind:Intermediate}
       {id:58; kind:Intermediate}
       {id:59; kind:Intermediate}
@@ -160,8 +100,8 @@ let%expect_test "yolo" =
       {id:70; kind:Intermediate}
       {id:71; kind:Intermediate}
       {id:72; kind:Intermediate}
-      {id:74; kind:Intermediate}
       {id:73; kind:Intermediate}
+      {id:74; kind:Intermediate}
       {id:75; kind:Intermediate}
       {id:76; kind:Intermediate}
       {id:77; kind:Intermediate}
@@ -178,8 +118,8 @@ let%expect_test "yolo" =
       {id:88; kind:Intermediate}
       {id:89; kind:Intermediate}
       {id:90; kind:Intermediate}
-      {id:92; kind:Intermediate}
       {id:91; kind:Intermediate}
+      {id:92; kind:Intermediate}
       {id:93; kind:Intermediate}
       {id:94; kind:Intermediate}
       {id:95; kind:Intermediate}
@@ -196,8 +136,8 @@ let%expect_test "yolo" =
       {id:106; kind:Intermediate}
       {id:107; kind:Intermediate}
       {id:108; kind:Intermediate}
-      {id:110; kind:Intermediate}
       {id:109; kind:Intermediate}
+      {id:110; kind:Intermediate}
       {id:111; kind:Intermediate}
       {id:112; kind:Intermediate}
       {id:113; kind:Intermediate}
@@ -213,8 +153,8 @@ let%expect_test "yolo" =
       {id:123; kind:Intermediate}
       {id:124; kind:Intermediate}
       {id:125; kind:Intermediate}
-      {id:127; kind:Intermediate}
       {id:126; kind:Intermediate}
+      {id:127; kind:Intermediate}
       {id:128; kind:Intermediate}
       {id:129; kind:Intermediate}
       {id:130; kind:Intermediate}
@@ -230,8 +170,8 @@ let%expect_test "yolo" =
       {id:140; kind:Intermediate}
       {id:141; kind:Intermediate}
       {id:142; kind:Intermediate}
-      {id:144; kind:Intermediate}
       {id:143; kind:Intermediate}
+      {id:144; kind:Intermediate}
       {id:145; kind:Intermediate}
       {id:146; kind:Intermediate}
       {id:147; kind:Intermediate}
@@ -247,8 +187,8 @@ let%expect_test "yolo" =
       {id:157; kind:Intermediate}
       {id:158; kind:Intermediate}
       {id:159; kind:Intermediate}
-      {id:161; kind:Intermediate}
       {id:160; kind:Intermediate}
+      {id:161; kind:Intermediate}
       {id:162; kind:Intermediate}
       {id:163; kind:Intermediate}
       {id:164; kind:Intermediate}
@@ -256,8 +196,8 @@ let%expect_test "yolo" =
       {id:166; kind:Intermediate}
       {id:167; kind:Output}
       {id:168; kind:Intermediate}
-      {id:170; kind:Intermediate}
       {id:169; kind:Intermediate}
+      {id:170; kind:Intermediate}
       {id:171; kind:Intermediate}
       {id:172; kind:Intermediate}
       {id:173; kind:Intermediate}
@@ -275,8 +215,8 @@ let%expect_test "yolo" =
       {id:185; kind:Intermediate}
       {id:186; kind:Intermediate}
       {id:187; kind:Intermediate}
-      {id:189; kind:Intermediate}
       {id:188; kind:Intermediate}
+      {id:189; kind:Intermediate}
       {id:190; kind:Intermediate}
       {id:191; kind:Intermediate}
       {id:192; kind:Intermediate}
@@ -292,14 +232,74 @@ let%expect_test "yolo" =
       {id:202; kind:Intermediate}
       {id:203; kind:Intermediate}
       {id:204; kind:Intermediate}
-      {id:206; kind:Intermediate}
       {id:205; kind:Intermediate}
+      {id:206; kind:Intermediate}
       {id:207; kind:Intermediate}
       {id:208; kind:Intermediate}
       {id:209; kind:Intermediate}
       {id:210; kind:Intermediate}
       {id:211; kind:Intermediate}
       {id:212; kind:Output}
+      {id:213; kind:Constant}
+      {id:214; kind:Constant}
+      {id:215; kind:Constant}
+      {id:216; kind:Constant}
+      {id:217; kind:Constant}
+      {id:218; kind:Constant}
+      {id:219; kind:Constant}
+      {id:220; kind:Constant}
+      {id:221; kind:Constant}
+      {id:222; kind:Constant}
+      {id:223; kind:Constant}
+      {id:224; kind:Constant}
+      {id:225; kind:Constant}
+      {id:226; kind:Constant}
+      {id:227; kind:Constant}
+      {id:228; kind:Constant}
+      {id:229; kind:Constant}
+      {id:230; kind:Constant}
+      {id:231; kind:Constant}
+      {id:232; kind:Constant}
+      {id:233; kind:Constant}
+      {id:234; kind:Constant}
+      {id:235; kind:Constant}
+      {id:236; kind:Constant}
+      {id:237; kind:Constant}
+      {id:238; kind:Constant}
+      {id:239; kind:Constant}
+      {id:240; kind:Constant}
+      {id:241; kind:Constant}
+      {id:242; kind:Constant}
+      {id:243; kind:Constant}
+      {id:244; kind:Constant}
+      {id:245; kind:Constant}
+      {id:246; kind:Constant}
+      {id:247; kind:Constant}
+      {id:248; kind:Constant}
+      {id:249; kind:Constant}
+      {id:250; kind:Constant}
+      {id:251; kind:Constant}
+      {id:252; kind:Constant}
+      {id:253; kind:Constant}
+      {id:254; kind:Constant}
+      {id:255; kind:Constant}
+      {id:256; kind:Constant}
+      {id:257; kind:Constant}
+      {id:258; kind:Constant}
+      {id:259; kind:Constant}
+      {id:260; kind:Constant}
+      {id:261; kind:Constant}
+      {id:262; kind:Constant}
+      {id:263; kind:Constant}
+      {id:264; kind:Constant}
+      {id:265; kind:Constant}
+      {id:266; kind:Constant}
+      {id:267; kind:Constant}
+      {id:268; kind:Constant}
+      {id:269; kind:Constant}
+      {id:270; kind:Constant}
+      {id:271; kind:Constant}
+      {id:272; kind:Constant}
     |}];
   Functions.model_uninit @@ addr model;
   keep model;
