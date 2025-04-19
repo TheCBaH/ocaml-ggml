@@ -1,0 +1,4 @@
+(library
+ (name ggml_model_explorer)
+ (wrapped false)
+ (libraries ggml model_explorer))

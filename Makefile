@@ -37,4 +37,7 @@ test/models/magika.h5.gguf:
 
 models:  test/models/gpt-2-117M/ggml-model.bin test/models/yolov3-tiny.gguf test/models/magika.h5.gguf
 
-.PHONY: default clean format models run top utop
+model-explorer.install:
+	python3 -m pip --no-cache-dir install ai-edge-model-explorer
+
+.PHONY: default clean format models run top utop model-explorer.install
