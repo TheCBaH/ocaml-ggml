@@ -2,7 +2,14 @@
  (deps
   (file Makefile)
   (source_tree %{project_root}/vendored/ggml))
- (targets ggml.h ggml-alloc.h ggml-backend.h ggml-cpu.h libggml.a dllggml.so)
+ (targets
+  ggml.h
+  ggml-alloc.h
+  ggml-backend.h
+  ggml-cpu.h
+  gguf.h
+  libggml.a
+  dllggml.so)
  (action
   (no-infer
    (progn
@@ -16,7 +23,8 @@
      %{project_root}/vendored/ggml/include/ggml-backend.h
      ggml-backend.h)
     (copy %{project_root}/vendored/ggml/include/ggml-cpu.h ggml-cpu.h)
-    (copy %{project_root}/vendored/ggml/include/ggml.h ggml.h)))))
+    (copy %{project_root}/vendored/ggml/include/ggml.h ggml.h)
+    (copy %{project_root}/vendored/ggml/include/gguf.h gguf.h)))))
 
 (library
  (name ggml)
@@ -29,7 +37,8 @@
     (c_flags :standard)
     (c_library_flags :standard -lstdc++ -fopenmp)))
   (headers
-   (preamble "#include \"ggml.h\"\n#include \"ggml-cpu.h\""))
+   (preamble
+    "#include \"ggml.h\"\n#include \"ggml-cpu.h\"\n#include \"gguf.h\""))
   (type_description
    (instance Types)
    (functor Type_description))

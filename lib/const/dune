@@ -5,7 +5,7 @@
   (external_library_name libggml)
   (build_flags_resolver (vendored))
   (headers
-   (preamble "#include \"../ggml.h\""))
+   (preamble "#include \"../ggml.h\"\n#include \"../gguf.h\""))
   (type_description
    (instance Types)
    (functor Type_const))

@@ -413,3 +413,40 @@ module NumaStrategy = struct
       (Count, "COUNT");
     ]
 end
+
+module GGUF = struct
+  (** GGUF metadata value types. *)
+  type type_ =
+    | Uint8
+    | Int8
+    | Uint16
+    | Int16
+    | Uint32
+    | Int32
+    | Float32
+    | Bool
+    | String
+    | Array
+    | Uint64
+    | Int64
+    | Float64
+    | Count  (** marks the end of the enum *)
+
+  let type_values =
+    [
+      (Uint8, "UINT8");
+      (Int8, "INT8");
+      (Uint16, "UINT16");
+      (Int16, "INT16");
+      (Uint32, "UINT32");
+      (Int32, "INT32");
+      (Float32, "FLOAT32");
+      (Bool, "BOOL");
+      (String, "STRING");
+      (Array, "ARRAY");
+      (Uint64, "UINT64");
+      (Int64, "INT64");
+      (Float64, "FLOAT64");
+      (Count, "COUNT");
+    ]
+end

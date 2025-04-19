@@ -6,7 +6,7 @@ module Types (F : Ctypes.TYPE) = struct
   let ns name = "ggml_" ^ name
   let _NS name = "GGML_" ^ name
 
-  let make_enum name values =
+  let make_enum ?(_NS = _NS) ?(ns = ns) name values =
     let _NAME v = _NS @@ String.uppercase_ascii name ^ "_" ^ v in
     enum (ns name) @@ List.map (fun (t, name) -> (t, constant (_NAME name) int64_t)) values
 
@@ -125,4 +125,27 @@ module Types (F : Ctypes.TYPE) = struct
 
   let tensor = ptr Tensor.t
   let guid = array 16 uint8_t
+
+  module GGUF = struct
+    let ns name = "gguf_" ^ name
+    let _NS name = "GGUF_" ^ name
+    let make_enum = make_enum ~_NS ~ns
+    let typ = make_enum "type" Types.GGUF.type_values
+
+    (* Opaque type for GGUF context *)
+    let context_struct : [ `gguf_context ] structure typ = structure (ns "context")
+    let context_t = ptr context_struct
+
+    (* GGUF initialization parameters *)
+    module InitParams = struct
+      type t
+
+      let t : t structure typ = structure (ns "init_params")
+      let no_alloc = field t "no_alloc" bool
+
+      (* The C type is 'struct ggml_context ** ctx'. We use the existing ggml context alias 'context' (ptr _context). *)
+      let ctx = field t "ctx" (ptr context) (* ptr context = ptr (ptr ggml_context) = ggml_context ** *)
+      let () = seal t
+    end
+  end
 end

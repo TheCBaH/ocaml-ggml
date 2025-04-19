@@ -21,4 +21,9 @@ module Types (F : Ctypes.TYPE) = struct
   let tensor_flag_output = constant "GGML_TENSOR_FLAG_OUTPUT" int32_t
   let tensor_flag_param = constant "GGML_TENSOR_FLAG_PARAM" int32_t
   let tensor_flag_loss = constant "GGML_TENSOR_FLAG_LOSS" int32_t
+
+  module GGUF = struct
+    let version = constant "GGUF_VERSION" int
+    let default_alignment = constant "GGUF_DEFAULT_ALIGNMENT" int
+  end
 end
