@@ -16,6 +16,15 @@
   (deps models/gpt-2-117M/ggml-model.bin)))
 
 (library
+ (name magika_test)
+ (modules magika_test)
+ (libraries magika ggml_model_explorer)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests
+  (deps models/magika.h5.gguf)))
+
+(library
  (name yolo_test)
  (modules yolo_test)
  (libraries yolo)
