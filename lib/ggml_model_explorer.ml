@@ -4,8 +4,8 @@ open Ggml.C
 let getfp p field = !@(p |-> field)
 let to_string t = coerce (ptr char) string t
 let pp_int64 fmt t = Format.fprintf fmt "%Ld" t
-let pp_list p fmt t = Format.(fprintf fmt "[%a]" (pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ",@ ") p) t)
-let pp_pair p1 p2 fmt (t1, t2) = Format.fprintf fmt "@[%a,@ %a@]" p1 t1 p2 t2
+let pp_list p fmt t = Format.(fprintf fmt "[%a]" (pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ",@,") p) t)
+let pp_pair p1 p2 fmt (t1, t2) = Format.fprintf fmt "@[%a,@,%a@]" p1 t1 p2 t2
 
 let pp_shape fmt t =
   let rec cut_aux l' l =
@@ -51,7 +51,7 @@ module TensorId = struct
       { id; kind }
     in
     let nodes =
-      let ptr = Ctypes.raw_address_of_ptr @@ to_voidp tensor in
+      let ptr = raw_address_of_ptr @@ to_voidp tensor in
       { nodes with map = PtrMap.add ptr t nodes.map }
     in
     let src = getfp tensor Types.Tensor.src in
@@ -64,7 +64,7 @@ module TensorId = struct
       (fun nodes tensor ->
         if is_null tensor then nodes
         else
-          let ptr = Ctypes.raw_address_of_ptr @@ to_voidp tensor in
+          let ptr = raw_address_of_ptr @@ to_voidp tensor in
           if PtrMap.mem ptr nodes.map then
             let _ = if false then Format.eprintf "%d: duplicate ptr:%a@." id pp_addr ptr in
             nodes
@@ -92,14 +92,26 @@ module TensorId = struct
     else Format.(pp_print_list ~pp_sep:pp_print_newline pp) fmt @@ List.sort compare @@ List.map snd nodes
 
   let of_graph graph =
-    let nodes = Array.init (Functions.graph_n_nodes graph) (fun n -> Functions.graph_node graph n) in
-    let tensors = ref @@ empty @@ Array.length nodes in
-    Array.iteri (fun id t -> tensors := add_node id t !tensors) nodes;
-    !tensors
+    let count = Functions.graph_n_nodes graph in
+    let rec of_graph_aux nodes n =
+      if n < count then
+        let t = Functions.graph_node graph n in
+        let nodes = add_node n t nodes in
+        of_graph_aux nodes @@ succ n
+      else nodes
+    in
+    of_graph_aux (empty count) 0
 
   let get_id nodes tensor =
-    let ptr = Ctypes.raw_address_of_ptr @@ to_voidp tensor in
+    let ptr = raw_address_of_ptr @@ to_voidp tensor in
     PtrMap.find ptr nodes.map
+
+  let fold f nodes a =
+    PtrMap.fold
+      (fun ptr id a ->
+        let tensor = from_voidp Types.Tensor.t @@ ptr_of_raw_address ptr in
+        f tensor id a)
+      nodes.map a
 end
 
 let attr key value = Model_explorer.KeyValue.create ~key ~value
@@ -107,19 +119,17 @@ let attr key value = Model_explorer.KeyValue.create ~key ~value
 let tensor nodes t =
   let id = TensorId.get_id nodes t in
   let tensor_index = attr "tensor_index" @@ string_of_int id.id in
-  let tensor_name =
-    let name = getfp t Ggml.C.Types.Tensor.name in
-    let name = to_string @@ CArray.start name in
-    let printed_name =
-      if String.length name == 0 || String.starts_with ~prefix:"leaf_" name || String.starts_with ~prefix:"node_" name
-      then ""
-      else name ^ " "
-    in
-    attr "tensor_name" printed_name
-  in
   let tensor_shape =
     let type_name = Ggml.C.Functions.type_name @@ getfp t Ggml.C.Types.Tensor.typ_ in
-    let shape = Format.asprintf "%s@ %a" type_name pp_shape t in
-    attr "tensor_name" shape
+    let shape = Format.asprintf "@[%s:%a@]" type_name pp_shape t in
+    attr "tensor_shape" shape
   in
-  [ tensor_index; tensor_name; tensor_shape ]
+  let tensor = [ tensor_index; tensor_shape ] in
+  let tensor =
+    let name = getfp t Ggml.C.Types.Tensor.name in
+    let name = to_string @@ CArray.start name in
+    if String.length name == 0 || String.starts_with ~prefix:"leaf_" name || String.starts_with ~prefix:"node_" name
+    then tensor
+    else attr "tensor_name" name :: tensor
+  in
+  tensor

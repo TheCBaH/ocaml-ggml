@@ -53,9 +53,9 @@ let%expect_test "gpt2" =
   Format.printf "nodes:%u" nodes;
   [%expect "nodes:487"];
   print Ggml_model_explorer.pp_shape @@ Ggml.C.Functions.graph_node gpt2 0;
-  [%expect "[768, 768]"];
+  [%expect "[768,768]"];
   print Ggml_model_explorer.pp_shape @@ Ggml.C.Functions.graph_node gpt2 6;
-  [%expect "[2304, 768]"];
+  [%expect "[2304,768]"];
 
   print Ggml_model_explorer.pp_flags @@ Ggml.C.Functions.graph_node gpt2 0;
   [%expect "[]"];

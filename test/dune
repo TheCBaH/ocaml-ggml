@@ -18,7 +18,7 @@
 (library
  (name magika_test)
  (modules magika_test)
- (libraries magika ggml_model_explorer)
+ (libraries jsont.bytesrw magika ggml_model_explorer)
  (preprocess
   (pps ppx_expect))
  (inline_tests
