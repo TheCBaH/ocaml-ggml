@@ -8,7 +8,7 @@ let to_string t = Ctypes.(coerce (ptr char) string t)
 let attr key value = KeyValue.create ~key ~value
 let pp_int64 fmt t = Format.fprintf fmt "%Ld" t
 let pp_list p fmt t = Format.(fprintf fmt "[%a]" (pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ",@ ") p) t)
-let pp_pair p1 p2 fmt (t1,t2) = Format.fprintf fmt "@[%a,@ %a@]" p1 t1 p2 t2
+let pp_pair p1 p2 fmt (t1, t2) = Format.fprintf fmt "@[%a,@ %a@]" p1 t1 p2 t2
 
 let pp_shape fmt t =
   let open Ggml.C in
@@ -33,40 +33,27 @@ let pp_flags fmt t =
 
 module TensorId = struct
   module PtrMap = Map.Make (Nativeint)
-  type kind =
-  | Input
-  | Output
-  | Constant
-  | Intermediate
-  let kind_to_string kind = match  kind with
-  | Input -> "Input"
-  | Output -> "Output"
-  | Constant -> "Constant"
-  | Intermediate -> "Intermediate"
 
-  type t = {
-    id: int;
-    kind: kind;
-  }
-  type nodes = {
-    map: t PtrMap.t;
-    node_count : int;
-  }
-  let empty node_count = {map=PtrMap.empty;node_count}
+  type kind = Input | Output | Constant | Intermediate
 
+  let kind_to_string kind =
+    match kind with Input -> "Input" | Output -> "Output" | Constant -> "Constant" | Intermediate -> "Intermediate"
+
+  type t = { id : int; kind : kind }
+  type nodes = { map : t PtrMap.t; node_count : int }
+
+  let empty node_count = { map = PtrMap.empty; node_count }
   let pp_addr fmt t = Format.fprintf fmt "%#LX" @@ Int64.of_nativeint t
-
-  let pp fmt t =
-    Format.fprintf fmt "@[{id:%d;@ kind:%s}"  t.id @@ kind_to_string t.kind
+  let pp fmt t = Format.fprintf fmt "@[{id:%d;@ kind:%s}" t.id @@ kind_to_string t.kind
 
   let add_node id tensor nodes =
     assert (id < nodes.node_count);
     let open Ggml.C in
     let flags = getfp tensor Types.Tensor.flags in
     let kind = if Int32.logand flags Ggml_const.C.Types.tensor_flag_output = Int32.zero then Intermediate else Output in
-    let t = {id;kind} in
+    let t = { id; kind } in
     let ptr = Ctypes.raw_address_of_ptr @@ to_voidp tensor in
-    {nodes with map=PtrMap.add ptr t nodes.map}
+    { nodes with map = PtrMap.add ptr t nodes.map }
 
   let pp_nodes fmt t =
     let nodes = PtrMap.bindings t.map in
