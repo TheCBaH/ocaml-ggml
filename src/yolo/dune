@@ -1,0 +1,33 @@
+(rule
+ (deps
+  (file Makefile)
+  (file yolo-lib.cpp)
+  (file yolo-lib.h)
+  (file %{project_root}/lib/ggml/ggml.h)
+  (source_tree %{project_root}/vendored/ggml/examples))
+ (targets libyolo.a dllyolo.so)
+ (action
+  (no-infer
+   (progn
+    (run make BIN=%{project_root} GGML=%{project_root}/vendored/ggml lib)))))
+
+(library
+ (name yolo)
+ (libraries ggml)
+ (foreign_archives yolo)
+ (ctypes
+  (external_library_name libyolo)
+  (build_flags_resolver
+   (vendored
+    (c_flags :standard -I %{project_root}/lib/ggml)))
+  (headers
+   (preamble "#include \"yolo-lib.h\""))
+  (type_description
+   (instance Types)
+   (functor Type_description))
+  (function_description
+   (concurrency unlocked)
+   (instance Functions)
+   (functor Function_description))
+  (generated_types Types_generated)
+  (generated_entry_point C)))

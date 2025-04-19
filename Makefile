@@ -28,6 +28,9 @@ clean:
 test/models/gpt-2-117M/ggml-model.bin:
 	cd test;../vendored/ggml/examples/gpt-2/download-ggml-model.sh 117M
 
-models:  test/models/gpt-2-117M/ggml-model.bin
+test/models/yolov3-tiny.gguf:
+	wget -O $@ https://huggingface.co/rgerganov/yolo-gguf/resolve/main/yolov3-tiny.gguf
+
+models:  test/models/gpt-2-117M/ggml-model.bin test/models/yolov3-tiny.gguf
 
 .PHONY: default clean format models run top utop
