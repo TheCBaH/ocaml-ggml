@@ -24,6 +24,15 @@ let pp_flags fmt t =
   in
   pp_list Format.pp_print_string fmt flags
 
+let node_inputs t =
+  let src = getfp t Types.Tensor.src in
+  List.rev @@ snd
+  @@ CArray.fold_left
+       (fun (n, l) tensor ->
+         let l = if is_null tensor then l else (n, tensor) :: l in
+         (succ n, l))
+       (0, []) src
+
 module TensorId = struct
   module PtrMap = Map.Make (Nativeint)
 
@@ -54,37 +63,30 @@ module TensorId = struct
       let ptr = raw_address_of_ptr @@ to_voidp tensor in
       { nodes with map = PtrMap.add ptr t nodes.map }
     in
-    let src = getfp tensor Types.Tensor.src in
-    let () =
-      let l = CArray.to_list src |> List.filter (fun t -> not @@ is_null t) in
-      if false then Format.eprintf "%d:not-null:%d@." id @@ List.length l;
-      ()
-    in
-    CArray.fold_left
-      (fun nodes tensor ->
-        if is_null tensor then nodes
+    let inputs = node_inputs tensor in
+    List.fold_left
+      (fun nodes (_, tensor) ->
+        let ptr = raw_address_of_ptr @@ to_voidp tensor in
+        if PtrMap.mem ptr nodes.map then
+          let _ = if false then Format.eprintf "%d: duplicate ptr:%a@." id pp_addr ptr in
+          nodes
         else
-          let ptr = raw_address_of_ptr @@ to_voidp tensor in
-          if PtrMap.mem ptr nodes.map then
-            let _ = if false then Format.eprintf "%d: duplicate ptr:%a@." id pp_addr ptr in
-            nodes
-          else
-            let _ =
-              if false then
-                Format.eprintf "%d:added :%d %s@." id nodes.next @@ Functions.op_name @@ getfp tensor Types.Tensor.op
-            in
-            let id = nodes.next in
-            let flags = getfp tensor Types.Tensor.flags in
-            let kind =
-              if Int32.logand flags tensor_flag_param <> Int32.zero then Constant
-              else if Int32.logand flags tensor_flag_input <> Int32.zero then Input
-              else if getfp tensor Types.Tensor.op = Ggml.Types.Op.None then Constant
-              else Intermediate
-            in
-            let t = { id; kind } in
-            let map = PtrMap.add ptr t nodes.map in
-            { nodes with map; next = succ nodes.next })
-      nodes src
+          let _ =
+            if false then
+              Format.eprintf "%d:added :%d %s@." id nodes.next @@ Functions.op_name @@ getfp tensor Types.Tensor.op
+          in
+          let id = nodes.next in
+          let flags = getfp tensor Types.Tensor.flags in
+          let kind =
+            if Int32.logand flags tensor_flag_param <> Int32.zero then Constant
+            else if Int32.logand flags tensor_flag_input <> Int32.zero then Input
+            else if getfp tensor Types.Tensor.op = Ggml.Types.Op.None then Constant
+            else Intermediate
+          in
+          let t = { id; kind } in
+          let map = PtrMap.add ptr t nodes.map in
+          { nodes with map; next = succ nodes.next })
+      nodes inputs
 
   let pp_nodes fmt t =
     let nodes = PtrMap.bindings t.map in
@@ -115,10 +117,11 @@ module TensorId = struct
 end
 
 let attr key value = Model_explorer.KeyValue.create ~key ~value
+let to_id n = string_of_int n
 
 let tensor nodes t =
   let id = TensorId.get_id nodes t in
-  let tensor_index = attr "tensor_index" @@ string_of_int id.id in
+  let tensor_index = attr "tensor_index" @@ to_id id.id in
   let tensor_shape =
     let type_name = Ggml.C.Functions.type_name @@ getfp t Ggml.C.Types.Tensor.typ_ in
     let shape = Format.asprintf "@[%s:%a@]" type_name pp_shape t in
@@ -133,3 +136,16 @@ let tensor nodes t =
     else attr "tensor_name" name :: tensor
   in
   tensor
+
+let incomingEdge nodeId inputIndex =
+  Model_explorer.IncomingEdge.create ~sourceNodeId:(to_id nodeId) ~sourceNodeOutputId:(to_id inputIndex)
+    ~targetNodeInputId:(to_id 0) ()
+
+let node nodes t =
+  let id = TensorId.get_id nodes t in
+  assert (id.id < nodes.node_count);
+  let op = getfp t Types.Tensor.op in
+  let symbol = Functions.op_symbol op in
+  let name = Functions.op_name op in
+  let label = name ^ ":" ^ symbol in
+  Model_explorer.GraphNode.create ~id:(to_id id.id) ~namespace:"" ~label ()

@@ -32,3 +32,11 @@
   (pps ppx_expect))
  (inline_tests
   (deps models/yolov3-tiny.gguf)))
+
+(library
+ (name model_explorer_test)
+ (modules model_explorer_test)
+ (libraries jsont.bytesrw ggml_model_explorer)
+ (preprocess
+  (pps ppx_expect))
+ (inline_tests))
