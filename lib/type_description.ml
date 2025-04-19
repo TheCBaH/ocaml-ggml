@@ -125,4 +125,25 @@ module Types (F : Ctypes.TYPE) = struct
 
   let tensor = ptr Tensor.t
   let guid = array 16 uint8_t
+
+  module GGUF = struct
+    let ns name = "gguf_" ^ name
+    let _NS name = "GGUF_" ^ name
+
+    (* Opaque type for GGUF context *)
+    let context_struct : [ `gguf_context ] structure typ = structure (ns "context")
+    let context_t = ptr context_struct
+
+    (* GGUF initialization parameters *)
+    module InitParams = struct
+      type t
+
+      let t : t structure typ = structure (ns "init_params")
+      let no_alloc = field t "no_alloc" bool
+
+      (* The C type is 'struct ggml_context ** ctx'. We use the existing ggml context alias 'context' (ptr _context). *)
+      let ctx = field t "ctx" (ptr context) (* ptr context = ptr (ptr ggml_context) = ggml_context ** *)
+      let () = seal t
+    end
+  end
 end

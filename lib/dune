@@ -37,7 +37,8 @@
     (c_flags :standard)
     (c_library_flags :standard -lstdc++ -fopenmp)))
   (headers
-   (preamble "#include \"ggml.h\"\n#include \"ggml-cpu.h\""))
+   (preamble
+    "#include \"ggml.h\"\n#include \"ggml-cpu.h\"\n#include \"gguf.h\""))
   (type_description
    (instance Types)
    (functor Type_description))
