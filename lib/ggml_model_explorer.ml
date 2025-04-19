@@ -35,7 +35,9 @@ module TensorId = struct
     match kind with Input -> "Input" | Output -> "Output" | Constant -> "Constant" | Intermediate -> "Intermediate"
 
   type t = { id : int; kind : kind }
+
   let compare a b = Int.compare a.id b.id
+
   type nodes = { map : t PtrMap.t; node_count : int; next : int }
 
   let empty node_count = { map = PtrMap.empty; node_count; next = node_count }

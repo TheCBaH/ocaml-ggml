@@ -24,7 +24,7 @@ let%expect_test "yolo" =
   Format.printf "nodes:%u" nodes;
   [%expect "nodes:213"];
   let open Ggml_model_explorer in
-  print TensorId.pp_nodes @@ TensorId.of_graph  yolo;
+  print TensorId.pp_nodes @@ TensorId.of_graph yolo;
   [%expect
     {|
       {id:0; kind:Intermediate}

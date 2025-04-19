@@ -67,7 +67,7 @@ let%expect_test "gpt2" =
   print pp_flags @@ Ggml.C.Functions.graph_node gpt2 486;
   [%expect "[Output]"];
 
-  print TensorId.pp_nodes @@ TensorId.of_graph  gpt2;
+  print TensorId.pp_nodes @@ TensorId.of_graph gpt2;
   [%expect
     {|
     {id:0; kind:Intermediate}
