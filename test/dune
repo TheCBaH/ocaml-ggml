@@ -9,7 +9,7 @@
 (library
  (name gpt2_test)
  (modules gpt2_test)
- (libraries gpt_2 model_explorer)
+ (libraries gpt_2 ggml_model_explorer)
  (preprocess
   (pps ppx_expect))
  (inline_tests
@@ -18,7 +18,7 @@
 (library
  (name yolo_test)
  (modules yolo_test)
- (libraries yolo)
+ (libraries yolo ggml_model_explorer)
  (preprocess
   (pps ppx_expect))
  (inline_tests
