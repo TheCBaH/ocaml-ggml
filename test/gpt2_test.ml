@@ -61,18 +61,31 @@ module TensorId = struct
       { nodes with map = PtrMap.add ptr t nodes.map }
     in
     let src = getfp tensor Types.Tensor.src in
+    let () =
+      let l = CArray.to_list src |> List.filter (fun t -> not @@ is_null t) in
+      if false then Format.eprintf "%d:not-null:%d@." id @@ List.length l;
+      ()
+    in
     CArray.fold_left
-      (fun nodes t ->
-        if true || is_null t then nodes
+      (fun nodes tensor ->
+        if is_null tensor then nodes
         else
           let ptr = Ctypes.raw_address_of_ptr @@ to_voidp tensor in
-          if PtrMap.mem ptr nodes.map then nodes
+          if PtrMap.mem ptr nodes.map then
+            let _ = if false then Format.eprintf "%d: duplicate ptr:%a@." id pp_addr ptr in
+            nodes
           else
+            let _ =
+              if false then
+                Format.eprintf "%d:added :%d %s@." id nodes.next
+                @@ Ggml.C.Functions.op_name @@ getfp tensor Ggml.C.Types.Tensor.op
+            in
             let id = nodes.next in
             let flags = getfp tensor Types.Tensor.flags in
             let kind =
               if Int32.logand flags Ggml_const.C.Types.tensor_flag_param <> Int32.zero then Constant
               else if Int32.logand flags Ggml_const.C.Types.tensor_flag_input <> Int32.zero then Input
+              else if getfp tensor Ggml.C.Types.Tensor.op = Ggml.Types.Op.None then Constant
               else Intermediate
             in
             let t = { id; kind } in
@@ -152,6 +165,158 @@ let%expect_test "gpt2" =
   print TensorId.pp_nodes !tensors;
   [%expect
     {|
+    {id:637; kind:Constant}
+    {id:638; kind:Constant}
+    {id:487; kind:Constant}
+    {id:489; kind:Constant}
+    {id:491; kind:Constant}
+    {id:492; kind:Constant}
+    {id:499; kind:Constant}
+    {id:500; kind:Constant}
+    {id:493; kind:Constant}
+    {id:494; kind:Constant}
+    {id:497; kind:Constant}
+    {id:498; kind:Constant}
+    {id:501; kind:Constant}
+    {id:502; kind:Constant}
+    {id:503; kind:Constant}
+    {id:504; kind:Constant}
+    {id:505; kind:Constant}
+    {id:506; kind:Constant}
+    {id:511; kind:Constant}
+    {id:512; kind:Constant}
+    {id:507; kind:Constant}
+    {id:508; kind:Constant}
+    {id:509; kind:Constant}
+    {id:510; kind:Constant}
+    {id:513; kind:Constant}
+    {id:514; kind:Constant}
+    {id:515; kind:Constant}
+    {id:516; kind:Constant}
+    {id:517; kind:Constant}
+    {id:518; kind:Constant}
+    {id:523; kind:Constant}
+    {id:524; kind:Constant}
+    {id:519; kind:Constant}
+    {id:520; kind:Constant}
+    {id:521; kind:Constant}
+    {id:522; kind:Constant}
+    {id:525; kind:Constant}
+    {id:526; kind:Constant}
+    {id:527; kind:Constant}
+    {id:528; kind:Constant}
+    {id:529; kind:Constant}
+    {id:530; kind:Constant}
+    {id:535; kind:Constant}
+    {id:536; kind:Constant}
+    {id:531; kind:Constant}
+    {id:532; kind:Constant}
+    {id:533; kind:Constant}
+    {id:534; kind:Constant}
+    {id:537; kind:Constant}
+    {id:538; kind:Constant}
+    {id:539; kind:Constant}
+    {id:540; kind:Constant}
+    {id:541; kind:Constant}
+    {id:542; kind:Constant}
+    {id:547; kind:Constant}
+    {id:548; kind:Constant}
+    {id:543; kind:Constant}
+    {id:544; kind:Constant}
+    {id:545; kind:Constant}
+    {id:546; kind:Constant}
+    {id:549; kind:Constant}
+    {id:550; kind:Constant}
+    {id:551; kind:Constant}
+    {id:552; kind:Constant}
+    {id:553; kind:Constant}
+    {id:554; kind:Constant}
+    {id:559; kind:Constant}
+    {id:560; kind:Constant}
+    {id:555; kind:Constant}
+    {id:556; kind:Constant}
+    {id:557; kind:Constant}
+    {id:558; kind:Constant}
+    {id:561; kind:Constant}
+    {id:562; kind:Constant}
+    {id:563; kind:Constant}
+    {id:564; kind:Constant}
+    {id:565; kind:Constant}
+    {id:566; kind:Constant}
+    {id:571; kind:Constant}
+    {id:572; kind:Constant}
+    {id:567; kind:Constant}
+    {id:568; kind:Constant}
+    {id:569; kind:Constant}
+    {id:570; kind:Constant}
+    {id:573; kind:Constant}
+    {id:574; kind:Constant}
+    {id:575; kind:Constant}
+    {id:576; kind:Constant}
+    {id:577; kind:Constant}
+    {id:578; kind:Constant}
+    {id:583; kind:Constant}
+    {id:584; kind:Constant}
+    {id:579; kind:Constant}
+    {id:580; kind:Constant}
+    {id:581; kind:Constant}
+    {id:582; kind:Constant}
+    {id:585; kind:Constant}
+    {id:586; kind:Constant}
+    {id:587; kind:Constant}
+    {id:588; kind:Constant}
+    {id:589; kind:Constant}
+    {id:590; kind:Constant}
+    {id:595; kind:Constant}
+    {id:596; kind:Constant}
+    {id:591; kind:Constant}
+    {id:592; kind:Constant}
+    {id:593; kind:Constant}
+    {id:594; kind:Constant}
+    {id:597; kind:Constant}
+    {id:598; kind:Constant}
+    {id:599; kind:Constant}
+    {id:600; kind:Constant}
+    {id:601; kind:Constant}
+    {id:602; kind:Constant}
+    {id:607; kind:Constant}
+    {id:608; kind:Constant}
+    {id:603; kind:Constant}
+    {id:604; kind:Constant}
+    {id:605; kind:Constant}
+    {id:606; kind:Constant}
+    {id:609; kind:Constant}
+    {id:610; kind:Constant}
+    {id:611; kind:Constant}
+    {id:612; kind:Constant}
+    {id:613; kind:Constant}
+    {id:614; kind:Constant}
+    {id:619; kind:Constant}
+    {id:620; kind:Constant}
+    {id:615; kind:Constant}
+    {id:616; kind:Constant}
+    {id:617; kind:Constant}
+    {id:618; kind:Constant}
+    {id:621; kind:Constant}
+    {id:622; kind:Constant}
+    {id:623; kind:Constant}
+    {id:624; kind:Constant}
+    {id:625; kind:Constant}
+    {id:626; kind:Constant}
+    {id:631; kind:Constant}
+    {id:632; kind:Constant}
+    {id:627; kind:Constant}
+    {id:628; kind:Constant}
+    {id:629; kind:Constant}
+    {id:630; kind:Constant}
+    {id:633; kind:Constant}
+    {id:634; kind:Constant}
+    {id:635; kind:Constant}
+    {id:636; kind:Constant}
+    {id:495; kind:Constant}
+    {id:496; kind:Constant}
+    {id:488; kind:Input}
+    {id:490; kind:Input}
     {id:1; kind:Intermediate}
     {id:0; kind:Intermediate}
     {id:2; kind:Intermediate}
