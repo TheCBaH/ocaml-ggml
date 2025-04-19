@@ -52,22 +52,21 @@ let%expect_test "gpt2" =
   let nodes = Ggml.C.Functions.graph_n_nodes gpt2 in
   Format.printf "nodes:%u" nodes;
   [%expect "nodes:487"];
-  let open Ggml_model_explorer in
-  print pp_shape @@ Ggml.C.Functions.graph_node gpt2 0;
+  print Ggml_model_explorer.pp_shape @@ Ggml.C.Functions.graph_node gpt2 0;
   [%expect "[768, 768]"];
-  print pp_shape @@ Ggml.C.Functions.graph_node gpt2 6;
+  print Ggml_model_explorer.pp_shape @@ Ggml.C.Functions.graph_node gpt2 6;
   [%expect "[2304, 768]"];
 
-  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 0;
+  print Ggml_model_explorer.pp_flags @@ Ggml.C.Functions.graph_node gpt2 0;
   [%expect "[]"];
-  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 1;
+  print Ggml_model_explorer.pp_flags @@ Ggml.C.Functions.graph_node gpt2 1;
   [%expect "[]"];
-  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 6;
+  print Ggml_model_explorer.pp_flags @@ Ggml.C.Functions.graph_node gpt2 6;
   [%expect "[]"];
-  print pp_flags @@ Ggml.C.Functions.graph_node gpt2 486;
+  print Ggml_model_explorer.pp_flags @@ Ggml.C.Functions.graph_node gpt2 486;
   [%expect "[Output]"];
 
-  print TensorId.pp_nodes @@ TensorId.of_graph gpt2;
+  print Ggml_model_explorer.TensorId.pp_nodes @@ Ggml_model_explorer.TensorId.of_graph gpt2;
   [%expect
     {|
     {id:0; kind:Intermediate}

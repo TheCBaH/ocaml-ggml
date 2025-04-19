@@ -7,8 +7,6 @@ let pp_int64 fmt t = Format.fprintf fmt "%Ld" t
 let pp_list p fmt t = Format.(fprintf fmt "[%a]" (pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ",@ ") p) t)
 let pp_pair p1 p2 fmt (t1, t2) = Format.fprintf fmt "@[%a,@ %a@]" p1 t1 p2 t2
 
-(* let attr key value = KeyValue.create ~key ~value *)
-
 let pp_shape fmt t =
   let rec cut_aux l' l =
     match l with [] -> l' | hd :: _ when hd = 1L || hd = 0L -> l' | hd :: tl -> cut_aux (hd :: l') tl
@@ -98,4 +96,30 @@ module TensorId = struct
     let tensors = ref @@ empty @@ Array.length nodes in
     Array.iteri (fun id t -> tensors := add_node id t !tensors) nodes;
     !tensors
+
+  let get_id nodes tensor =
+    let ptr = Ctypes.raw_address_of_ptr @@ to_voidp tensor in
+    PtrMap.find ptr nodes.map
 end
+
+let attr key value = Model_explorer.KeyValue.create ~key ~value
+
+let tensor nodes t =
+  let id = TensorId.get_id nodes t in
+  let tensor_index = attr "tensor_index" @@ string_of_int id.id in
+  let tensor_name =
+    let name = getfp t Ggml.C.Types.Tensor.name in
+    let name = to_string @@ CArray.start name in
+    let printed_name =
+      if String.length name == 0 || String.starts_with ~prefix:"leaf_" name || String.starts_with ~prefix:"node_" name
+      then ""
+      else name ^ " "
+    in
+    attr "tensor_name" printed_name
+  in
+  let tensor_shape =
+    let type_name = Ggml.C.Functions.type_name @@ getfp t Ggml.C.Types.Tensor.typ_ in
+    let shape = Format.asprintf "%s@ %a" type_name pp_shape t in
+    attr "tensor_name" shape
+  in
+  [ tensor_index; tensor_name; tensor_shape ]
