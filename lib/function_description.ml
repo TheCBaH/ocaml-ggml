@@ -2189,4 +2189,8 @@ module Functions (F : Ctypes.FOREIGN) = struct
   (** [backend_cpu_reg ()] gets the registration information for the CPU backend.
       @return The backend registration structure. *)
   let backend_cpu_reg = foreign (ns "backend_cpu_reg") (void @-> returning backend_reg_t)
+
+  module GGUF = struct
+    open Types.GGUF
+  end
 end
