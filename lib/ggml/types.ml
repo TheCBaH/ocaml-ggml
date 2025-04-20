@@ -3,6 +3,7 @@ module Status = struct
   type t = AllocFailed | Failed | Success | Aborted
 
   let values = [ (AllocFailed, "ALLOC_FAILED"); (Failed, "FAILED"); (Success, "SUCCESS"); (Aborted, "ABORTED") ]
+  let to_string t = List.assoc t values
 end
 
 (** Available tensor types. NOTE: always add types at the end of the enum to keep backward compatibility. *)
@@ -74,6 +75,8 @@ module Type = struct
       (TQ1_0, "TQ1_0");
       (TQ2_0, "TQ2_0");
     ]
+
+  let to_string t = List.assoc t values
 end
 
 (** Precision levels for matrix multiplication. *)
@@ -81,6 +84,7 @@ module Prec = struct
   type t = Default | F32
 
   let values = [ (Default, "DEFAULT"); (F32, "F32") ]
+  let to_string t = List.assoc t values
 end
 
 (** Model file types. *)
@@ -138,6 +142,8 @@ module Ftype = struct
       (Mostly_IQ1_M, "MOSTLY_IQ1_M");
       (Mostly_BF16, "MOSTLY_BF16");
     ]
+
+  let to_string t = List.assoc t values
 end
 
 (** Available tensor operations. *)
@@ -319,6 +325,8 @@ module Op = struct
       (Opt_Step_Adamw, "OPT_STEP_ADAMW");
       (Count, "COUNT");
     ]
+
+  let to_string t = List.assoc t values
 end
 
 (** Available unary operations. *)
@@ -358,6 +366,8 @@ module UnaryOp = struct
       (Exp, "EXP");
       (Count, "COUNT");
     ]
+
+  let to_string t = List.assoc t values
 end
 
 (** Object types used by ggml. *)
@@ -365,6 +375,7 @@ module ObjectType = struct
   type t = Tensor | Graph | Work_Buffer
 
   let values = [ (Tensor, "TENSOR"); (Graph, "GRAPH"); (Work_Buffer, "WORK_BUFFER") ]
+  let to_string t = List.assoc t values
 end
 
 (** Logging levels. *)
@@ -372,6 +383,7 @@ module LogLevel = struct
   type t = None | Debug | Info | Warn | Error | Cont  (** continue previous log *)
 
   let values = [ (None, "NONE"); (Debug, "DEBUG"); (Info, "INFO"); (Warn, "WARN"); (Error, "ERROR"); (Cont, "CONT") ]
+  let to_string t = List.assoc t values
 end
 
 (** Tensor flags. Used to mark tensors with special properties. *)
@@ -383,6 +395,7 @@ module TensorFlag = struct
     | Loss  (** defines loss for numerical optimization (multiple loss tensors add up) *)
 
   let values = [ (Input, "INPUT"); (Output, "OUTPUT"); (Param, "PARAM"); (Loss, "LOSS") ]
+  let to_string t = List.assoc t values
 end
 
 (** Pooling operations. *)
@@ -390,6 +403,7 @@ module OpPool = struct
   type t = Max | Avg | Count
 
   let values = [ (Max, "MAX"); (Avg, "AVG"); (Count, "COUNT") ]
+  let to_string t = List.assoc t values
 end
 
 (** Sort order for argsort. *)
@@ -397,6 +411,7 @@ module SortOrder = struct
   type t = Asc | Desc
 
   let values = [ (Asc, "ASC"); (Desc, "DESC") ]
+  let to_string t = List.assoc t values
 end
 
 (** NUMA strategy. *)
@@ -412,41 +427,47 @@ module NumaStrategy = struct
       (Mirror, "MIRROR");
       (Count, "COUNT");
     ]
+
+  let to_string t = List.assoc t values
 end
 
 module GGUF = struct
   (** GGUF metadata value types. *)
-  type type_ =
-    | Uint8
-    | Int8
-    | Uint16
-    | Int16
-    | Uint32
-    | Int32
-    | Float32
-    | Bool
-    | String
-    | Array
-    | Uint64
-    | Int64
-    | Float64
-    | Count  (** marks the end of the enum *)
+  module Type = struct
+    type t =
+      | Uint8
+      | Int8
+      | Uint16
+      | Int16
+      | Uint32
+      | Int32
+      | Float32
+      | Bool
+      | String
+      | Array
+      | Uint64
+      | Int64
+      | Float64
+      | Count  (** marks the end of the enum *)
 
-  let type_values =
-    [
-      (Uint8, "UINT8");
-      (Int8, "INT8");
-      (Uint16, "UINT16");
-      (Int16, "INT16");
-      (Uint32, "UINT32");
-      (Int32, "INT32");
-      (Float32, "FLOAT32");
-      (Bool, "BOOL");
-      (String, "STRING");
-      (Array, "ARRAY");
-      (Uint64, "UINT64");
-      (Int64, "INT64");
-      (Float64, "FLOAT64");
-      (Count, "COUNT");
-    ]
+    let values =
+      [
+        (Uint8, "UINT8");
+        (Int8, "INT8");
+        (Uint16, "UINT16");
+        (Int16, "INT16");
+        (Uint32, "UINT32");
+        (Int32, "INT32");
+        (Float32, "FLOAT32");
+        (Bool, "BOOL");
+        (String, "STRING");
+        (Array, "ARRAY");
+        (Uint64, "UINT64");
+        (Int64, "INT64");
+        (Float64, "FLOAT64");
+        (Count, "COUNT");
+      ]
+
+    let to_string t = List.assoc t values
+  end
 end

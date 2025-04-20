@@ -130,7 +130,7 @@ module Types (F : Ctypes.TYPE) = struct
     let ns name = "gguf_" ^ name
     let _NS name = "GGUF_" ^ name
     let make_enum = make_enum ~_NS ~ns
-    let typ = make_enum "type" Types.GGUF.type_values
+    let typ = make_enum "type" Types.GGUF.Type.values
 
     (* Opaque type for GGUF context *)
     let context_struct : [ `gguf_context ] structure typ = structure (ns "context")
