@@ -40,4 +40,9 @@ models:  test/models/gpt-2-117M/ggml-model.bin test/models/yolov3-tiny.gguf test
 model-explorer.install:
 	python3 -m pip --no-cache-dir install ai-edge-model-explorer
 
+visualize:
+	opam exec -- dune exec -- ./visualize.exe magika test/models/magika.h5.gguf magika.json
+	opam exec -- dune exec -- ./visualize.exe yolo test/models/yolov3-tiny.gguf yolov3-tiny.json
+	opam exec -- dune exec -- ./visualize.exe gpt2 test/models/gpt-2-117M/ggml-model.bin gpt2.json
+
 .PHONY: default clean format models run top utop model-explorer.install

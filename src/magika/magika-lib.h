@@ -10,7 +10,7 @@ struct magika_model_t {
 };
 struct ggml_cgraph;
 
-int ggml_main(int argc, const char** argv);
+int magika_main(int argc, const char** argv);
 int magika_model_init(struct magika_model_t* model, const char* fname);
 void magika_model_uninit(struct magika_model_t* model);
 

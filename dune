@@ -1,0 +1,4 @@
+(executable
+ (name visualize)
+ (modules visualize)
+ (libraries cmdliner jsont.bytesrw gpt_2 yolo magika ggml_model_explorer))

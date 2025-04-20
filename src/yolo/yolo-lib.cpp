@@ -1,4 +1,4 @@
-#define main ggml_main
+#define main yolo_main
 #include "yolo-lib.h"
 #include "yolo/yolov3-tiny.cpp"
 #include <memory>

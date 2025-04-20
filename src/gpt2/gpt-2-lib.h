@@ -10,7 +10,7 @@ struct gpt2_model_t {
 };
 struct ggml_cgraph;
 
-int ggml_main(int argc, char ** argv);
+int gpt2_main(int argc, char ** argv);
 int gpt2_model_init(struct gpt2_model_t* model, const char* fname, int n_ctx, int n_gpu_layers);
 void gpt2_model_uninit(struct gpt2_model_t* model);
 

@@ -33,3 +33,6 @@ jobs:
     - name: runtest
       run: |
         ${{ env.EXEC }} make runtest
+    - name: visualize
+      run: |
+        ${{ env.EXEC }} make visualize

@@ -1,4 +1,4 @@
-#define main ggml_main
+#define main magika_main
 #include "magika-lib.h"
 #include "magika/main.cpp"
 #include <memory>

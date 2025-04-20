@@ -1,4 +1,4 @@
-#define main ggml_main
+#define main gpt2_ggml_main
 #include "gpt-2-lib.h"
 #include "gpt-2/main-backend.cpp"
 

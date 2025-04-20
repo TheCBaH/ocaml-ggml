@@ -10,7 +10,7 @@ struct yolo_model_t {
 };
 struct ggml_cgraph;
 
-int ggml_main(int argc, char** argv);
+int yolo_main(int argc, char** argv);
 int yolo_model_init(struct yolo_model_t* model, const char* fname);
 void yolo_model_uninit(struct yolo_model_t* model);
 

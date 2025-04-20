@@ -1,5 +1,5 @@
 #include "yolo-lib.h"
 
 int main(int argc, char ** argv) {
-    return ggml_main(argc, argv);
+    return yolo_main(argc, argv);
 }
