@@ -11,10 +11,6 @@ let out_file =
   let doc = "Json file to write" in
   Arg.(required & pos 1 (some string) None & info [] ~docv:"OUT" ~doc)
 
-let context = Arg.(value & opt (some int) (Some 1024) & info [ "c"; "context-size" ])
-let past = Arg.(value & opt (some int) (Some 0) & info [ "p"; "past" ])
-let tokens = Arg.(value & opt (some int) (Some 768) & info [ "t"; "tokens" ])
-
 let print_graph ~label graph out_file =
   let graph = Ggml_model_explorer.visualize ~label graph in
   let oc = open_out out_file in
@@ -69,8 +65,12 @@ let cmd_gpt2 =
   let doc = "Visualize " ^ label ^ " graph" in
   Cmd.v (Cmd.info label ~doc)
   @@
-  let+ model_file = model_file and+ out_file = out_file and+ context = context and+ past = past and+ tokens = tokens in
-  gpt2 model_file out_file (Option.get context) (Option.get past) (Option.get tokens)
+  let+ model_file = model_file
+  and+ out_file = out_file
+  and+ context = Arg.(required & opt (some int) (Some 1024) & info [ "c"; "context-size" ])
+  and+ past = Arg.(required & opt (some int) (Some 0) & info [ "p"; "past" ])
+  and+ tokens = Arg.(required & opt (some int) (Some 768) & info [ "t"; "tokens" ]) in
+  gpt2 model_file out_file context past tokens
 
 let cmd_yolo = cmd_simple "yolo" yolo
 let cmd_magika = cmd_simple "magika" magika
