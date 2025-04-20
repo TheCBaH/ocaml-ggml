@@ -17,7 +17,7 @@
         },
         "./features/ocaml": {
             "packages": "utop jsont bytesrw ctypes ctypes-foreign ppx_expect",
-            "system-packages": "valgrind cmake ninja-build"
+            "system-packages": "valgrind cmake ninja-build libcurl4-openssl-dev"
         }
     },
     "customizations": {

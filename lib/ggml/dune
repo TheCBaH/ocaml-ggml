@@ -1,7 +1,8 @@
 (rule
+ (alias libggml)
  (deps
-  (file Makefile)
-  (source_tree %{project_root}/vendored/ggml))
+  (file %{project_root}/lib/llama.cpp/Makefile)
+  (source_tree %{project_root}/vendored/llama.cpp))
  (targets
   ggml.h
   ggml-alloc.h
@@ -13,18 +14,26 @@
  (action
   (no-infer
    (progn
-    (run make GGML=%{project_root}/vendored/ggml)
-    (copy %{project_root}/vendored/ggml/libggml.a libggml.a)
+    (run
+     make
+     -C
+     %{project_root}/lib/llama.cpp
+     LLAMA.CPP=%{project_root}/vendored/llama.cpp)
+    (copy %{project_root}/vendored/llama.cpp/libggml.a libggml.a)
     (copy
-     %{project_root}/vendored/ggml/build.ml.shared/src/libggml.so
+     %{project_root}/vendored/llama.cpp/build.ml.shared/bin/libggml.so
      dllggml.so)
-    (copy %{project_root}/vendored/ggml/include/ggml-alloc.h ggml-alloc.h)
     (copy
-     %{project_root}/vendored/ggml/include/ggml-backend.h
+     %{project_root}/vendored/llama.cpp/ggml/include/ggml-alloc.h
+     ggml-alloc.h)
+    (copy
+     %{project_root}/vendored/llama.cpp/ggml/include/ggml-backend.h
      ggml-backend.h)
-    (copy %{project_root}/vendored/ggml/include/ggml-cpu.h ggml-cpu.h)
-    (copy %{project_root}/vendored/ggml/include/ggml.h ggml.h)
-    (copy %{project_root}/vendored/ggml/include/gguf.h gguf.h)))))
+    (copy
+     %{project_root}/vendored/llama.cpp/ggml/include/ggml-cpu.h
+     ggml-cpu.h)
+    (copy %{project_root}/vendored/llama.cpp/ggml/include/ggml.h ggml.h)
+    (copy %{project_root}/vendored/llama.cpp/ggml/include/gguf.h gguf.h)))))
 
 (library
  (name ggml)

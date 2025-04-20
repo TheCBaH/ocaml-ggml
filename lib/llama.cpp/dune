@@ -1,0 +1,39 @@
+(rule
+ (deps
+  (alias ../ggml/libggml)
+  (file Makefile)
+  (source_tree %{project_root}/vendored/llama.cpp))
+ (targets llama.h libllama.a dllllama.so)
+ (action
+  (no-infer
+   (progn
+    (run make build-llama LLAMA.CPP=%{project_root}/vendored/llama.cpp)
+    (copy
+     %{project_root}/vendored/llama.cpp/build.ml.static/src/libllama.a
+     libllama.a)
+    (copy
+     %{project_root}/vendored/llama.cpp/build.ml.shared/bin/libllama.so
+     dllllama.so)
+    (copy %{project_root}/vendored/llama.cpp/include/llama.h llama.h)))))
+
+(library
+ (name llama)
+ (libraries ggml)
+ (foreign_archives llama)
+ (ctypes
+  (external_library_name libllama)
+  (build_flags_resolver
+   (vendored
+    (c_flags :standard -I %{project_root}/lib/ggml) ;; Add local include path for llama.h
+    (c_library_flags :standard)))
+  (headers
+   (preamble "#include \"llama.h\""))
+  (type_description
+   (instance Types)
+   (functor Type_description))
+  (function_description
+   (concurrency unlocked)
+   (instance Functions)
+   (functor Function_description))
+  (generated_types Types_generated)
+  (generated_entry_point C)))

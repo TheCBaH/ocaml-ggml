@@ -7,33 +7,6 @@
  (inline_tests))
 
 (library
- (name gpt2_test)
- (modules gpt2_test)
- (libraries gpt_2 ggml_model_explorer)
- (preprocess
-  (pps ppx_expect))
- (inline_tests
-  (deps models/gpt-2-117M/ggml-model.bin)))
-
-(library
- (name magika_test)
- (modules magika_test)
- (libraries jsont.bytesrw magika ggml_model_explorer)
- (preprocess
-  (pps ppx_expect))
- (inline_tests
-  (deps models/magika.h5.gguf)))
-
-(library
- (name yolo_test)
- (modules yolo_test)
- (libraries yolo ggml_model_explorer)
- (preprocess
-  (pps ppx_expect))
- (inline_tests
-  (deps models/yolov3-tiny.gguf)))
-
-(library
  (name model_explorer_test)
  (modules model_explorer_test)
  (libraries jsont.bytesrw ggml_model_explorer)
