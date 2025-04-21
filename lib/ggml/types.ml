@@ -431,6 +431,24 @@ module ScaleMode = struct
   let to_string t = List.assoc t values
 end
 
+module Backend = struct
+  (** Backend buffer usage types. *)
+  module BufferUsage = struct
+    type t = Any | Weights | Compute
+
+    let values = [ (Any, "ANY"); (Weights, "WEIGHTS"); (Compute, "COMPUTE") ]
+    let to_string t = List.assoc t values
+  end
+
+  (** Backend device types. *)
+  module DevType = struct
+    type t = Cpu | Gpu | Accel
+
+    let values = [ (Cpu, "CPU"); (Gpu, "GPU"); (Accel, "ACCEL") ]
+    let to_string t = List.assoc t values
+  end
+end
+
 module GGUF = struct
   (** GGUF metadata value types. *)
   module Type = struct

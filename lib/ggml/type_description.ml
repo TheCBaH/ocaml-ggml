@@ -6,8 +6,9 @@ module Types (F : Ctypes.TYPE) = struct
   let ns name = "ggml_" ^ name
   let _NS name = "GGML_" ^ name
 
-  let make_enum ?(_NS = _NS) ?(ns = ns) name values =
-    let _NAME v = _NS @@ String.uppercase_ascii name ^ "_" ^ v in
+  let make_enum ?(_NS = _NS) ?_NAME ?(ns = ns) name values =
+    let _NAME = match _NAME with Some _NAME -> _NAME | None -> String.uppercase_ascii name in
+    let _NAME v = _NS @@ _NAME ^ "_" ^ v in
     enum (ns name) @@ List.map (fun (t, name) -> (t, constant (_NAME name) int64_t)) values
 
   let status = make_enum "status" Types.Status.values
@@ -29,7 +30,6 @@ module Types (F : Ctypes.TYPE) = struct
   let context = ptr _context
   let _cgraph : [ `Cgraph ] structure typ = structure (ns "cgraph")
   let cgraph = ptr _cgraph
-  let backend_buffer : [ `BackendBuffer ] structure typ = structure (ns "backend_buffer")
 
   (* Opaque struct types *)
   let opt_params : [ `OptParams ] structure typ = structure (ns "opt_params")
@@ -37,10 +37,6 @@ module Types (F : Ctypes.TYPE) = struct
   let scratch : [ `Scratch ] structure typ = structure (ns "scratch")
   let type_traits : [ `TypeTraits ] structure typ = structure (ns "type_traits")
   let threadpool : [ `ThreadPool ] structure typ = structure (ns "threadpool")
-  let backend : [ `Backend ] structure typ = structure (ns "backend")
-  let backend_t = ptr backend
-  let backend_reg : [ `BackendReg ] structure typ = structure (ns "backend_reg")
-  let backend_reg_t = ptr backend_reg
 
   (* Typedefs *)
   let fp16_t = typedef uint16_t (ns "fp16_t")
@@ -108,7 +104,6 @@ module Types (F : Ctypes.TYPE) = struct
 
     (* Need to declare t before using it recursively in src and view_src *)
     let typ_ = field t "type" typ
-    let buffer = field t "buffer" (ptr backend_buffer)
     let ne = field t "ne" (array max_dims int64_t)
     let nb = field t "nb" (array max_dims size_t)
     let op = field t "op" op
@@ -127,6 +122,97 @@ module Types (F : Ctypes.TYPE) = struct
   let tensor = ptr Tensor.t
   let const_tensor = ptr @@ const Tensor.t
   let guid = array 16 uint8_t
+
+  module Backend = struct
+    let backend : [ `Backend ] structure typ = structure (ns "backend")
+    let backend_t = ptr backend
+    let ns name = ns @@ "backend_" ^ name
+    let _NS name = _NS @@ "BACKEND_" ^ name
+    let status = make_enum "buffer_usage" ~ns ~_NS Types.Backend.BufferUsage.values
+    let dev_type = make_enum "dev_type" ~ns ~_NS ~_NAME:"DEVICE_TYPE" Types.Backend.DevType.values
+
+    (* Opaque struct types for backend components *)
+    let buffer_type_struct : [ `BufferType ] structure typ = structure (ns "buffer_type")
+    let buffer_type_t = ptr buffer_type_struct
+    let buffer_struct : [ `Buffer ] structure typ = structure (ns "buffer")
+    let buffer_t = ptr buffer_struct
+    let event_struct : [ `Event ] structure typ = structure (ns "event")
+    let event_t = ptr event_struct
+    let graph_plan_t = ptr void
+    let reg_struct : [ `Reg ] structure typ = structure (ns "event")
+    let reg_t = ptr reg_struct
+    let dev_struct : [ `Device ] structure typ = structure (ns "backend_device")
+    let dev_t = ptr dev_struct
+
+    (** functionality supported by the device *)
+    module DevCaps = struct
+      type t
+
+      let t : t structure typ = structure (ns "dev_caps")
+      let async = field t "async" bool
+      let host_buffer = field t "host_buffer" bool
+      let buffer_from_host_ptr = field t "buffer_from_host_ptr" bool
+      let events = field t "events" bool
+      let () = seal t
+    end
+
+    (** Device properties structure. Mirrors C `ggml_backend_dev_props`. *)
+    module DevProps = struct
+      type t
+
+      let t : t structure typ = structure (ns "dev_props")
+      let name = field t "name" string
+      let description = field t "description" string
+      let memory_free = field t "memory_free" size_t
+      let memory_total = field t "memory_total" size_t
+      let type_ = field t "type" dev_type
+      let caps = field t "caps" DevCaps.t
+      let () = seal t
+    end
+
+    (** Backend feature structure. *)
+    module BackendFeature = struct
+      type t
+
+      let t : t structure typ = structure (ns "feature")
+      let name = field t "name" string
+      let value = field t "value" string
+      let () = seal t
+    end
+
+    (** Structure for copying graphs between backends. *)
+    module GraphCopy = struct
+      type t
+
+      let t : t structure typ = structure (ns "graph_copy")
+      let buffer = field t "buffer" buffer_t
+      let ctx_allocated = field t "ctx_allocated" context
+      let ctx_unallocated = field t "ctx_unallocated" context
+      let graph = field t "graph" cgraph
+      let () = seal t
+    end
+
+    (** Split buffer type for tensor parallelism. *)
+    let split_buffer_type_t = static_funptr (int @-> ptr float @-> returning buffer_type_t)
+
+    (** Set the number of threads for the backend. *)
+    let set_n_threads_t = static_funptr (backend_t @-> int @-> returning void)
+
+    (** Get additional buffer types provided by the device (returns a NULL-terminated array). *)
+    let dev_get_extra_bufts_t = static_funptr (dev_t @-> returning (ptr buffer_type_t))
+    (* Returns ptr to buffer_type_t *)
+
+    (** Set the abort callback for the backend. *)
+    let set_abort_callback_t = static_funptr (backend_t @-> abort_callback @-> ptr void @-> returning void)
+
+    (** Get features provided by the backend registry. *)
+    let get_features_t = static_funptr (reg_t @-> returning (ptr BackendFeature.t))
+
+    let eval_callback = static_funptr (int @-> tensor @-> tensor @-> ptr void @-> returning bool)
+
+    (** Evaluation callback for the scheduler. *)
+    let sched_eval_callback = static_funptr (tensor @-> bool @-> ptr void @-> returning bool)
+  end
 
   module GGUF = struct
     let ns name = "gguf_" ^ name
