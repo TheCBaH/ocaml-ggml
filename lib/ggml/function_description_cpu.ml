@@ -1,10 +1,9 @@
 open Ctypes
-module Types = Types_generated
 
 module Functions (F : Ctypes.FOREIGN) = struct
   open F
-  open Types
-  open Types.CPU
+  open Types_generated
+  open Types_generated.CPU
 
   (** [numa_init strategy] initializes NUMA (Non-Uniform Memory Access) support.
       @param strategy The NUMA strategy to use. *)

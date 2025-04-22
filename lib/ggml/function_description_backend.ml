@@ -1,10 +1,9 @@
 open Ctypes
-module Types = Types_generated
 
 module Functions (F : Ctypes.FOREIGN) = struct
   open F
-  open Types
-  open Types.Backend
+  open Types_generated
+  open Types_generated.Backend
 
   (** Backend Buffer Type *)
 

@@ -1,9 +1,9 @@
 open Ctypes
-module Types = Types_generated
 
 module Functions (F : Ctypes.FOREIGN) = struct
   open F
-  open Types.GGUF
+  open Types_generated
+  open Types_generated.GGUF
 
   (** [init_empty ()] creates an empty GGUF context.
       @return A new GGUF context. *)
@@ -192,7 +192,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
       @param ctx The GGUF context.
       @param tensor_id The index of the tensor.
       @return The ggml type enum value. *)
-  let get_tensor_type = foreign (ns "get_tensor_type") (context_t @-> int64_t @-> returning Types.typ)
+  let get_tensor_type = foreign (ns "get_tensor_type") (context_t @-> int64_t @-> returning typ)
   (* ggml_type *)
 
   (** [get_tensor_size ctx tensor_id] returns the size in bytes of the tensor data.
@@ -303,14 +303,14 @@ module Functions (F : Ctypes.FOREIGN) = struct
   (** [add_tensor ctx tensor] adds a ggml tensor's information to the GGUF context.
       @param ctx The GGUF context.
       @param tensor The ggml tensor to add. *)
-  let add_tensor = foreign (ns "add_tensor") (context_t @-> Types.tensor @-> returning void)
+  let add_tensor = foreign (ns "add_tensor") (context_t @-> tensor @-> returning void)
   (* ggml_tensor *)
 
   (** [set_tensor_type ctx name typ] changes the ggml type associated with a tensor name in the GGUF context.
       @param ctx The GGUF context.
       @param name The name of the tensor.
       @param typ The new ggml type. *)
-  let set_tensor_type = foreign (ns "set_tensor_type") (context_t @-> string @-> Types.typ @-> returning void)
+  let set_tensor_type = foreign (ns "set_tensor_type") (context_t @-> string @-> typ @-> returning void)
   (* ggml_type *)
 
   (** [set_tensor_data ctx name data] sets the raw data pointer associated with a tensor name (for writing).

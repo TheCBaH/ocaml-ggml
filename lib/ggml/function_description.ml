@@ -1,24 +1,8 @@
 open Ctypes
-module Types = Types_generated
-open Types_generated (* Bring types into scope for definitions below *)
-
-(** Custom unary operation function pointer type. *)
-let custom1_op_t = static_funptr (tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
-
-(** Custom binary operation function pointer type. *)
-let custom2_op_t =
-  static_funptr (tensor @-> const_tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
-
-(** Custom ternary operation function pointer type. *)
-let custom3_op_t =
-  static_funptr
-    (tensor @-> const_tensor @-> const_tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
-
-(** Custom operation function pointer type (for ggml_custom). *)
-let custom_op_t = static_funptr (tensor @-> int @-> int @-> ptr void @-> returning void)
 
 module Functions (F : Ctypes.FOREIGN) = struct
   open F
+  open Types_generated
 
   (* Context *)
 
@@ -1999,7 +1983,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
 
   (** [graph_get_grad graph tensor] retrieves the gradient tensor associated with a given tensor in the graph.
       @param graph The computation graph.
-      @param tensor The tensor whose gradient is requested.
+      @param tensor The tensor whose gradient is requested. c
       @return The gradient tensor, or NULL if gradients are not stored or not computed. *)
   let graph_get_grad = foreign (ns "graph_get_grad") (cgraph @-> tensor @-> returning tensor)
 

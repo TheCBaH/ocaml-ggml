@@ -125,6 +125,21 @@ module Types (F : Ctypes.TYPE) = struct
   let const_tensor = ptr @@ const Tensor.t
   let guid = array 16 uint8_t
 
+  (** Custom unary operation function pointer type. *)
+  let custom1_op_t = static_funptr (tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
+
+  (** Custom binary operation function pointer type. *)
+  let custom2_op_t =
+    static_funptr (tensor @-> const_tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
+
+  (** Custom ternary operation function pointer type. *)
+  let custom3_op_t =
+    static_funptr
+      (tensor @-> const_tensor @-> const_tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
+
+  (** Custom operation function pointer type (for ggml_custom). *)
+  let custom_op_t = static_funptr (tensor @-> int @-> int @-> ptr void @-> returning void)
+
   module Backend = struct
     let backend : [ `Backend ] structure typ = structure (ns "backend")
     let backend_t = ptr backend
