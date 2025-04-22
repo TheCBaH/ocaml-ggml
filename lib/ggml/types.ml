@@ -223,14 +223,10 @@ module Op = struct
     | Gated_Linear_Attn
     | Rwkv_Wkv7
     | Unary
-    | Map_Unary
-    | Map_Binary
-    | Map_Custom1_F32
-    | Map_Custom2_F32
-    | Map_Custom3_F32
     | Map_Custom1
     | Map_Custom2
     | Map_Custom3
+    | Custom
     | Cross_Entropy_Loss
     | Cross_Entropy_Loss_Back
     | Opt_Step_Adamw
@@ -312,14 +308,10 @@ module Op = struct
       (Gated_Linear_Attn, "GATED_LINEAR_ATTN");
       (Rwkv_Wkv7, "RWKV_WKV7");
       (Unary, "UNARY");
-      (Map_Unary, "MAP_UNARY");
-      (Map_Binary, "MAP_BINARY");
-      (Map_Custom1_F32, "MAP_CUSTOM1_F32");
-      (Map_Custom2_F32, "MAP_CUSTOM2_F32");
-      (Map_Custom3_F32, "MAP_CUSTOM3_F32");
       (Map_Custom1, "MAP_CUSTOM1");
       (Map_Custom2, "MAP_CUSTOM2");
       (Map_Custom3, "MAP_CUSTOM3");
+      (Custom, "CUSTOM");
       (Cross_Entropy_Loss, "CROSS_ENTROPY_LOSS");
       (Cross_Entropy_Loss_Back, "CROSS_ENTROPY_LOSS_BACK");
       (Opt_Step_Adamw, "OPT_STEP_ADAMW");
@@ -428,6 +420,14 @@ module NumaStrategy = struct
       (Count, "COUNT");
     ]
 
+  let to_string t = List.assoc t values
+end
+
+(** Scaling modes for upscale operations. *)
+module ScaleMode = struct
+  type t = Nearest | Bilinear
+
+  let values = [ (Nearest, "NEAREST"); (Bilinear, "BILINEAR") ]
   let to_string t = List.assoc t values
 end
 

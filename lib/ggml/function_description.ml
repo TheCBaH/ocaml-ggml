@@ -1,9 +1,24 @@
 open Ctypes
 module Types = Types_generated
+open Types (* Bring types into scope for definitions below *)
+
+(** Custom unary operation function pointer type. *)
+let custom1_op_t = static_funptr (tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
+
+(** Custom binary operation function pointer type. *)
+let custom2_op_t =
+  static_funptr (tensor @-> const_tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
+
+(** Custom ternary operation function pointer type. *)
+let custom3_op_t =
+  static_funptr
+    (tensor @-> const_tensor @-> const_tensor @-> const_tensor @-> int @-> int @-> ptr void @-> returning void)
+
+(** Custom operation function pointer type (for ggml_custom). *)
+let custom_op_t = static_funptr (tensor @-> int @-> int @-> ptr void @-> returning void)
 
 module Functions (F : Ctypes.FOREIGN) = struct
   open F
-  open Types
 
   (* Context *)
 
@@ -1515,22 +1530,26 @@ module Functions (F : Ctypes.FOREIGN) = struct
       (context @-> tensor @-> tensor @-> op_pool @-> int @-> int @-> int @-> int @-> float @-> float
      @-> returning tensor)
 
-  (** [upscale ctx a scale_factor] performs nearest neighbor upscaling by `scale_factor` on the first two dimensions.
+  (** [upscale ctx a scale_factor mode] performs upscaling by `scale_factor` on the first two dimensions using the
+      specified mode.
       @param ctx The context.
       @param a Input tensor.
       @param scale_factor The integer factor to scale dimensions by.
+      @param mode The scaling mode (`GGML_SCALE_MODE_NEAREST` or `GGML_SCALE_MODE_BILINEAR`).
       @return The upscaled tensor. *)
-  let upscale = foreign (ns "upscale") (context @-> tensor @-> int @-> returning tensor)
+  let upscale = foreign (ns "upscale") (context @-> tensor @-> int @-> scale_mode @-> returning tensor)
 
-  (** [upscale_ext ctx a ne0 ne1 ne2 ne3] performs nearest neighbor upscaling to the specified dimensions.
+  (** [upscale_ext ctx a ne0 ne1 ne2 ne3 mode] performs upscaling to the specified dimensions using the specified mode.
       @param ctx The context.
       @param a Input tensor.
       @param ne0 Target size for dimension 0.
       @param ne1 Target size for dimension 1.
       @param ne2 Target size for dimension 2.
       @param ne3 Target size for dimension 3.
+      @param mode The scaling mode.
       @return The upscaled tensor. *)
-  let upscale_ext = foreign (ns "upscale_ext") (context @-> tensor @-> int @-> int @-> int @-> int @-> returning tensor)
+  let upscale_ext =
+    foreign (ns "upscale_ext") (context @-> tensor @-> int @-> int @-> int @-> int @-> scale_mode @-> returning tensor)
 
   (** [pad ctx a p0 p1 p2 p3] pads each dimension of tensor `a` with zeros.
       @param ctx The context.
@@ -1734,6 +1753,110 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let rwkv_wkv7 =
     foreign (ns "rwkv_wkv7")
       (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
+  (** [map_custom1 ctx a fun n_tasks userdata] applies a custom unary function `fun` to tensor `a`.
+      @param ctx The context.
+      @param a Input tensor.
+      @param fun The custom function `(dst, a, ith, nth, userdata) -> void`.
+      @param n_tasks Number of parallel tasks to use (-1 for max).
+      @param userdata User data passed to the function.
+      @return The resulting tensor. *)
+  let map_custom1 =
+    foreign (ns "map_custom1") (context @-> tensor @-> custom1_op_t @-> int @-> ptr void @-> returning tensor)
+
+  (** [map_custom1_inplace ctx a fun n_tasks userdata] applies a custom unary function `fun` to tensor `a` in-place.
+      @param ctx The context.
+      @param a Input tensor (modified).
+      @param fun The custom function.
+      @param n_tasks Number of parallel tasks.
+      @param userdata User data.
+      @return The modified tensor `a`. *)
+  let map_custom1_inplace =
+    foreign (ns "map_custom1_inplace") (context @-> tensor @-> custom1_op_t @-> int @-> ptr void @-> returning tensor)
+
+  (** [map_custom2 ctx a b fun n_tasks userdata] applies a custom binary function `fun` to tensors `a` and `b`.
+      @param ctx The context.
+      @param a First input tensor.
+      @param b Second input tensor.
+      @param fun The custom function `(dst, a, b, ith, nth, userdata) -> void`.
+      @param n_tasks Number of parallel tasks.
+      @param userdata User data.
+      @return The resulting tensor. *)
+  let map_custom2 =
+    foreign (ns "map_custom2") (context @-> tensor @-> tensor @-> custom2_op_t @-> int @-> ptr void @-> returning tensor)
+
+  (** [map_custom2_inplace ctx a b fun n_tasks userdata] applies a custom binary function `fun` to `a` and `b` in-place
+      (modifies `a`).
+      @param ctx The context.
+      @param a First input tensor (modified).
+      @param b Second input tensor.
+      @param fun The custom function.
+      @param n_tasks Number of parallel tasks.
+      @param userdata User data.
+      @return The modified tensor `a`. *)
+  let map_custom2_inplace =
+    foreign (ns "map_custom2_inplace")
+      (context @-> tensor @-> tensor @-> custom2_op_t @-> int @-> ptr void @-> returning tensor)
+
+  (** [map_custom3 ctx a b c fun n_tasks userdata] applies a custom ternary function `fun` to tensors `a`, `b`, and `c`.
+      @param ctx The context.
+      @param a First input tensor.
+      @param b Second input tensor.
+      @param c Third input tensor.
+      @param fun The custom function `(dst, a, b, c, ith, nth, userdata) -> void`.
+      @param n_tasks Number of parallel tasks.
+      @param userdata User data.
+      @return The resulting tensor. *)
+  let map_custom3 =
+    foreign (ns "map_custom3")
+      (context @-> tensor @-> tensor @-> tensor @-> custom3_op_t @-> int @-> ptr void @-> returning tensor)
+
+  (** [map_custom3_inplace ctx a b c fun n_tasks userdata] applies a custom ternary function `fun` to `a`, `b`, and `c`
+      in-place (modifies `a`).
+      @param ctx The context.
+      @param a First input tensor (modified).
+      @param b Second input tensor.
+      @param c Third input tensor.
+      @param fun The custom function.
+      @param n_tasks Number of parallel tasks.
+      @param userdata User data.
+      @return The modified tensor `a`. *)
+  let map_custom3_inplace =
+    foreign (ns "map_custom3_inplace")
+      (context @-> tensor @-> tensor @-> tensor @-> custom3_op_t @-> int @-> ptr void @-> returning tensor)
+
+  (** [custom_4d ctx typ ne0 ne1 ne2 ne3 args n_args fun n_tasks userdata] creates a tensor using a custom operation
+      with multiple arguments.
+      @param ctx The context.
+      @param typ The type of the resulting tensor.
+      @param ne0 Size of dimension 0.
+      @param ne1 Size of dimension 1.
+      @param ne2 Size of dimension 2.
+      @param ne3 Size of dimension 3.
+      @param args Pointer to an array of input tensor pointers.
+      @param n_args Number of input tensors in `args`.
+      @param fun The custom function `(dst, ith, nth, userdata) -> void`.
+      @param n_tasks Number of parallel tasks.
+      @param userdata User data.
+      @return The resulting tensor. *)
+  let custom_4d =
+    foreign (ns "custom_4d")
+      (context @-> typ @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> ptr tensor @-> int @-> custom_op_t @-> int
+     @-> ptr void @-> returning tensor)
+
+  (** [custom_inplace ctx a args n_args fun n_tasks userdata] applies a custom operation with multiple arguments
+      in-place (modifies `a`).
+      @param ctx The context.
+      @param a The tensor to modify.
+      @param args Pointer to an array of input tensor pointers.
+      @param n_args Number of input tensors in `args`.
+      @param fun The custom function `(dst, ith, nth, userdata) -> void`.
+      @param n_tasks Number of parallel tasks.
+      @param userdata User data.
+      @return The modified tensor `a`. *)
+  let custom_inplace =
+    foreign (ns "custom_inplace")
+      (context @-> tensor @-> ptr tensor @-> int @-> custom_op_t @-> int @-> ptr void @-> returning tensor)
 
   (** [quantize_init typ] initializes quantization resources for the given type.
       @param typ The quantization type. *)
