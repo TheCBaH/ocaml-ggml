@@ -54,5 +54,9 @@
    (concurrency unlocked)
    (instance Functions_backend)
    (functor Function_description_backend))
+  (function_description
+   (concurrency unlocked)
+   (instance Functions_cpu)
+   (functor Function_description_cpu))
   (generated_types Types_generated)
   (generated_entry_point C)))

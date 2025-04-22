@@ -66,7 +66,7 @@ let%expect_test "compute" =
   let result = Functions.mul_mat context a b in
   Functions.build_forward_expand graph result;
 
-  ignore @@ Functions.graph_compute_with_ctx context graph 1;
+  ignore @@ Functions_cpu.graph_compute_with_ctx context graph 1;
   let computed = get_fp32 result in
   Format.printf "@[[%a]@]%!"
     (Format.pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ";@ ") Format.pp_print_float)
