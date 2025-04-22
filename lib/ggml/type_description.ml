@@ -139,9 +139,9 @@ module Types (F : Ctypes.TYPE) = struct
     let event_struct : [ `Event ] structure typ = structure (ns "event")
     let event_t = ptr event_struct
     let graph_plan_t = ptr void
-    let reg_struct : [ `Reg ] structure typ = structure (ns "event")
+    let reg_struct : [ `Reg ] structure typ = structure (ns "reg")
     let reg_t = ptr reg_struct
-    let dev_struct : [ `Device ] structure typ = structure (ns "backend_device")
+    let dev_struct : [ `Device ] structure typ = structure (ns "device")
     let dev_t = ptr dev_struct
 
     (** functionality supported by the device *)

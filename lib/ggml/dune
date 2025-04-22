@@ -50,5 +50,9 @@
    (concurrency unlocked)
    (instance Functions_gguf)
    (functor Function_description_gguf))
+  (function_description
+   (concurrency unlocked)
+   (instance Functions_backend)
+   (functor Function_description_backend))
   (generated_types Types_generated)
   (generated_entry_point C)))
