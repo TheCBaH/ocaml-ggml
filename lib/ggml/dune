@@ -46,5 +46,9 @@
    (concurrency unlocked)
    (instance Functions)
    (functor Function_description))
+  (function_description
+   (concurrency unlocked)
+   (instance Functions_gguf)
+   (functor Function_description_gguf))
   (generated_types Types_generated)
   (generated_entry_point C)))
