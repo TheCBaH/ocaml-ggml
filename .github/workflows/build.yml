@@ -25,14 +25,17 @@ jobs:
     - name: Cache Models
       uses: actions/cache@v4
       with:
-        path: test/models
-        key: models-${{ hashFiles('Makefile', 'vendored/ggml/examples/gpt-2/download-ggml-model.sh') }}
+        path: bartowski
+        key: models-${{ hashFiles('Makefile') }}
     - name: models
       run: |
         ${{ env.EXEC }} make models
     - name: runtest
       run: |
         ${{ env.EXEC }} make runtest
-    - name: visualize
+    - name: simple
       run: |
-        ${{ env.EXEC }} make visualize
+        ${{ env.EXEC }} make simple
+    - name: llama-simple
+      run: |
+        ${{ env.EXEC }} make -C lib/llama.cpp simple
