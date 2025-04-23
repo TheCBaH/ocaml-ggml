@@ -469,6 +469,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
 
   (** [sched_struct] Structure for the backend scheduler. *)
   let sched_struct : [ `Sched ] structure typ = structure (ns "sched")
+
   let sched_t = ptr sched_struct
 
   (** [sched_new backends bufts n_backends graph_size parallel] creates a new backend scheduler.
