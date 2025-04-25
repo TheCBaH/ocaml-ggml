@@ -2,6 +2,17 @@ open Ctypes
 open Cmdliner
 open Cmdliner.Term.Syntax
 
+type callback_state = { fname : string }
+
+let graph_callback_print_something user_data cgraph compute =
+  let nodes = Ggml.C.Functions.graph_n_nodes cgraph in
+  let state = Ctypes.Root.get user_data in
+  ignore (compute,state,nodes);
+  if false then Ggml.C.Functions.graph_print cgraph;
+  true
+
+let keep x = ignore (Sys.opaque_identity (List.hd [ x ]))
+
 let simple fname prompt n_predict =
   Ggml.C.Functions_backend.load_all ();
   let open Llama.C.Functions in
@@ -28,6 +39,19 @@ let simple fname prompt n_predict =
   setf ctx_params ContextParams.n_ctx @@ Unsigned.UInt32.of_int @@ (Int32.to_int n_prompt + n_predict - 1);
   setf ctx_params ContextParams.n_batch @@ Unsigned.UInt32.of_int32 n_prompt;
   setf ctx_params ContextParams.no_perf false;
+
+  (* Create the static function pointer *)
+  let graph_callback_funptr =
+    coerce
+      (Foreign.funptr ~runtime_lock:true graph_compute_callback_type)
+      graph_compute_callback graph_callback_print_something
+  in
+  let state = { fname } in
+  let state_root = Root.create state in
+  setf ctx_params ContextParams.graph_callback graph_callback_funptr;
+  setf ctx_params ContextParams.graph_callback_data state_root;
+
+  (* Revert to setting the funptr if direct fails *)
   let ctx = init_from_model model ctx_params in
   assert (not @@ is_null ctx);
   let sparams = sampler_chain_default_params () in
@@ -79,6 +103,8 @@ let simple fname prompt n_predict =
   prerr_newline ();
   sampler_free smpl;
   free ctx;
+  Root.release state_root;
+  keep (graph_callback_funptr, state_root);
   model_free model
 
 let cmd =

@@ -36,4 +36,7 @@ simple: models
 model-explorer.install:
 	python3 -m pip --no-cache-dir install ai-edge-model-explorer
 
-.PHONY: default clean format models run top utop model-explorer.install
+patch:
+	git -C vendored/llama.cpp apply < patches/graph_callback_llama.patch
+
+.PHONY: default clean format models patch run top utop model-explorer.install

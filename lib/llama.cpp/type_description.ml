@@ -139,11 +139,18 @@ module Types (F : Ctypes.TYPE) = struct
     let () = seal t
   end
 
+  type cgraph = [ `Cgraph ] structure typ
   (** The computation graph structure. *)
-  let cgraph_struct : [ `Cgraph ] structure typ = structure (ns "cgraph")
+
+  let cgraph_struct : cgraph = structure (ns "cgraph")
 
   (** Pointer to the computation graph structure. *)
   let cgraph = ptr cgraph_struct
+
+  (** Callback function for graph computation. *)
+  let graph_compute_callback_type = ptr void @-> cgraph @-> bool @-> returning bool
+
+  let graph_compute_callback = static_funptr graph_compute_callback_type
 
   (** Callback function for evaluating the computation graph. *)
   let cgraph_eval_callback = static_funptr (cgraph @-> ptr void @-> returning bool)
@@ -243,6 +250,8 @@ module Types (F : Ctypes.TYPE) = struct
     (** User data for the abort callback. *)
     let abort_callback_data = field t "abort_callback_data" (ptr void)
 
+    let graph_callback = field t "graph_callback" graph_compute_callback
+    let graph_callback_data = field t "graph_callback_data" (ptr void)
     let () = seal t
   end
 

@@ -1,0 +1,90 @@
+diff --git a/include/llama.h b/include/llama.h
+index 5657fbf0..a3bc006b 100644
+--- a/include/llama.h
++++ b/include/llama.h
+@@ -286,6 +286,8 @@ extern "C" {
+         ggml_backend_buffer_type_t buft;
+     };
+ 
++    typedef bool (*llama_graph_compute_callback)(void * data, const struct ggml_cgraph * graph, bool compute);
++
+     struct llama_model_params {
+         // NULL-terminated list of devices to use for offloading (if NULL, all available devices are used)
+         ggml_backend_dev_t * devices;
+@@ -363,6 +365,9 @@ extern "C" {
+         // currently works only with CPU execution
+         ggml_abort_callback abort_callback;
+         void *              abort_callback_data;
++
++        llama_graph_compute_callback graph_callback;
++        void *              graph_callback_data;
+     };
+ 
+     // model quantization parameters
+diff --git a/src/llama-context.cpp b/src/llama-context.cpp
+index 983385f8..61a590b0 100644
+--- a/src/llama-context.cpp
++++ b/src/llama-context.cpp
+@@ -53,6 +53,9 @@ llama_context::llama_context(
+     cparams.cb_eval           = params.cb_eval;
+     cparams.cb_eval_user_data = params.cb_eval_user_data;
+ 
++    cparams.graph_callback = params.graph_callback;
++    cparams.graph_callback_data = params.graph_callback_data;
++
+     auto rope_scaling_type = params.rope_scaling_type;
+     if (rope_scaling_type == LLAMA_ROPE_SCALING_TYPE_UNSPECIFIED) {
+         rope_scaling_type = hparams.rope_scaling_type_train;
+@@ -1618,7 +1621,7 @@ llm_graph_result_ptr llama_context::graph_build(
+              ggml_cgraph * gf,
+       const llama_ubatch & ubatch,
+             llm_graph_type gtype) {
+-    return model.build_graph(
++    auto res = model.build_graph(
+             {
+                 /*.ctx         =*/ ctx,
+                 /*.arch        =*/ model.arch,
+@@ -1634,6 +1637,10 @@ llm_graph_result_ptr llama_context::graph_build(
+                 /*.n_outputs   =*/ n_outputs,
+                 /*.cb          =*/ graph_get_cb(),
+             }, gf, gtype);
++    if (cparams.graph_callback) {
++        cparams.graph_callback(cparams.graph_callback_data, gf, false);
++    }
++    return res;
+ }
+ 
+ ggml_status llama_context::graph_compute(
+@@ -1652,7 +1659,9 @@ ggml_status llama_context::graph_compute(
+     for (const auto & set_n_threads_fn : set_n_threads_fns) {
+         set_n_threads_fn.second(set_n_threads_fn.first, n_threads);
+     }
+-
++    if (cparams.graph_callback) {
++        cparams.graph_callback(cparams.graph_callback_data, gf, true);
++    }
+     auto status = ggml_backend_sched_graph_compute_async(sched.get(), gf);
+     if (status != GGML_STATUS_SUCCESS) {
+         LLAMA_LOG_ERROR("%s: ggml_backend_sched_graph_compute_async failed with error %d\n", __func__, status);
+@@ -2250,6 +2259,8 @@ llama_context_params llama_context_default_params() {
+         /*.no_perf                     =*/ true,
+         /*.abort_callback              =*/ nullptr,
+         /*.abort_callback_data         =*/ nullptr,
++        /*.graph_callback              =*/ nullptr,
++        /*.graph_callback_data         =*/ nullptr,
+     };
+ 
+     return result;
+diff --git a/src/llama-cparams.h b/src/llama-cparams.h
+index 30e550f0..9f7ebcb9 100644
+--- a/src/llama-cparams.h
++++ b/src/llama-cparams.h
+@@ -35,4 +35,8 @@ struct llama_cparams {
+ 
+     ggml_backend_sched_eval_callback cb_eval;
+     void * cb_eval_user_data;
++
++    llama_graph_compute_callback graph_callback;
++    void *              graph_callback_data;
++
+ };

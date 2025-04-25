@@ -19,6 +19,9 @@ jobs:
     - name: setup
       run: |
         echo 'EXEC=${{ steps.devcontainer.outputs.exec }}' >> $GITHUB_ENV
+    - name: patch
+      run: |
+        ${{ env.EXEC }} make patch
     - name: build
       run: |
         ${{ env.EXEC }} make
