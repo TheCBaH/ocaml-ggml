@@ -2,18 +2,79 @@ open Ctypes
 open Cmdliner
 open Cmdliner.Term.Syntax
 
-type callback_state = { fname : string }
+let print_graph ~label graph out_file =
+  let graph = Ggml_model_explorer.visualize ~label graph in
+  let oc = open_out out_file in
+  Fun.protect
+    ~finally:(fun () -> close_out oc)
+    (fun () ->
+      Result.get_ok
+      @@ Jsont_bytesrw.encode ~eod:true ~format:Jsont.Indent Model_explorer.GraphCollection.jsont graph
+      @@ Bytesrw.Bytes.Writer.of_out_channel oc);
+  ignore (graph, out_file)
+
+module GraphKey = struct
+  type tensor = { typ : Ggml.Types.Type.t; shape : int list }
+  type tensors = tensor list
+  type t = { nodes : int; inputs : tensors; outputs : tensors }
+
+  let make nodes inputs outputs =
+    let tensors = List.map (fun (typ, shape) -> { typ; shape }) in
+    { nodes; inputs = tensors inputs; outputs = tensors outputs }
+
+  let pp_sep ch = fun fmt () -> Format.fprintf fmt "%c@ " ch
+  let coma = pp_sep ','
+  let semicolon = pp_sep ';'
+
+  let pp_tensor fmt { typ; shape } =
+    Format.(
+      fprintf fmt "@[{%s:@,[%a]}@]" (Ggml.Types.Type.to_string typ) (pp_print_list ~pp_sep:coma pp_print_int) shape)
+
+  let pp_tensors fmt t = Format.(fprintf fmt "@[[%a]]@]" (pp_print_list ~pp_sep:semicolon pp_tensor) t)
+
+  let pp fmt t =
+    Format.(fprintf fmt "@[nodes:%d@ inputs:%a@ outputs:%a@]" t.nodes pp_tensors t.inputs pp_tensors t.outputs)
+
+  let compare_tensor a b =
+    match Stdlib.compare a.typ b.typ with 0 -> List.compare Int.compare a.shape b.shape | n -> n
+
+  let compare_tensors = List.compare compare_tensor
+
+  let compare a b =
+    match Int.compare a.nodes b.nodes with
+    | 0 -> ( match compare_tensors a.inputs b.inputs with 0 -> compare_tensors a.outputs b.outputs | n -> n)
+    | n -> n
+end
+
+module GraphSet = Set.Make (GraphKey)
+
+type callback_state = { label : string; graph_dir : string option; mutable observed : GraphSet.t }
 
 let graph_callback_print_something user_data cgraph compute =
+  let open Ctypes in
   let nodes = Ggml.C.Functions.graph_n_nodes cgraph in
-  let state = Ctypes.Root.get user_data in
-  ignore (compute,state,nodes);
+  let state = Root.get user_data in
+  (if compute then
+     let key =
+       GraphKey.make nodes (Ggml_model_explorer.graph_inputs cgraph) @@ Ggml_model_explorer.graph_outputs cgraph
+     in
+     if not @@ GraphSet.mem key state.observed then (
+       let ptr = raw_address_of_ptr @@ to_voidp cgraph in
+       if false then Format.eprintf "@[graph:%#Lx@ key:%a@]@.%!" (Int64.of_nativeint ptr) GraphKey.pp key;
+       let n = GraphSet.cardinal state.observed in
+       state.observed <- GraphSet.add key state.observed;
+       Printf.printf ".[%#LX/%d/%d]." (Int64.of_nativeint ptr) n nodes;
+       match state.graph_dir with
+       | None -> ()
+       | Some dir ->
+           let json = Filename.concat dir @@ Format.sprintf "%s-%d.json" state.label n in
+           print_graph ~label:state.label cgraph json));
   if false then Ggml.C.Functions.graph_print cgraph;
   true
 
 let keep x = ignore (Sys.opaque_identity (List.hd [ x ]))
 
-let simple fname prompt n_predict =
+let simple fname graph_dir prompt n_predict =
   Ggml.C.Functions_backend.load_all ();
   let open Llama.C.Functions in
   let open Llama.C.Types in
@@ -46,7 +107,10 @@ let simple fname prompt n_predict =
       (Foreign.funptr ~runtime_lock:true graph_compute_callback_type)
       graph_compute_callback graph_callback_print_something
   in
-  let state = { fname } in
+  let state =
+    let label = fname |> Filename.basename |> Filename.chop_extension in
+    { label; graph_dir; observed = GraphSet.empty }
+  in
   let state_root = Root.create state in
   setf ctx_params ContextParams.graph_callback graph_callback_funptr;
   setf ctx_params ContextParams.graph_callback_data state_root;
@@ -112,8 +176,12 @@ let cmd =
   @@
   let+ model_file = Arg.(required & pos 0 (some file) None & info [] ~docv:"MODEL" ~doc:"Model file")
   and+ prompt = Arg.(value & pos 1 string "Hello my name is" & info [] ~docv:"PROMPT" ~doc:"Prompt")
-  and+ predict = Arg.(value & opt int 32 & info [ "n" ] ~doc:"Predict") in
-  simple model_file prompt predict
+  and+ predict = Arg.(value & opt int 32 & info [ "n" ] ~doc:"Predict")
+  and+ graph_dir =
+    Arg.(
+      value & opt (some dir) None & info [ "g"; "graph-dir" ] ~docv:"GRAPH_DIR" ~doc:"Directory to write Json graphs")
+  in
+  simple model_file graph_dir prompt predict
 
 let main () = Cmd.eval cmd
 let () = if !Sys.interactive then () else Stdlib.exit @@ main ()

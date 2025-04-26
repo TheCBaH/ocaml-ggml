@@ -31,7 +31,8 @@ bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf:
 
 models: bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
 simple: models
-	opam exec -- dune exec -- src/simple.exe bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
+	mkdir -p _build/json
+	opam exec -- dune exec -- src/simple.exe -g _build/json bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
 
 model-explorer.install:
 	python3 -m pip --no-cache-dir install ai-edge-model-explorer

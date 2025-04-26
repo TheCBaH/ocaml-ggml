@@ -42,3 +42,8 @@ jobs:
     - name: llama-simple
       run: |
         ${{ env.EXEC }} make -C lib/llama.cpp simple
+    - uses: actions/upload-artifact@v4
+      with:
+        name: model-graphs
+        path: _build/json
+        retention-days: 7
