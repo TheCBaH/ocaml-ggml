@@ -41,7 +41,7 @@ jobs:
         ${{ env.EXEC }} make simple
     - name: llama-simple
       run: |
-        ${{ env.EXEC }} make -C lib/llama.cpp simple
+        ${{ env.EXEC }} make llama-simple
     - uses: actions/upload-artifact@v4
       with:
         name: model-graphs
