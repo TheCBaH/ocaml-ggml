@@ -25,14 +25,14 @@ utop:
 clean:
 	opam exec dune $@
 
-bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf:
+models/bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf:
 	mkdir -p $(dir $@)
 	wget -O $@ https://huggingface.co/bartowski/SmolLM2-135M-Instruct-GGUF/resolve/main/SmolLM2-135M-Instruct-Q5_K_M.gguf
 
-models: bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
+models: models/bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
 simple: models
 	mkdir -p _build/json
-	opam exec -- dune exec -- src/simple.exe -g _build/json bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
+	opam exec -- dune exec -- src/simple.exe -g _build/json models/bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
 
 model-explorer.install:
 	python3 -m pip --no-cache-dir install ai-edge-model-explorer

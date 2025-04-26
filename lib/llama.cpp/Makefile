@@ -28,6 +28,7 @@ BIN_DIR=.
 
 TARGET.LLAMA.CPP.simple=bin/llama-simple
 simple: BIN_DIR=$(abspath ${ROOT})/_build/.ml.simple
+simple: MODEL=${ROOT}/models/bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
 simple:
 	${MAKE} simple.build-llama BIN_DIR=${BIN_DIR}
-	${BIN_DIR}/build.ml.simple/${TARGET.LLAMA.CPP.simple} -m ${ROOT}/bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf
+	${BIN_DIR}/build.ml.simple/${TARGET.LLAMA.CPP.simple} -m ${MODEL}

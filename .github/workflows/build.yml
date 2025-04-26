@@ -28,7 +28,7 @@ jobs:
     - name: Cache Models
       uses: actions/cache@v4
       with:
-        path: bartowski
+        path: models
         key: models-${{ hashFiles('Makefile') }}
     - name: models
       run: |
