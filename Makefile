@@ -47,6 +47,14 @@ simple: models
 	mkdir -p _build/json
 	opam exec -- dune exec -- src/simple.exe -g _build/json ${MODEL}
 
+simple.all:
+	$(foreach m,\
+ models/bartowski/SmolLM2-135M-Instruct-Q5_K_M.gguf\
+ models/ggml-org/gemma-3-1b-it-Q4_K_M.gguf\
+ models/ggml-org/qwen2.5-coder-0.5b-q8_0.gguf\
+ models/tiiuae/Falcon3-1B-Instruct-q3_k_m.gguf\
+  , ${MAKE} MODEL=$m simple &&) true
+
 llama-simple: ${MODEL}
 	${MAKE} -C lib/llama.cpp simple MODEL=$(abspath ${MODEL})
 
