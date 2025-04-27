@@ -6,9 +6,28 @@
         "switch": "default"
     },
     "cSpell.words": [
+        "Bytesrw",
+        "cgraph",
+        "Cmdliner",
+        "Ctypes",
+        "docv",
+        "eprintf",
+        "fname",
+        "fprintf",
+        "funptr",
+        "getf",
+        "Ggml",
+        "Jsont",
+        "nativeint",
         "ocamlformat",
         "opam",
         "OPAMROOT",
-        "utop"
+        "prerr",
+        "setf",
+        "sprintf",
+        "Stdlib",
+        "succ",
+        "utop",
+        "voidp"
     ]
 }
