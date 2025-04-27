@@ -6,18 +6,19 @@ let to_string t = coerce (ptr char) string t
 let pp_int64 fmt t = Format.fprintf fmt "%Ld" t
 let pp_list p fmt t = Format.(fprintf fmt "[%a]" (pp_print_list ~pp_sep:(fun fmt () -> Format.fprintf fmt ",@,") p) t)
 let pp_pair p1 p2 fmt (t1, t2) = Format.fprintf fmt "@[%a,@,%a@]" p1 t1 p2 t2
+let shape t = List.rev_map Int64.to_int @@ CArray.to_list @@ getfp t Types.Tensor.ne
 
 let pp_shape fmt t =
   let rec cut_aux l' l =
     match l with
     | [] -> l'
     | hd :: tl ->
-        let l' = if hd = 1L || hd = 0L then l' else hd :: l' in
+        let l' = if hd = 1 || hd = 0 then l' else hd :: l' in
         cut_aux l' tl
   in
-  let ne = CArray.to_list @@ getfp t Types.Tensor.ne in
-  let ne = if true then cut_aux [] @@ List.rev ne else ne in
-  pp_list pp_int64 fmt ne
+  let ne = shape t in
+  let ne = if true then cut_aux [] ne else ne in
+  pp_list Format.pp_print_int fmt ne
 
 let pp_flags fmt t =
   let flags = getfp t Types.Tensor.flags in
@@ -37,6 +38,12 @@ let node_inputs t =
          let l = if is_null tensor then l else (n, tensor) :: l in
          (succ n, l))
        (0, []) src
+
+let is_output t last =
+  if last then true
+  else
+    let flags = getfp t Types.Tensor.flags in
+    Int32.logand flags Ggml_const.C.Types.tensor_flag_output <> Int32.zero
 
 module TensorId = struct
   module PtrMap = Map.Make (Nativeint)
@@ -60,8 +67,7 @@ module TensorId = struct
     assert (id < tensors.node_count);
     let open Ggml_const.C.Types in
     let t =
-      let flags = getfp tensor Types.Tensor.flags in
-      let kind = if Int32.logand flags tensor_flag_output = Int32.zero then Intermediate else Output in
+      let kind = if is_output tensor (succ id = tensors.node_count) then Output else Intermediate in
       { id; kind }
     in
     let tensors =
@@ -127,6 +133,45 @@ module TensorId = struct
         f tensor id a)
       tensors.map a
 end
+
+let tensor t =
+  let typ = getfp t Ggml.C.Types.Tensor.typ_ in
+  (typ, if true then shape t else [])
+
+let graph_inputs graph =
+  let node_count = Functions.graph_n_nodes graph in
+  let rec of_graph_aux inputs n =
+    if n < node_count then
+      let t = Functions.graph_node graph n in
+      let src = getfp t Types.Tensor.src in
+      let inputs =
+        CArray.fold_left
+          (fun m tensor ->
+            if is_null tensor then m
+            else
+              let flags = getfp tensor Types.Tensor.flags in
+              if Int32.logand flags Ggml_const.C.Types.tensor_flag_input <> Int32.zero then
+                let ptr = raw_address_of_ptr @@ to_voidp tensor in
+                TensorId.PtrMap.add ptr tensor m
+              else m)
+          inputs src
+      in
+      of_graph_aux inputs @@ succ n
+    else inputs
+  in
+  let inputs = of_graph_aux TensorId.PtrMap.empty 0 in
+  TensorId.PtrMap.fold (fun _ t l -> tensor t :: l) inputs []
+
+let graph_outputs graph =
+  let node_count = Functions.graph_n_nodes graph in
+  let rec of_graph_aux outputs n =
+    if n < node_count then
+      let t = Functions.graph_node graph n in
+      let outputs = if is_output t (succ n = node_count) then tensor t :: outputs else outputs in
+      of_graph_aux outputs @@ succ n
+    else outputs
+  in
+  of_graph_aux [] 0
 
 let attr key value = Model_explorer.KeyValue.create ~key ~value
 let to_id n = string_of_int n
