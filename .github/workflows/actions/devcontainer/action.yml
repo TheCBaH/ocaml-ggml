@@ -33,7 +33,7 @@ runs:
         npm install -g @devcontainers/cli
         IMAGE_ID=${{ inputs.registry }}/$GITHUB_REPOSITORY/${{ inputs.name }}
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
-        TAG="$GITHUB_REF_NAME"
+        TAG="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
         TAG=$(echo $TAG | tr '[A-Z].' '[a-z]_')
         old_id=''
         if docker pull $IMAGE_ID:$TAG; then
@@ -44,8 +44,8 @@ runs:
         echo "::group::up"
         env BUILDKIT_PROGRESS=plain devcontainer up --workspace-folder .
         echo "EXEC=devcontainer exec --workspace-folder ." >> $GITHUB_OUTPUT
-        echo "::group::push"
-        if [ -n '${{ inputs.password }}' ]; then
+        if [ -n '${{ inputs.password }}' -a -z "${GITHUB_BASE_REF:-}" ]; then
+          echo "::group::push"
           new_id=$(docker image inspect $IMAGE_ID --format "{{.ID}}")
           if docker tag $IMAGE_ID $IMAGE_ID:$TAG ; then
             if [ "$old_id" != "$new_id" ]; then
