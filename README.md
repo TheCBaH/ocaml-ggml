@@ -1,6 +1,6 @@
 # OCaml GGML bindings
 
-[![OCaml GGML bindings](https://github.com/TheCBaH/ocaml-ggml/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/TheCBaH/ocaml-ggmk/actions/workflows/build.yml)
+[![OCaml GGML bindings](https://github.com/TheCBaH/ocaml-ggml/actions/workflows/build.yml/badge.svg?branch=main)](https://github.com/TheCBaH/ocaml-ggml/actions/workflows/build.yml)
 
 [OCaml](https://ocaml.org/) bindings for [GGML](https://github.com/ggerganov/ggml)
 
