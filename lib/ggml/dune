@@ -30,7 +30,7 @@
 
 (library
  (name ggml)
- (libraries ggml_const)
+ (libraries ggml_const ctypes-foreign)
  (foreign_archives ggml)
  (ctypes
   (external_library_name libggml)

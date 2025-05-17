@@ -503,8 +503,9 @@ module Opt = struct
   module LossType = struct
     type t = Mean | Sum | CrossEntropy | MeanSquaredError
 
-    let values = [ (Mean, "MEAN"); (Sum, "SUM"); (CrossEntropy, "CROSS_ENTROPY"); (MeanSquaredError, "MEAN_SQUARED_ERROR") ]
+    let values =
+      [ (Mean, "MEAN"); (Sum, "SUM"); (CrossEntropy, "CROSS_ENTROPY"); (MeanSquaredError, "MEAN_SQUARED_ERROR") ]
+
     let to_string t = List.assoc t values
   end
-
 end

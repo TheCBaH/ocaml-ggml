@@ -454,7 +454,6 @@ module Types (F : Ctypes.TYPE) = struct
   module Opt = struct
     let ns name = ns @@ "opt_" ^ name
     let _NS name = _NS @@ "OPT_" ^ name
-
     let make_enum name values = make_enum ~_NS ~ns name values
 
     (** Optimization build types. Corresponds to C `enum ggml_opt_build_type`. *)
@@ -462,7 +461,6 @@ module Types (F : Ctypes.TYPE) = struct
 
     (** Loss function types. Corresponds to C `enum ggml_opt_loss_type`. *)
     let loss_type = make_enum "loss_type" Types.Opt.LossType.values
-
 
     (** Opaque dataset structure for optimization. Corresponds to C `struct ggml_opt_dataset`. *)
     let _opt_dataset : [ `OptDataset ] structure typ = structure (ns "dataset")
@@ -478,6 +476,7 @@ module Types (F : Ctypes.TYPE) = struct
     (** Optimizer parameters. Corresponds to C `struct ggml_opt_optimizer_params`. *)
     module OptimizerParams = struct
       type t
+
       let t : t structure typ = structure (ns "optimizer_params")
       let adamw_alpha = field t "adamw.alpha" float
       let adamw_beta1 = field t "adamw.beta1" float
@@ -503,7 +502,6 @@ module Types (F : Ctypes.TYPE) = struct
       let loss_type = field t "loss_type" loss_type
       let build_type = field t "build_type" build_type
       let opt_period = field t "opt_period" int32_t
-
       let get_opt_pars_ud = field t "get_opt_pars_ud" @@ ptr void
 
       (*
