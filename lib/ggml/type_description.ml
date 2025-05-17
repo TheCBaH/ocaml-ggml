@@ -486,6 +486,8 @@ module Types (F : Ctypes.TYPE) = struct
       let () = seal t
     end
 
+    let get_optimizer_params = static_funptr (ptr void @-> returning (* OptimizerParams.t *) void)
+
     (** Parameters for initializing an optimization context. Corresponds to C `struct ggml_opt_params`. *)
     module Params = struct
       type t
@@ -498,8 +500,10 @@ module Types (F : Ctypes.TYPE) = struct
       let loss_type = field t "loss_type" loss_type
       let build_type = field t "build_type" build_type
       let opt_period = field t "opt_period" int32_t
-      let get_opt_pars_ud = field t "get_opt_pars_ud" @@ ptr void
 
+      (* let get_opt_pars = field t "get_opt_pars" @@ static_funptr (ptr void @-> returning OptimizerParams.t) *)
+      let get_opt_pars = field t "get_opt_pars" get_optimizer_params
+      let get_opt_pars_ud = field t "get_opt_pars_ud" @@ ptr void
       let () = seal t
     end
   end

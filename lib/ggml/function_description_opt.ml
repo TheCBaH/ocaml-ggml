@@ -75,8 +75,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [backend_sched] Defines which backends are used to construct the compute graphs.
       - [loss_type] The type of loss function to use.
       - returns The default optimization parameters. *)
-  let default_params =
-    foreign (ns "default_params") (backend_sched_t @-> Opt.loss_type @-> returning Opt.Params.t)
+  let default_params = foreign (ns "default_params") (backend_sched_t @-> Opt.loss_type @-> returning Opt.Params.t)
 
   (** [init params] initializes a new optimization context.
       - [params] The optimization parameters.
@@ -164,6 +163,8 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [result] Optional optimization result structure to update. Can be NULL. *)
   let eval = foreign (ns "eval") (opt_context @-> Opt.opt_result_opt_t @-> returning void)
 
+  (* let get_optimizer_params = Foreign.funptr Ctypes.(ptr void @-> returning Opt.OptimizerParams.t) *)
+
   (** [fit backend_sched ctx_compute inputs outputs dataset loss_type get_opt_pars userdata n_epochs n_iter_max] fits a
       model defined by inputs and outputs to a dataset.
       - [backend_sched] Backend scheduler for constructing compute graphs.
@@ -176,10 +177,8 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [userdata] User data for the `get_opt_pars` callback.
       - [n_epochs] Number of epochs to train for.
       - [n_iter_max] Maximum number of iterations per epoch. *)
-
   let fit =
     foreign (ns "fit")
       (backend_sched_t @-> context @-> tensor @-> tensor @-> Opt.opt_dataset_t @-> Opt.loss_type
-      @-> Foreign.funptr Ctypes.(ptr void @-> returning Opt.OptimizerParams.t)
-      @-> ptr void @-> int64_t @-> int64_t @-> returning void)
+     @-> get_optimizer_params @-> ptr void @-> int64_t @-> int64_t @-> returning void)
 end

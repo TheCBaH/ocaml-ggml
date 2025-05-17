@@ -2025,4 +2025,3 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [filename] The output filename. *)
   let graph_dump_dot = foreign (ns "graph_dump_dot") (cgraph @-> cgraph @-> string @-> returning void)
 end
-
