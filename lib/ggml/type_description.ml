@@ -62,13 +62,22 @@ module Types (F : Ctypes.TYPE) = struct
 
   let cgraph = ptr _cgraph
 
+  (** Opaque backend scheduler structure. Corresponds to C `struct ggml_backend_sched`. *)
+  let _backend_sched : [ `BackendSched ] structure typ = structure (ns "backend_sched")
+
+  let backend_sched_t = ptr _backend_sched
+
   (* Opaque struct types *)
 
   (** Optimizer parameters. Corresponds to C `struct ggml_opt_params`. *)
-  let opt_params : [ `OptParams ] structure typ = structure (ns "opt_params")
+  let opt_params_struct : [ `OptParams ] structure typ = structure (ns "opt_params")
+
+  let opt_params_t = ptr opt_params_struct (* Added for consistency, though struct itself is often used directly *)
 
   (** Opaque optimizer context structure. Corresponds to C `struct ggml_opt_context`. *)
-  let opt_context : [ `OptContext ] structure typ = structure (ns "opt_context")
+  let _opt_context : [ `OptContext ] structure typ = structure (ns "opt_context")
+
+  let opt_context = ptr _opt_context
 
   (** Opaque scratch buffer structure. Corresponds to C `struct ggml_scratch`. *)
   let scratch : [ `Scratch ] structure typ = structure (ns "scratch")
@@ -102,6 +111,10 @@ module Types (F : Ctypes.TYPE) = struct
 
   (** Function pointer for converting float to a specific type. Corresponds to C `ggml_from_float_t`. *)
   let from_float_t = static_funptr (ptr float @-> ptr void @-> int64_t @-> returning void)
+
+  (** Function pointer for getting optimizer parameters. Corresponds to C `ggml_opt_get_optimizer_params`. *)
+  let opt_get_optimizer_params_fn_t = static_funptr (ptr void @-> returning (ptr void))
+  (* Return type will be OptOptimizerParams.t *)
 
   module CPU = struct
     (** Computation plan structure. *)
@@ -412,7 +425,7 @@ module Types (F : Ctypes.TYPE) = struct
   module GGUF = struct
     let ns name = "gguf_" ^ name
     let _NS name = "GGUF_" ^ name
-    let make_enum = make_enum ~_NS ~ns
+    let make_enum name values = make_enum ~_NS ~ns name values
     let typ = make_enum "type" Types.GGUF.Type.values
 
     (* Opaque type for GGUF context *)
@@ -434,6 +447,63 @@ module Types (F : Ctypes.TYPE) = struct
       let ctx = field t "ctx" (ptr context)
       (* ptr context = ptr (ptr ggml_context) = ggml_context ** *)
 
+      let () = seal t
+    end
+  end
+
+  module Opt = struct
+    let ns name = ns @@ "opt_" ^ name
+    let _NS name = _NS @@ "OPT_" ^ name
+    let make_enum name values = make_enum ~_NS ~ns name values
+
+    (** Optimization build types. Corresponds to C `enum ggml_opt_build_type`. *)
+    let build_type = make_enum "build_type" Types.Opt.BuildType.values
+
+    (** Loss function types. Corresponds to C `enum ggml_opt_loss_type`. *)
+    let loss_type = make_enum "loss_type" Types.Opt.LossType.values
+
+    (** Opaque dataset structure for optimization. Corresponds to C `struct ggml_opt_dataset`. *)
+    let _opt_dataset : [ `OptDataset ] structure typ = structure (ns "dataset")
+
+    let opt_dataset_t = ptr _opt_dataset
+
+    (** Opaque optimization result structure. Corresponds to C `struct ggml_opt_result`. *)
+    let _opt_result : [ `OptResult ] structure typ = structure (ns "result")
+
+    let opt_result_t = ptr _opt_result
+    let opt_result_opt_t = ptr_opt _opt_result (* For functions that can take NULL *)
+
+    (** Optimizer parameters. Corresponds to C `struct ggml_opt_optimizer_params`. *)
+    module OptimizerParams = struct
+      type t
+
+      let t : t structure typ = structure (ns "optimizer_params")
+      let adamw_alpha = field t "adamw.alpha" float
+      let adamw_beta1 = field t "adamw.beta1" float
+      let adamw_beta2 = field t "adamw.beta2" float
+      let adamw_eps = field t "adamw.eps" float
+      let adamw_wd = field t "adamw.wd" float
+      let () = seal t
+    end
+
+    let get_optimizer_params = static_funptr (ptr void @-> returning (* OptimizerParams.t *) void)
+
+    (** Parameters for initializing an optimization context. Corresponds to C `struct ggml_opt_params`. *)
+    module Params = struct
+      type t
+
+      let t : t structure typ = structure (ns "params")
+      let backend_sched = field t "backend_sched" backend_sched_t
+      let ctx_compute = field t "ctx_compute" context
+      let inputs = field t "inputs" tensor
+      let outputs = field t "outputs" tensor
+      let loss_type = field t "loss_type" loss_type
+      let build_type = field t "build_type" build_type
+      let opt_period = field t "opt_period" int32_t
+
+      (* let get_opt_pars = field t "get_opt_pars" @@ static_funptr (ptr void @-> returning OptimizerParams.t) *)
+      let get_opt_pars = field t "get_opt_pars" get_optimizer_params
+      let get_opt_pars_ud = field t "get_opt_pars_ud" @@ ptr void
       let () = seal t
     end
   end

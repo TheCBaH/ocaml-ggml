@@ -209,6 +209,18 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns True if contiguous for dims >= 2, false otherwise. *)
   let is_contiguous_2 = foreign (ns "is_contiguous_2") (tensor @-> returning bool)
 
+  (** [is_contiguously_allocated tensor] returns whether the tensor elements are allocated as one contiguous block of
+      memory (no gaps, but permutation ok).
+      - [tensor] The tensor.
+      - returns True if contiguously allocated, false otherwise. *)
+  let is_contiguously_allocated = foreign (ns "is_contiguously_allocated") (tensor @-> returning bool)
+
+  (** [is_contiguous_channels tensor] true for tensor that is stored in memory as CxWxHxN and has been permuted to
+      WxHxCxN.
+      - [tensor] The tensor.
+      - returns True if contiguous channels, false otherwise. *)
+  let is_contiguous_channels = foreign (ns "is_contiguous_channels") (tensor @-> returning bool)
+
   (** [are_same_shape t0 t1] checks if two tensors have the same shape.
       - [t0] First tensor.
       - [t1] Second tensor.
@@ -384,7 +396,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
   (** [set_param ctx tensor] marks the tensor as containing trainable parameters.
       - [ctx] The context.
       - [tensor] The tensor to mark. *)
-  let set_param = foreign (ns "set_param") (context @-> tensor @-> returning void)
+  let set_param = foreign (ns "set_param") (tensor @-> returning void)
 
   (** [set_loss tensor] marks the tensor as defining loss for numerical optimization. Multiple loss tensors add up.
       - [tensor] The tensor to mark. *)
@@ -1895,13 +1907,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [tensor] The tensor whose computation to include. *)
   let build_forward_expand = foreign (ns "build_forward_expand") (cgraph @-> tensor @-> returning void)
 
-  (** [build_backward_expand ctx_fwd ctx_bwd graph keep_grads] expands the backward graph.
-      - [ctx_fwd] Forward context.
-      - [ctx_bwd] Backward context.
-      - [graph] The computation graph.
-      - [keep_grads] Whether to keep intermediate gradients. *)
-  let build_backward_expand =
-    foreign (ns "build_backward_expand") (context @-> context @-> cgraph @-> bool @-> returning void)
+  (** [build_backward_expand ctx cgraph grad_accs] expands the backward graph.
+      - [ctx] Context for gradient computation.
+      - [cgraph] The compute graph.
+      - [grad_accs] Pointer to an array of gradient accumulation tensors. *)
+  let build_backward_expand = foreign (ns "build_backward_expand") (context @-> cgraph @-> ptr tensor @-> returning void)
 
   (** [new_graph ctx] creates a new computation graph with the default size.
       - [ctx] The context.
@@ -1915,11 +1925,12 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns The new computation graph. *)
   let new_graph_custom = foreign (ns "new_graph_custom") (context @-> size_t @-> bool @-> returning cgraph)
 
-  (** [graph_dup ctx graph] duplicates a computation graph.
+  (** [graph_dup ctx cgraph force_grads] duplicates a computation graph.
       - [ctx] The context.
-      - [graph] The graph to duplicate.
+      - [cgraph] The graph to duplicate.
+      - [force_grads] Whether to force gradient storage in the duplicated graph.
       - returns The duplicated graph. *)
-  let graph_dup = foreign (ns "graph_dup") (context @-> cgraph @-> returning cgraph)
+  let graph_dup = foreign (ns "graph_dup") (context @-> cgraph @-> bool @-> returning cgraph)
 
   (** [graph_cpy src dst] copies the nodes from graph `src` to `dst`.
       - [src] The source graph.

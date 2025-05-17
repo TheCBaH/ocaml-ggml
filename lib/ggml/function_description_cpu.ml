@@ -283,4 +283,28 @@ module Functions (F : Ctypes.FOREIGN) = struct
   (** [backend_cpu_reg ()] gets the registration information for the CPU backend.
       - returns The backend registration structure. *)
   let backend_cpu_reg = foreign (ns "backend_cpu_reg") (void @-> returning Backend.reg_t)
+
+  (** [cpu_fp32_to_fp16 src dst n] converts an array of float32 values to float16.
+      - [src] Pointer to the source float32 array.
+      - [dst] Pointer to the destination float16 array.
+      - [n] Number of elements to convert. *)
+  let cpu_fp32_to_fp16 = foreign (ns "cpu_fp32_to_fp16") (ptr float @-> ptr fp16_t @-> int64_t @-> returning void)
+
+  (** [cpu_fp16_to_fp32 src dst n] converts an array of float16 values to float32.
+      - [src] Pointer to the source float16 array.
+      - [dst] Pointer to the destination float32 array.
+      - [n] Number of elements to convert. *)
+  let cpu_fp16_to_fp32 = foreign (ns "cpu_fp16_to_fp32") (ptr fp16_t @-> ptr float @-> int64_t @-> returning void)
+
+  (** [cpu_fp32_to_bf16 src dst n] converts an array of float32 values to bfloat16.
+      - [src] Pointer to the source float32 array.
+      - [dst] Pointer to the destination bfloat16 array.
+      - [n] Number of elements to convert. *)
+  let cpu_fp32_to_bf16 = foreign (ns "cpu_fp32_to_bf16") (ptr float @-> ptr bf16_t @-> int64_t @-> returning void)
+
+  (** [cpu_bf16_to_fp32 src dst n] converts an array of bfloat16 values to float32.
+      - [src] Pointer to the source bfloat16 array.
+      - [dst] Pointer to the destination float32 array.
+      - [n] Number of elements to convert. *)
+  let cpu_bf16_to_fp32 = foreign (ns "cpu_bf16_to_fp32") (ptr bf16_t @-> ptr float @-> int64_t @-> returning void)
 end

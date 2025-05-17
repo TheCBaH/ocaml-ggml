@@ -200,6 +200,7 @@ module Op = struct
     | Conv_Transpose_1D
     | Im2Col
     | Im2Col_Back
+    | Conv_2d_dw
     | Conv_Transpose_2D
     | Pool_1D
     | Pool_2D
@@ -285,6 +286,7 @@ module Op = struct
       (Conv_Transpose_1D, "CONV_TRANSPOSE_1D");
       (Im2Col, "IM2COL");
       (Im2Col_Back, "IM2COL_BACK");
+      (Conv_2d_dw, "CONV_2D_DW");
       (Conv_Transpose_2D, "CONV_TRANSPOSE_2D");
       (Pool_1D, "POOL_1D");
       (Pool_2D, "POOL_2D");
@@ -485,6 +487,24 @@ module GGUF = struct
         (Float64, "FLOAT64");
         (Count, "COUNT");
       ]
+
+    let to_string t = List.assoc t values
+  end
+end
+
+module Opt = struct
+  module BuildType = struct
+    type t = Forward | Grad | Opt
+
+    let values = [ (Forward, "FORWARD"); (Grad, "GRAD"); (Opt, "OPT") ]
+    let to_string t = List.assoc t values
+  end
+
+  module LossType = struct
+    type t = Mean | Sum | CrossEntropy | MeanSquaredError
+
+    let values =
+      [ (Mean, "MEAN"); (Sum, "SUM"); (CrossEntropy, "CROSS_ENTROPY"); (MeanSquaredError, "MEAN_SQUARED_ERROR") ]
 
     let to_string t = List.assoc t values
   end
