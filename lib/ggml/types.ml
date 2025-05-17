@@ -91,56 +91,56 @@ end
 module Ftype = struct
   type t =
     | Unknown
-    | All_F32
-    | Mostly_F16  (** except 1d tensors *)
-    | Mostly_Q4_0  (** except 1d tensors *)
-    | Mostly_Q4_1  (** except 1d tensors *)
-    | Mostly_Q4_1_Some_F16  (** tok_embeddings.weight and output.weight are F16 *)
-    | Mostly_Q8_0  (** except 1d tensors *)
-    | Mostly_Q5_0  (** except 1d tensors *)
-    | Mostly_Q5_1  (** except 1d tensors *)
-    | Mostly_Q2_K  (** except 1d tensors *)
-    | Mostly_Q3_K  (** except 1d tensors *)
-    | Mostly_Q4_K  (** except 1d tensors *)
-    | Mostly_Q5_K  (** except 1d tensors *)
-    | Mostly_Q6_K  (** except 1d tensors *)
-    | Mostly_IQ2_XXS  (** except 1d tensors *)
-    | Mostly_IQ2_XS  (** except 1d tensors *)
-    | Mostly_IQ3_XXS  (** except 1d tensors *)
-    | Mostly_IQ1_S  (** except 1d tensors *)
-    | Mostly_IQ4_NL  (** except 1d tensors *)
-    | Mostly_IQ3_S  (** except 1d tensors *)
-    | Mostly_IQ2_S  (** except 1d tensors *)
-    | Mostly_IQ4_XS  (** except 1d tensors *)
-    | Mostly_IQ1_M  (** except 1d tensors *)
-    | Mostly_BF16  (** except 1d tensors *)
+    | AllF32
+    | MostlyF16  (** except 1d tensors *)
+    | MostlyQ4_0  (** except 1d tensors *)
+    | MostlyQ4_1  (** except 1d tensors *)
+    | MostlyQ4_1SomeF16  (** tok_embeddings.weight and output.weight are F16 *)
+    | MostlyQ8_0  (** except 1d tensors *)
+    | MostlyQ5_0  (** except 1d tensors *)
+    | MostlyQ5_1  (** except 1d tensors *)
+    | MostlyQ2_K  (** except 1d tensors *)
+    | MostlyQ3_K  (** except 1d tensors *)
+    | MostlyQ4_K  (** except 1d tensors *)
+    | MostlyQ5_K  (** except 1d tensors *)
+    | MostlyQ6_K  (** except 1d tensors *)
+    | MostlyIQ2_XXS  (** except 1d tensors *)
+    | MostlyIQ2_XS  (** except 1d tensors *)
+    | MostlyIQ3_XXS  (** except 1d tensors *)
+    | MostlyIQ1_S  (** except 1d tensors *)
+    | MostlyIQ4_NL  (** except 1d tensors *)
+    | MostlyIQ3_S  (** except 1d tensors *)
+    | MostlyIQ2_S  (** except 1d tensors *)
+    | MostlyIQ4_XS  (** except 1d tensors *)
+    | MostlyIQ1_M  (** except 1d tensors *)
+    | MostlyBF16  (** except 1d tensors *)
 
   let values =
     [
       (Unknown, "UNKNOWN");
-      (All_F32, "ALL_F32");
-      (Mostly_F16, "MOSTLY_F16");
-      (Mostly_Q4_0, "MOSTLY_Q4_0");
-      (Mostly_Q4_1, "MOSTLY_Q4_1");
-      (Mostly_Q4_1_Some_F16, "MOSTLY_Q4_1_SOME_F16");
-      (Mostly_Q8_0, "MOSTLY_Q8_0");
-      (Mostly_Q5_0, "MOSTLY_Q5_0");
-      (Mostly_Q5_1, "MOSTLY_Q5_1");
-      (Mostly_Q2_K, "MOSTLY_Q2_K");
-      (Mostly_Q3_K, "MOSTLY_Q3_K");
-      (Mostly_Q4_K, "MOSTLY_Q4_K");
-      (Mostly_Q5_K, "MOSTLY_Q5_K");
-      (Mostly_Q6_K, "MOSTLY_Q6_K");
-      (Mostly_IQ2_XXS, "MOSTLY_IQ2_XXS");
-      (Mostly_IQ2_XS, "MOSTLY_IQ2_XS");
-      (Mostly_IQ3_XXS, "MOSTLY_IQ3_XXS");
-      (Mostly_IQ1_S, "MOSTLY_IQ1_S");
-      (Mostly_IQ4_NL, "MOSTLY_IQ4_NL");
-      (Mostly_IQ3_S, "MOSTLY_IQ3_S");
-      (Mostly_IQ2_S, "MOSTLY_IQ2_S");
-      (Mostly_IQ4_XS, "MOSTLY_IQ4_XS");
-      (Mostly_IQ1_M, "MOSTLY_IQ1_M");
-      (Mostly_BF16, "MOSTLY_BF16");
+      (AllF32, "ALL_F32");
+      (MostlyF16, "MOSTLY_F16");
+      (MostlyQ4_0, "MOSTLY_Q4_0");
+      (MostlyQ4_1, "MOSTLY_Q4_1");
+      (MostlyQ4_1SomeF16, "MOSTLY_Q4_1_SOME_F16");
+      (MostlyQ8_0, "MOSTLY_Q8_0");
+      (MostlyQ5_0, "MOSTLY_Q5_0");
+      (MostlyQ5_1, "MOSTLY_Q5_1");
+      (MostlyQ2_K, "MOSTLY_Q2_K");
+      (MostlyQ3_K, "MOSTLY_Q3_K");
+      (MostlyQ4_K, "MOSTLY_Q4_K");
+      (MostlyQ5_K, "MOSTLY_Q5_K");
+      (MostlyQ6_K, "MOSTLY_Q6_K");
+      (MostlyIQ2_XXS, "MOSTLY_IQ2_XXS");
+      (MostlyIQ2_XS, "MOSTLY_IQ2_XS");
+      (MostlyIQ3_XXS, "MOSTLY_IQ3_XXS");
+      (MostlyIQ1_S, "MOSTLY_IQ1_S");
+      (MostlyIQ4_NL, "MOSTLY_IQ4_NL");
+      (MostlyIQ3_S, "MOSTLY_IQ3_S");
+      (MostlyIQ2_S, "MOSTLY_IQ2_S");
+      (MostlyIQ4_XS, "MOSTLY_IQ4_XS");
+      (MostlyIQ1_M, "MOSTLY_IQ1_M");
+      (MostlyBF16, "MOSTLY_BF16");
     ]
 
   let to_string t = List.assoc t values
@@ -163,22 +163,22 @@ module Op = struct
     | Sin
     | Cos
     | Sum
-    | Sum_Rows
+    | SumRows
     | Mean
     | Argmax
-    | Count_Equal
+    | CountEqual
     | Repeat
-    | Repeat_Back
+    | RepeatBack
     | Concat
-    | Silu_Back
+    | SiluBack
     | Norm  (** normalize *)
-    | Rms_Norm
-    | Rms_Norm_Back
-    | Group_Norm
-    | L2_Norm
-    | Mul_Mat
-    | Mul_Mat_Id
-    | Out_Prod
+    | RmsNorm
+    | RmsNormBack
+    | GroupNorm
+    | L2Norm
+    | MulMat
+    | MulMatId
+    | OutProd
     | Scale
     | Set
     | Cpy
@@ -187,50 +187,50 @@ module Op = struct
     | View
     | Permute
     | Transpose
-    | Get_Rows
-    | Get_Rows_Back
+    | GetRows
+    | GetRowsBack
     | Diag
-    | Diag_Mask_Inf
-    | Diag_Mask_Zero
-    | Soft_Max
-    | Soft_Max_Back
+    | DiagMaskInf
+    | DiagMaskZero
+    | SoftMax
+    | SoftMaxBack
     | Rope
-    | Rope_Back
+    | RopeBack
     | Clamp
-    | Conv_Transpose_1D
+    | ConvTranspose1D
     | Im2Col
-    | Im2Col_Back
-    | Conv_2d_dw
-    | Conv_Transpose_2D
-    | Pool_1D
-    | Pool_2D
-    | Pool_2D_Back
+    | Im2ColBack
+    | Conv2dDw
+    | ConvTranspose2D
+    | Pool1D
+    | Pool2D
+    | Pool2DBack
     | Upscale  (** nearest interpolate *)
     | Pad
-    | Pad_Reflect_1D
+    | PadReflect1D
     | Arange
-    | Timestep_Embedding
+    | TimestepEmbedding
     | Argsort
-    | Leaky_Relu
-    | Flash_Attn_Ext
-    | Flash_Attn_Back
-    | Ssm_Conv
-    | Ssm_Scan
-    | Win_Part
-    | Win_Unpart
-    | Get_Rel_Pos
-    | Add_Rel_Pos
-    | Rwkv_Wkv6
-    | Gated_Linear_Attn
-    | Rwkv_Wkv7
+    | LeakyRelu
+    | FlashAttnExt
+    | FlashAttnBack
+    | SsmConv
+    | SsmScan
+    | WinPart
+    | WinUnpart
+    | GetRelPos
+    | AddRelPos
+    | RwkvWkv6
+    | GatedLinearAttn
+    | RwkvWkv7
     | Unary
-    | Map_Custom1
-    | Map_Custom2
-    | Map_Custom3
+    | MapCustom1
+    | MapCustom2
+    | MapCustom3
     | Custom
-    | Cross_Entropy_Loss
-    | Cross_Entropy_Loss_Back
-    | Opt_Step_Adamw
+    | CrossEntropyLoss
+    | CrossEntropyLossBack
+    | OptStepAdamw
     | Count
 
   let values =
@@ -249,22 +249,22 @@ module Op = struct
       (Sin, "SIN");
       (Cos, "COS");
       (Sum, "SUM");
-      (Sum_Rows, "SUM_ROWS");
+      (SumRows, "SUM_ROWS");
       (Mean, "MEAN");
       (Argmax, "ARGMAX");
-      (Count_Equal, "COUNT_EQUAL");
+      (CountEqual, "COUNT_EQUAL");
       (Repeat, "REPEAT");
-      (Repeat_Back, "REPEAT_BACK");
+      (RepeatBack, "REPEAT_BACK");
       (Concat, "CONCAT");
-      (Silu_Back, "SILU_BACK");
+      (SiluBack, "SILU_BACK");
       (Norm, "NORM");
-      (Rms_Norm, "RMS_NORM");
-      (Rms_Norm_Back, "RMS_NORM_BACK");
-      (Group_Norm, "GROUP_NORM");
-      (L2_Norm, "L2_NORM");
-      (Mul_Mat, "MUL_MAT");
-      (Mul_Mat_Id, "MUL_MAT_ID");
-      (Out_Prod, "OUT_PROD");
+      (RmsNorm, "RMS_NORM");
+      (RmsNormBack, "RMS_NORM_BACK");
+      (GroupNorm, "GROUP_NORM");
+      (L2Norm, "L2_NORM");
+      (MulMat, "MUL_MAT");
+      (MulMatId, "MUL_MAT_ID");
+      (OutProd, "OUT_PROD");
       (Scale, "SCALE");
       (Set, "SET");
       (Cpy, "CPY");
@@ -273,50 +273,50 @@ module Op = struct
       (View, "VIEW");
       (Permute, "PERMUTE");
       (Transpose, "TRANSPOSE");
-      (Get_Rows, "GET_ROWS");
-      (Get_Rows_Back, "GET_ROWS_BACK");
+      (GetRows, "GET_ROWS");
+      (GetRowsBack, "GET_ROWS_BACK");
       (Diag, "DIAG");
-      (Diag_Mask_Inf, "DIAG_MASK_INF");
-      (Diag_Mask_Zero, "DIAG_MASK_ZERO");
-      (Soft_Max, "SOFT_MAX");
-      (Soft_Max_Back, "SOFT_MAX_BACK");
+      (DiagMaskInf, "DIAG_MASK_INF");
+      (DiagMaskZero, "DIAG_MASK_ZERO");
+      (SoftMax, "SOFT_MAX");
+      (SoftMaxBack, "SOFT_MAX_BACK");
       (Rope, "ROPE");
-      (Rope_Back, "ROPE_BACK");
+      (RopeBack, "ROPE_BACK");
       (Clamp, "CLAMP");
-      (Conv_Transpose_1D, "CONV_TRANSPOSE_1D");
+      (ConvTranspose1D, "CONV_TRANSPOSE_1D");
       (Im2Col, "IM2COL");
-      (Im2Col_Back, "IM2COL_BACK");
-      (Conv_2d_dw, "CONV_2D_DW");
-      (Conv_Transpose_2D, "CONV_TRANSPOSE_2D");
-      (Pool_1D, "POOL_1D");
-      (Pool_2D, "POOL_2D");
-      (Pool_2D_Back, "POOL_2D_BACK");
+      (Im2ColBack, "IM2COL_BACK");
+      (Conv2dDw, "CONV_2D_DW");
+      (ConvTranspose2D, "CONV_TRANSPOSE_2D");
+      (Pool1D, "POOL_1D");
+      (Pool2D, "POOL_2D");
+      (Pool2DBack, "POOL_2D_BACK");
       (Upscale, "UPSCALE");
       (Pad, "PAD");
-      (Pad_Reflect_1D, "PAD_REFLECT_1D");
+      (PadReflect1D, "PAD_REFLECT_1D");
       (Arange, "ARANGE");
-      (Timestep_Embedding, "TIMESTEP_EMBEDDING");
+      (TimestepEmbedding, "TIMESTEP_EMBEDDING");
       (Argsort, "ARGSORT");
-      (Leaky_Relu, "LEAKY_RELU");
-      (Flash_Attn_Ext, "FLASH_ATTN_EXT");
-      (Flash_Attn_Back, "FLASH_ATTN_BACK");
-      (Ssm_Conv, "SSM_CONV");
-      (Ssm_Scan, "SSM_SCAN");
-      (Win_Part, "WIN_PART");
-      (Win_Unpart, "WIN_UNPART");
-      (Get_Rel_Pos, "GET_REL_POS");
-      (Add_Rel_Pos, "ADD_REL_POS");
-      (Rwkv_Wkv6, "RWKV_WKV6");
-      (Gated_Linear_Attn, "GATED_LINEAR_ATTN");
-      (Rwkv_Wkv7, "RWKV_WKV7");
+      (LeakyRelu, "LEAKY_RELU");
+      (FlashAttnExt, "FLASH_ATTN_EXT");
+      (FlashAttnBack, "FLASH_ATTN_BACK");
+      (SsmConv, "SSM_CONV");
+      (SsmScan, "SSM_SCAN");
+      (WinPart, "WIN_PART");
+      (WinUnpart, "WIN_UNPART");
+      (GetRelPos, "GET_REL_POS");
+      (AddRelPos, "ADD_REL_POS");
+      (RwkvWkv6, "RWKV_WKV6");
+      (GatedLinearAttn, "GATED_LINEAR_ATTN");
+      (RwkvWkv7, "RWKV_WKV7");
       (Unary, "UNARY");
-      (Map_Custom1, "MAP_CUSTOM1");
-      (Map_Custom2, "MAP_CUSTOM2");
-      (Map_Custom3, "MAP_CUSTOM3");
+      (MapCustom1, "MAP_CUSTOM1");
+      (MapCustom2, "MAP_CUSTOM2");
+      (MapCustom3, "MAP_CUSTOM3");
       (Custom, "CUSTOM");
-      (Cross_Entropy_Loss, "CROSS_ENTROPY_LOSS");
-      (Cross_Entropy_Loss_Back, "CROSS_ENTROPY_LOSS_BACK");
-      (Opt_Step_Adamw, "OPT_STEP_ADAMW");
+      (CrossEntropyLoss, "CROSS_ENTROPY_LOSS");
+      (CrossEntropyLossBack, "CROSS_ENTROPY_LOSS_BACK");
+      (OptStepAdamw, "OPT_STEP_ADAMW");
       (Count, "COUNT");
     ]
 
@@ -335,7 +335,7 @@ module UnaryOp = struct
     | Relu
     | Sigmoid
     | Gelu
-    | Gelu_Quick
+    | GeluQuick
     | Silu
     | Hardswish
     | Hardsigmoid
@@ -353,7 +353,7 @@ module UnaryOp = struct
       (Relu, "RELU");
       (Sigmoid, "SIGMOID");
       (Gelu, "GELU");
-      (Gelu_Quick, "GELU_QUICK");
+      (GeluQuick, "GELU_QUICK");
       (Silu, "SILU");
       (Hardswish, "HARDSWISH");
       (Hardsigmoid, "HARDSIGMOID");
@@ -366,9 +366,9 @@ end
 
 (** Object types used by ggml. *)
 module ObjectType = struct
-  type t = Tensor | Graph | Work_Buffer
+  type t = Tensor | Graph | WorkBuffer
 
-  let values = [ (Tensor, "TENSOR"); (Graph, "GRAPH"); (Work_Buffer, "WORK_BUFFER") ]
+  let values = [ (Tensor, "TENSOR"); (Graph, "GRAPH"); (WorkBuffer, "WORK_BUFFER") ]
   let to_string t = List.assoc t values
 end
 
