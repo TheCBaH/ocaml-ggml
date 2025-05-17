@@ -486,10 +486,6 @@ module Types (F : Ctypes.TYPE) = struct
       let () = seal t
     end
 
-    (*
-    let opt_get_optimizer_params_fn_t = static_funptr (ptr void @-> returning OptimizerParams.t)
-    *)
-
     (** Parameters for initializing an optimization context. Corresponds to C `struct ggml_opt_params`. *)
     module Params = struct
       type t
@@ -504,19 +500,7 @@ module Types (F : Ctypes.TYPE) = struct
       let opt_period = field t "opt_period" int32_t
       let get_opt_pars_ud = field t "get_opt_pars_ud" @@ ptr void
 
-      (*
-      let get_optimizer_params = field t "get_optimizer_params" opt_get_optimizer_params_fn_t
-      let optimizer_params_userdata = field t "optimizer_params_userdata" (ptr void)
-      let ndata_batch = field t "ndata_batch" int64_t
-      let n_gradient_accumulation = field t "n_gradient_accumulation" int64_t
-      let print_every_n_epochs = field t "print_every_n_epochs" int64_t
-      let print_every_n_iter = field t "print_every_n_iter" int64_t
-      let n_iter_max = field t "n_iter_max" int64_t
-      let n_epochs_max = field t "n_epochs_max" int64_t
-      *)
       let () = seal t
     end
-
-    let opt_params_t = Params.t (* Expose the structure type itself *)
   end
 end
