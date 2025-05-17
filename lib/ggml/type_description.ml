@@ -58,9 +58,12 @@ module Types (F : Ctypes.TYPE) = struct
   let context = ptr _context
 
   (** Opaque computation graph structure. Corresponds to C `struct ggml_cgraph`. *)
-  let _cgraph : [ `Cgraph ] structure typ = structure (ns "cgraph")
+  let cgraph_struct : [ `Cgraph ] structure typ = structure (ns "cgraph")
 
-  let cgraph = ptr _cgraph
+  let cgraph = ptr cgraph_struct
+  let tensor_struct : [ `Tensor ] structure typ = structure (ns "tensor")
+  let tensor = ptr tensor_struct
+  let const_tensor = ptr @@ const tensor_struct
 
   (** Opaque backend scheduler structure. Corresponds to C `struct ggml_backend_sched`. *)
   let _backend_sched : [ `BackendSched ] structure typ = structure (ns "backend_sched")
@@ -206,9 +209,7 @@ module Types (F : Ctypes.TYPE) = struct
   module Tensor = struct
     open Ggml_const.C.Types
 
-    type t
-
-    let t : t structure typ = structure (ns "tensor")
+    let t = tensor_struct
 
     (** Tensor data type *)
     let typ_ = field t "type" typ
@@ -252,8 +253,6 @@ module Types (F : Ctypes.TYPE) = struct
     let () = seal t
   end
 
-  let tensor = ptr Tensor.t
-  let const_tensor = ptr @@ const Tensor.t
   let guid = array 16 uint8_t
 
   (** Custom unary operation function pointer type. Corresponds to C `ggml_custom1_op_t`. *)
