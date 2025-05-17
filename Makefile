@@ -22,7 +22,10 @@ top:
 utop:
 	opam exec dune utop
 
-clean:
+clean.misc:
+	rm -vf api.diff
+
+clean: clean.misc
 	opam exec dune $@
 
 test/models/gpt-2-117M/ggml-model.bin:
@@ -46,3 +49,8 @@ visualize:
 	opam exec -- dune exec -- ./visualize.exe gpt2 test/models/gpt-2-117M/ggml-model.bin gpt2.json
 
 .PHONY: default clean format models run top utop model-explorer.install
+
+GGML_API_REV=9b048bb72b811f50b0c30d9e5c84d6ff9f4bf005
+
+api.diff:
+	git -C vendored/ggml/ diff -r ${GGML_API_REV} include >$@
