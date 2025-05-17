@@ -36,3 +36,6 @@ jobs:
     - name: visualize
       run: |
         ${{ env.EXEC }} make visualize
+    - name: clean
+      run: |
+        ${{ env.EXEC }} make clean
