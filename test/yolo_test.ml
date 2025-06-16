@@ -14,7 +14,10 @@ let%expect_test "yolo" =
   let yolo = Functions.model_graph @@ addr model in
   let nodes = Ggml.C.Functions.graph_n_nodes yolo in
   Format.printf "nodes:%u" nodes;
-  [%expect "nodes:213"];
+  [%expect {|
+      create_backend: using CPU backend
+      nodes:213
+    |}];
   let open Ggml_model_explorer in
   print TensorId.pp_nodes @@ TensorId.of_graph yolo;
   [%expect

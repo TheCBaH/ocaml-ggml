@@ -17,6 +17,11 @@ int yolo_model_init(struct yolo_model_t* model, const char* fname)
         /*.mem_buffer =*/ NULL,
         /*.no_alloc   =*/ true
     };
+    struct yolo_params yolo_params;
+    buf->model.backend = create_backend(yolo_params);
+    if (!buf->model.backend) {
+        return -1;
+    }
     if (!load_model(_fname, buf->model)) {
         return -1;
     }
