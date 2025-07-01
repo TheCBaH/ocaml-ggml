@@ -628,6 +628,17 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns The resulting tensor with summed repetitions. *)
   let repeat_back = foreign (ns "repeat_back") (context @-> tensor @-> tensor @-> returning tensor)
 
+  (** [repeat_4d ctx a ne0 ne1 ne2 ne3] repeats tensor `a` to the specified shape.
+      - [ctx] The context.
+      - [a] The tensor to repeat.
+      - [ne0] Size of the first dimension.
+      - [ne1] Size of the second dimension.
+      - [ne2] Size of the third dimension.
+      - [ne3] Size of the fourth dimension.
+      - returns The repeated tensor. *)
+  let repeat_4d =
+    foreign (ns "repeat_4d") (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> returning tensor)
+
   (** [concat ctx a b dim] concatenates tensors `a` and `b` along the specified dimension `dim`.
       - [ctx] The context.
       - [a] First tensor.
@@ -763,6 +774,18 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [a] The tensor (modified).
       - returns The modified tensor `a`. *)
   let gelu_quick_inplace = foreign (ns "gelu_quick_inplace") (context @-> tensor @-> returning tensor)
+
+  (** [gelu_erf ctx a] computes GELU using erf (error function) when possible.
+      - [ctx] The context.
+      - [a] The tensor.
+      - returns The resulting tensor. *)
+  let gelu_erf = foreign (ns "gelu_erf") (context @-> tensor @-> returning tensor)
+
+  (** [gelu_erf_inplace ctx a] computes GELU using erf in-place, modifying `a`.
+      - [ctx] The context.
+      - [a] The tensor (modified).
+      - returns The modified tensor `a`. *)
+  let gelu_erf_inplace = foreign (ns "gelu_erf_inplace") (context @-> tensor @-> returning tensor)
 
   (** [silu ctx a] computes element-wise Sigmoid Linear Unit `silu(a) = a * sigmoid(a)`.
       - [ctx] The context.
@@ -1561,6 +1584,17 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns The padded tensor. *)
   let pad_reflect_1d = foreign (ns "pad_reflect_1d") (context @-> tensor @-> int @-> int @-> returning tensor)
 
+  (** [roll ctx a shift0 shift1 shift2 shift3] moves tensor elements by an offset given for each dimension. Elements
+      that are shifted beyond the last position are wrapped around to the beginning.
+      - [ctx] The context.
+      - [a] The tensor to roll.
+      - [shift0] Shift for dimension 0.
+      - [shift1] Shift for dimension 1.
+      - [shift2] Shift for dimension 2.
+      - [shift3] Shift for dimension 3.
+      - returns The rolled tensor. *)
+  let roll = foreign (ns "roll") (context @-> tensor @-> int @-> int @-> int @-> int @-> returning tensor)
+
   (** [timestep_embedding ctx timesteps dim max_period] creates timestep embeddings used in diffusion models.
       - [ctx] The context.
       - [timesteps] Tensor of timesteps [N,].
@@ -1999,21 +2033,6 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [tensor] The tensor.
       - returns The accumulated gradient tensor. *)
   let graph_get_grad_acc = foreign (ns "graph_get_grad_acc") (cgraph @-> tensor @-> returning tensor)
-
-  (*
-  (* Graph Import/Export *)
-  (** [graph_export graph fname] exports the computation graph to a file.
-      @param graph The graph to export.
-      @param fname The filename. *)
-  let graph_export = foreign (ns "graph_export") (cgraph @-> string @-> returning void)
-
-  (** [graph_import fname ctx_fwd ctx_bwd] imports a computation graph from a file.
-      @param fname The filename.
-      @param ctx_fwd Pointer to store the loaded forward context.
-      @param ctx_bwd Pointer to store the loaded backward context.
-      @return The imported computation graph. *)
-  let graph_import = foreign (ns "graph_import") (string @-> ptr context @-> ptr context @-> returning cgraph)
-  *)
 
   (** [graph_print graph] prints information about the computation graph to stderr.
       - [graph] The computation graph. *)

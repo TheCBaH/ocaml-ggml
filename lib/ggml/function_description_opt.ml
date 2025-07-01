@@ -91,6 +91,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [optimizer] Whether to reset the optimizer state. *)
   let reset = foreign (ns "reset") (opt_context @-> bool @-> returning void)
 
+  (** [static_graphs opt_ctx] whether the graphs are allocated_statically.
+      - [opt_ctx] The optimization context.
+      - returns True if graphs are statically allocated, false otherwise. *)
+  let static_graphs = foreign (ns "static_graphs") (opt_context @-> returning bool)
+
   (** [inputs opt_ctx] returns the forward graph input tensor. If not using static graphs these pointers become invalid
       with the next call to ggml_opt_alloc.
       - [opt_ctx] The optimization context.

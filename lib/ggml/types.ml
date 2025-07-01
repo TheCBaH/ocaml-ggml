@@ -208,6 +208,7 @@ module Op = struct
     | Upscale  (** nearest interpolate *)
     | Pad
     | PadReflect1D
+    | Roll
     | Arange
     | TimestepEmbedding
     | Argsort
@@ -294,6 +295,7 @@ module Op = struct
       (Upscale, "UPSCALE");
       (Pad, "PAD");
       (PadReflect1D, "PAD_REFLECT_1D");
+      (Roll, "ROLL");
       (Arange, "ARANGE");
       (TimestepEmbedding, "TIMESTEP_EMBEDDING");
       (Argsort, "ARGSORT");
@@ -340,6 +342,7 @@ module UnaryOp = struct
     | Hardswish
     | Hardsigmoid
     | Exp
+    | GeluErf
     | Count
 
   let values =
@@ -358,6 +361,7 @@ module UnaryOp = struct
       (Hardswish, "HARDSWISH");
       (Hardsigmoid, "HARDSIGMOID");
       (Exp, "EXP");
+      (GeluErf, "GELU_ERF");
       (Count, "COUNT");
     ]
 
@@ -508,4 +512,12 @@ module Opt = struct
 
     let to_string t = List.assoc t values
   end
+end
+
+(** Scheduling priorities. *)
+module SchedPrio = struct
+  type t = Low | Normal | Medium | High
+
+  let values = [ (Low, "LOW"); (Normal, "NORMAL"); (Medium, "MEDIUM"); (High, "HIGH") ]
+  let to_string t = List.assoc t values
 end
