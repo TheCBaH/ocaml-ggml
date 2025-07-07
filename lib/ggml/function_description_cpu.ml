@@ -237,6 +237,10 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns 1 if supported, 0 otherwise. *)
   let cpu_has_vxe = foreign (ns "cpu_has_vxe") (void @-> returning int)
 
+  (** [cpu_has_nnpa ()] checks if the CPU supports NNPA.
+      - returns 1 if supported, 0 otherwise. *)
+  let cpu_has_nnpa = foreign (ns "cpu_has_nnpa") (void @-> returning int)
+
   (** [cpu_has_wasm_simd ()] checks if the environment supports WASM SIMD.
       - returns 1 if supported, 0 otherwise. *)
   let cpu_has_wasm_simd = foreign (ns "cpu_has_wasm_simd") (void @-> returning int)
@@ -283,6 +287,12 @@ module Functions (F : Ctypes.FOREIGN) = struct
   (** [backend_cpu_reg ()] gets the registration information for the CPU backend.
       - returns The backend registration structure. *)
   let backend_cpu_reg = foreign (ns "backend_cpu_reg") (void @-> returning Backend.reg_t)
+
+  (** [cpu_fp32_to_fp32 src dst n] converts an array of float32 values to float32.
+      - [src] Pointer to the source float32 array.
+      - [dst] Pointer to the destination float32 array.
+      - [n] Number of elements to convert. *)
+  let cpu_fp32_to_fp32 = foreign (ns "cpu_fp32_to_fp32") (ptr float @-> ptr float @-> int64_t @-> returning void)
 
   (** [cpu_fp32_to_fp16 src dst n] converts an array of float32 values to float16.
       - [src] Pointer to the source float32 array.

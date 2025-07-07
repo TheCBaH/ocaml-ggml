@@ -30,6 +30,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns True if the GUIDs match, false otherwise. *)
   let guid_matches = foreign (ns "guid_matches") (guid_t @-> guid_t @-> returning bool)
 
+  (* Misc *)
+
+
   (* Time Functions *)
 
   (** [time_init ()] initializes the internal timer. Call once at program start. *)
@@ -90,6 +93,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [op] The ggml unary operation.
       - returns The name of the unary operation. *)
   let unary_op_name = foreign (ns "unary_op_name") (unary_op @-> returning string)
+
+  (** [glu_op_name op] returns the name of the ggml GLU operation.
+      - [op] The ggml GLU operation.
+      - returns The name of the GLU operation. *)
+  let glu_op_name = foreign (ns "glu_op_name") (glu_op @-> returning string)
 
   (** [op_desc tensor] returns a description of the operation that produced the tensor.
       - [tensor] The tensor.
@@ -220,6 +228,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [tensor] The tensor.
       - returns True if contiguous channels, false otherwise. *)
   let is_contiguous_channels = foreign (ns "is_contiguous_channels") (tensor @-> returning bool)
+
+  (** [is_contiguous_rows tensor] true if the elements in dimension 0 are contiguous, or there is just 1 block of elements.
+      - [tensor] The tensor.
+      - returns True if contiguous rows, false otherwise. *)
+  let is_contiguous_rows = foreign (ns "is_contiguous_rows") (tensor @-> returning bool)
 
   (** [are_same_shape t0 t1] checks if two tensors have the same shape.
       - [t0] First tensor.
@@ -356,6 +369,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [tensor] The tensor.
       - returns The unary operation enum value. *)
   let get_unary_op = foreign (ns "get_unary_op") (tensor @-> returning unary_op)
+
+  (** [get_glu_op tensor] returns the GLU operation associated with the tensor, if any.
+      - [tensor] The tensor.
+      - returns The GLU operation enum value. *)
+  let get_glu_op = foreign (ns "get_glu_op") (tensor @-> returning glu_op)
 
   (* Data Access *)
 
@@ -1178,6 +1196,14 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns The gradient with respect to the original data tensor `a`. *)
   let get_rows_back = foreign (ns "get_rows_back") (context @-> tensor @-> tensor @-> tensor @-> returning tensor)
 
+  (** [set_rows ctx a b c] sets rows of tensor `a` with values from tensor `b` at indices specified by tensor `c`.
+      - [ctx] The context.
+      - [a] Destination tensor.
+      - [b] Source tensor.
+      - [c] Row indices.
+      - returns The modified tensor `a`. *)
+  let set_rows = foreign (ns "set_rows") (context @-> tensor @-> tensor @-> tensor @-> returning tensor)
+
   (** [diag ctx a] creates a diagonal matrix from vector `a`, or extracts the diagonal from matrix `a`.
       - [ctx] The context.
       - [a] The input tensor (vector or matrix).
@@ -1450,10 +1476,10 @@ module Functions (F : Ctypes.FOREIGN) = struct
   let conv_transpose_1d =
     foreign (ns "conv_transpose_1d") (context @-> tensor @-> tensor @-> int @-> int @-> int @-> returning tensor)
 
-  (** [conv_2d ctx a b s0 s1 p0 p1 d0 d1] performs 2D convolution.
+  (** [conv_2d_direct ctx a b s0 s1 p0 p1 d0 d1] performs 2D convolution directly.
       - [ctx] The context.
-      - [a] Convolution kernel.
-      - [b] Input data.
+      - [a] Convolution kernel [KW, KH, IC, OC].
+      - [b] Input data [W, H, C, N].
       - [s0] Stride dimension 0.
       - [s1] Stride dimension 1.
       - [p0] Padding dimension 0.
@@ -1461,8 +1487,9 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [d0] Dilation dimension 0.
       - [d1] Dilation dimension 1.
       - returns The result of the 2D convolution. *)
-  let conv_2d =
-    foreign (ns "conv_2d")
+  let conv_2d_direct =
+    foreign
+      (ns "conv_2d_direct")
       (context @-> tensor @-> tensor @-> int @-> int @-> int @-> int @-> int @-> int @-> returning tensor)
 
   (** [conv_2d_sk_p0 ctx a b] performs 2D convolution with stride equal to kernel size and zero padding.
@@ -1545,26 +1572,19 @@ module Functions (F : Ctypes.FOREIGN) = struct
       (context @-> tensor @-> tensor @-> op_pool @-> int @-> int @-> int @-> int @-> float @-> float
      @-> returning tensor)
 
-  (** [upscale ctx a scale_factor mode] performs upscaling by `scale_factor` on the first two dimensions using the
-      specified mode.
-      - [ctx] The context.
-      - [a] Input tensor.
-      - [scale_factor] The integer factor to scale dimensions by.
-      - [mode] The scaling mode (`GGML_SCALE_MODE_NEAREST` or `GGML_SCALE_MODE_BILINEAR`).
-      - returns The upscaled tensor. *)
-  let upscale = foreign (ns "upscale") (context @-> tensor @-> int @-> scale_mode @-> returning tensor)
-
-  (** [upscale_ext ctx a ne0 ne1 ne2 ne3 mode] performs upscaling to the specified dimensions using the specified mode.
+  (** [interpolate ctx a ne0 ne1 ne2 ne3 mode] up- or downsamples the input to the specified size. 2D scale modes (e.g.,
+      bilinear) are applied to the first two dimensions.
       - [ctx] The context.
       - [a] Input tensor.
       - [ne0] Target size for dimension 0.
       - [ne1] Target size for dimension 1.
       - [ne2] Target size for dimension 2.
       - [ne3] Target size for dimension 3.
-      - [mode] The scaling mode.
-      - returns The upscaled tensor. *)
-  let upscale_ext =
-    foreign (ns "upscale_ext") (context @-> tensor @-> int @-> int @-> int @-> int @-> scale_mode @-> returning tensor)
+      - [mode] The scaling mode (ggml_scale_mode | ggml_scale_flag...).
+      - returns The interpolated tensor. *)
+  let interpolate =
+    foreign (ns "interpolate")
+      (context @-> tensor @-> int64_t @-> int64_t @-> int64_t @-> int64_t @-> uint32_t @-> returning tensor)
 
   (** [pad ctx a p0 p1 p2 p3] pads each dimension of tensor `a` with zeros.
       - [ctx] The context.
@@ -1946,6 +1966,80 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [cgraph] The compute graph.
       - [grad_accs] Pointer to an array of gradient accumulation tensors. *)
   let build_backward_expand = foreign (ns "build_backward_expand") (context @-> cgraph @-> ptr tensor @-> returning void)
+
+  (** [glu ctx a op swapped] performs a Gated Linear Unit operation.
+      - [ctx] The context.
+      - [a] Input tensor (n columns, r rows).
+      - [op] The GLU operation type.
+      - [swapped] If true, expects gate in the first half of the row.
+      - returns Resulting tensor (n/2 columns, r rows). *)
+  let glu = foreign (ns "glu") (context @-> tensor @-> glu_op @-> bool @-> returning tensor)
+
+  (** [reglu ctx a] performs a ReGLU operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let reglu = foreign (ns "reglu") (context @-> tensor @-> returning tensor)
+
+  (** [reglu_swapped ctx a] performs a swapped ReGLU operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let reglu_swapped = foreign (ns "reglu_swapped") (context @-> tensor @-> returning tensor)
+
+  (** [geglu ctx a] performs a GeGLU operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let geglu = foreign (ns "geglu") (context @-> tensor @-> returning tensor)
+
+  (** [geglu_swapped ctx a] performs a swapped GeGLU operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let geglu_swapped = foreign (ns "geglu_swapped") (context @-> tensor @-> returning tensor)
+
+  (** [swiglu ctx a] performs a SwiGLU operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let swiglu = foreign (ns "swiglu") (context @-> tensor @-> returning tensor)
+
+  (** [swiglu_swapped ctx a] performs a swapped SwiGLU operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let swiglu_swapped = foreign (ns "swiglu_swapped") (context @-> tensor @-> returning tensor)
+
+  (** [glu_split ctx a b op] performs a Gated Linear Unit operation with split inputs.
+      - [ctx] The context.
+      - [a] First input tensor (n columns, r rows).
+      - [b] Second input tensor (n columns, r rows).
+      - [op] The GLU operation type.
+      - returns Resulting tensor. *)
+  let glu_split = foreign (ns "glu_split") (context @-> tensor @-> tensor @-> glu_op @-> returning tensor)
+
+  (** [reglu_split ctx a b] performs a ReGLU operation with split inputs.
+      - [ctx] The context.
+      - [a] First input tensor.
+      - [b] Second input tensor.
+      - returns Resulting tensor. *)
+  let reglu_split = foreign (ns "reglu_split") (context @-> tensor @-> tensor @-> returning tensor)
+
+  (** [geglu_split ctx a b] performs a GeGLU operation with split inputs.
+      - [ctx] The context.
+      - [a] First input tensor.
+      - [b] Second input tensor.
+      - returns Resulting tensor. *)
+  let geglu_split = foreign (ns "geglu_split") (context @-> tensor @-> tensor @-> returning tensor)
+
+  (** [swiglu_split ctx a b] performs a SwiGLU operation with split inputs.
+      - [ctx] The context.
+      - [a] First input tensor.
+      - [b] Second input tensor.
+      - returns Resulting tensor. *)
+  let swiglu_split = foreign (ns "swiglu_split") (context @-> tensor @-> tensor @-> returning tensor)
+
 
   (** [new_graph ctx] creates a new computation graph with the default size.
       - [ctx] The context.
