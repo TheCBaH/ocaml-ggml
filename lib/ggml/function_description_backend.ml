@@ -589,7 +589,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns True if the outputs match, false otherwise. *)
   let compare_graph_backend =
     foreign (ns "compare_graph_backend")
-      (backend_t @-> backend_t @-> cgraph @-> eval_callback @-> ptr void @-> returning bool)
+      (backend_t @-> backend_t @-> cgraph @-> eval_callback @-> ptr void @-> tensor @-> returning bool)
 
   (** [tensor_alloc buffer tensor addr] allocates memory for a tensor within a buffer at a specific address. (Internal
       use likely).

@@ -189,6 +189,7 @@ module Op = struct
     | Transpose
     | GetRows
     | GetRowsBack
+    | SetRows
     | Diag
     | DiagMaskInf
     | DiagMaskZero
@@ -200,6 +201,7 @@ module Op = struct
     | ConvTranspose1D
     | Im2Col
     | Im2ColBack
+    | Conv2d
     | Conv2dDw
     | ConvTranspose2D
     | Pool1D
@@ -232,6 +234,7 @@ module Op = struct
     | CrossEntropyLoss
     | CrossEntropyLossBack
     | OptStepAdamw
+    | Glu
     | Count
 
   let values =
@@ -276,6 +279,7 @@ module Op = struct
       (Transpose, "TRANSPOSE");
       (GetRows, "GET_ROWS");
       (GetRowsBack, "GET_ROWS_BACK");
+      (SetRows, "SET_ROWS");
       (Diag, "DIAG");
       (DiagMaskInf, "DIAG_MASK_INF");
       (DiagMaskZero, "DIAG_MASK_ZERO");
@@ -287,6 +291,7 @@ module Op = struct
       (ConvTranspose1D, "CONV_TRANSPOSE_1D");
       (Im2Col, "IM2COL");
       (Im2ColBack, "IM2COL_BACK");
+      (Conv2d, "CONV_2D");
       (Conv2dDw, "CONV_2D_DW");
       (ConvTranspose2D, "CONV_TRANSPOSE_2D");
       (Pool1D, "POOL_1D");
@@ -319,6 +324,7 @@ module Op = struct
       (CrossEntropyLoss, "CROSS_ENTROPY_LOSS");
       (CrossEntropyLossBack, "CROSS_ENTROPY_LOSS_BACK");
       (OptStepAdamw, "OPT_STEP_ADAMW");
+      (Glu, "GLU");
       (Count, "COUNT");
     ]
 
@@ -365,6 +371,14 @@ module UnaryOp = struct
       (Count, "COUNT");
     ]
 
+  let to_string t = List.assoc t values
+end
+
+(** Gated Linear Unit operations. *)
+module GluOp = struct
+  type t = Reglu | Geglu | Swiglu | Count
+
+  let values = [ (Reglu, "REGLU"); (Geglu, "GEGLU"); (Swiglu, "SWIGLU"); (Count, "COUNT") ]
   let to_string t = List.assoc t values
 end
 
@@ -431,9 +445,17 @@ end
 
 (** Scaling modes for upscale operations. *)
 module ScaleMode = struct
-  type t = Nearest | Bilinear
+  type t = Nearest | Bilinear | Count
 
-  let values = [ (Nearest, "NEAREST"); (Bilinear, "BILINEAR") ]
+  let values = [ (Nearest, "NEAREST"); (Bilinear, "BILINEAR"); (Count, "COUNT") ]
+  let to_string t = List.assoc t values
+end
+
+(** Scaling flags for interpolate operations. *)
+module ScaleFlag = struct
+  type t = AlignCorners
+
+  let values = [ (AlignCorners, "ALIGN_CORNERS") ]
   let to_string t = List.assoc t values
 end
 

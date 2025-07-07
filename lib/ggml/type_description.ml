@@ -29,6 +29,9 @@ module Types (F : Ctypes.TYPE) = struct
   (** Unary operations. Corresponds to C `enum ggml_unary_op`. *)
   let unary_op = make_enum "unary_op" Types.UnaryOp.values
 
+  (** Gated linear unit operations. Corresponds to C `enum ggml_glu_op`. *)
+  let glu_op = make_enum "glu_op" Types.GluOp.values
+
   (** Object types. Corresponds to C `enum ggml_object_type`. *)
   let object_type = make_enum "object_type" Types.ObjectType.values
 
