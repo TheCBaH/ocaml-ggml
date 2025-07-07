@@ -50,7 +50,7 @@ visualize:
 
 .PHONY: default clean format models run top utop model-explorer.install
 
-GGML_API_REV=14147d683fb9d95444b43747d03b1b3bc5234714
+GGML_API_REV=84ec81d769bbddb5c26200716080061550315008
 
 api.diff:
 	git -C vendored/ggml/ fetch --depth 1000

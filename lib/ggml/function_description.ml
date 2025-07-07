@@ -32,7 +32,6 @@ module Functions (F : Ctypes.FOREIGN) = struct
 
   (* Misc *)
 
-
   (* Time Functions *)
 
   (** [time_init ()] initializes the internal timer. Call once at program start. *)
@@ -229,7 +228,8 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns True if contiguous channels, false otherwise. *)
   let is_contiguous_channels = foreign (ns "is_contiguous_channels") (tensor @-> returning bool)
 
-  (** [is_contiguous_rows tensor] true if the elements in dimension 0 are contiguous, or there is just 1 block of elements.
+  (** [is_contiguous_rows tensor] true if the elements in dimension 0 are contiguous, or there is just 1 block of
+      elements.
       - [tensor] The tensor.
       - returns True if contiguous rows, false otherwise. *)
   let is_contiguous_rows = foreign (ns "is_contiguous_rows") (tensor @-> returning bool)
@@ -1488,8 +1488,7 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [d1] Dilation dimension 1.
       - returns The result of the 2D convolution. *)
   let conv_2d_direct =
-    foreign
-      (ns "conv_2d_direct")
+    foreign (ns "conv_2d_direct")
       (context @-> tensor @-> tensor @-> int @-> int @-> int @-> int @-> int @-> int @-> returning tensor)
 
   (** [conv_2d_sk_p0 ctx a b] performs 2D convolution with stride equal to kernel size and zero padding.
@@ -2039,7 +2038,6 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [b] Second input tensor.
       - returns Resulting tensor. *)
   let swiglu_split = foreign (ns "swiglu_split") (context @-> tensor @-> tensor @-> returning tensor)
-
 
   (** [new_graph ctx] creates a new computation graph with the default size.
       - [ctx] The context.

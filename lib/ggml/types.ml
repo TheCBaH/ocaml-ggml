@@ -378,14 +378,7 @@ end
 module GluOp = struct
   type t = Reglu | Geglu | Swiglu | Count
 
-  let values =
-    [
-      (Reglu, "REGLU");
-      (Geglu, "GEGLU");
-      (Swiglu, "SWIGLU");
-      (Count, "COUNT");
-    ]
-
+  let values = [ (Reglu, "REGLU"); (Geglu, "GEGLU"); (Swiglu, "SWIGLU"); (Count, "COUNT") ]
   let to_string t = List.assoc t values
 end
 
