@@ -376,9 +376,18 @@ end
 
 (** Gated Linear Unit operations. *)
 module GluOp = struct
-  type t = Reglu | Geglu | Swiglu | Count
+  type t = Reglu | Geglu | Swiglu | GegluErf | GegluQuick | Count
 
-  let values = [ (Reglu, "REGLU"); (Geglu, "GEGLU"); (Swiglu, "SWIGLU"); (Count, "COUNT") ]
+  let values =
+    [
+      (Reglu, "REGLU");
+      (Geglu, "GEGLU");
+      (Swiglu, "SWIGLU");
+      (GegluErf, "GEGLU_ERF");
+      (GegluQuick, "GEGLU_QUICK");
+      (Count, "COUNT");
+    ]
+
   let to_string t = List.assoc t values
 end
 

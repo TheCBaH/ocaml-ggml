@@ -53,6 +53,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns CPU cycles per millisecond. *)
   let cycles_per_ms = foreign (ns "cycles_per_ms") (void @-> returning int64_t)
 
+  (** [set_abort_callback callback] sets the abort callback.
+      - [callback] The callback function.
+      - returns The old callback for chaining. *)
+  let set_abort_callback = foreign (ns "set_abort_callback") (abort_callback @-> returning abort_callback)
+
   (* File Handling *)
 
   (** [fopen fname mode] opens a file, accepting UTF-8 paths even on Windows.
@@ -1251,10 +1256,10 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns A view of the modified tensor `a`. *)
   let soft_max_inplace = foreign (ns "soft_max_inplace") (context @-> tensor @-> returning tensor)
 
-  (** [soft_max_ext ctx a mask scale max_bias] computes fused softmax: `softmax(a*scale + mask*(ALiBi slope))`.
+  (** [soft_max_ext ctx a mask scale max_bias] computes fused softmax: `soft_max(a*scale + mask*(ALiBi slope))`.
       - [ctx] The context.
-      - [a] The input tensor.
-      - [mask] Optional mask tensor.
+      - [a] Input tensor [ne0, ne01, ne02, ne03].
+      - [mask] Mask tensor [ne0, ne11, ne12, ne13] | ne11 >= ne01, F16 or F32, optional.
       - [scale] Scaling factor for `a`.
       - [max_bias] Maximum bias for ALiBi (0.0f for no ALiBi).
       - returns The resulting tensor. *)
@@ -1645,18 +1650,17 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns A tensor containing the top k values and indices (implementation specific). *)
   let top_k = foreign (ns "top_k") (context @-> tensor @-> int @-> returning tensor)
 
-  (** [flash_attn_ext ctx q k v mask scale max_bias logit_softcap] performs extended Flash Attention. q:
-      [n_embd_k, n_batch, n_head, 1], k: [n_embd_k, n_kv, n_head_kv, 1], v: [n_embd_v, n_kv, n_head_kv, 1], mask:
-      [n_kv, n_batch_pad, 1, 1]
+  (** [flash_attn_ext ctx q k v mask scale max_bias logit_softcap] performs extended Flash Attention.
       - [ctx] The context.
-      - [q] Query tensor.
-      - [k] Key tensor.
-      - [v] Value tensor (not transposed).
-      - [mask] Optional attention mask.
-      - [scale] Scaling factor for QK^T
+      - [q] Query tensor: [n_embd_k, n_batch, n_head, ne3].
+      - [k] Key tensor: [n_embd_k, n_kv, n_head_kv, ne3].
+      - [v] Value tensor: [n_embd_v, n_kv, n_head_kv, ne3] (not transposed).
+      - [mask] Optional attention mask: [n_kv, n_batch_pad, ne32, ne33] (n_batch_pad = GGML_PAD(n_batch,
+        GGML_KQ_MASK_PAD)).
+      - [scale] Scaling factor for QK^T.
       - [max_bias] Maximum bias for ALiBi.
       - [logit_softcap] Softcap value for logits.
-      - returns Result tensor [n_embd_v, n_head, n_batch, 1] (permuted). *)
+      - returns Result tensor [n_embd_v, n_head, n_batch, ne3] (permuted). *)
   let flash_attn_ext =
     foreign (ns "flash_attn_ext")
       (context @-> tensor @-> tensor @-> tensor @-> tensor @-> float @-> float @-> float @-> returning tensor)
@@ -1699,10 +1703,11 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [A] State transition matrix A.
       - [B] State transition matrix B.
       - [C] Output matrix C.
+      - [ids] Optional tensor for indirect access.
       - returns Result of the SSM scan. *)
   let ssm_scan =
     foreign (ns "ssm_scan")
-      (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
+      (context @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> tensor @-> returning tensor)
 
   (** [win_part ctx a w] partitions tensor `a` into non-overlapping windows of size `w`.
       - [ctx] The context.
@@ -2010,6 +2015,30 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - returns Resulting tensor. *)
   let swiglu_swapped = foreign (ns "swiglu_swapped") (context @-> tensor @-> returning tensor)
 
+  (** [geglu_erf ctx a] performs a GeGLU_ERF operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let geglu_erf = foreign (ns "geglu_erf") (context @-> tensor @-> returning tensor)
+
+  (** [geglu_erf_swapped ctx a] performs a swapped GeGLU_ERF operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let geglu_erf_swapped = foreign (ns "geglu_erf_swapped") (context @-> tensor @-> returning tensor)
+
+  (** [geglu_quick ctx a] performs a GeGLU_QUICK operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let geglu_quick = foreign (ns "geglu_quick") (context @-> tensor @-> returning tensor)
+
+  (** [geglu_quick_swapped ctx a] performs a swapped GeGLU_QUICK operation.
+      - [ctx] The context.
+      - [a] Input tensor.
+      - returns Resulting tensor. *)
+  let geglu_quick_swapped = foreign (ns "geglu_quick_swapped") (context @-> tensor @-> returning tensor)
+
   (** [glu_split ctx a b op] performs a Gated Linear Unit operation with split inputs.
       - [ctx] The context.
       - [a] First input tensor (n columns, r rows).
@@ -2038,6 +2067,20 @@ module Functions (F : Ctypes.FOREIGN) = struct
       - [b] Second input tensor.
       - returns Resulting tensor. *)
   let swiglu_split = foreign (ns "swiglu_split") (context @-> tensor @-> tensor @-> returning tensor)
+
+  (** [geglu_erf_split ctx a b] performs a GeGLU_ERF operation with split inputs.
+      - [ctx] The context.
+      - [a] First input tensor.
+      - [b] Second input tensor.
+      - returns Resulting tensor. *)
+  let geglu_erf_split = foreign (ns "geglu_erf_split") (context @-> tensor @-> tensor @-> returning tensor)
+
+  (** [geglu_quick_split ctx a b] performs a GeGLU_QUICK operation with split inputs.
+      - [ctx] The context.
+      - [a] First input tensor.
+      - [b] Second input tensor.
+      - returns Resulting tensor. *)
+  let geglu_quick_split = foreign (ns "geglu_quick_split") (context @-> tensor @-> tensor @-> returning tensor)
 
   (** [new_graph ctx] creates a new computation graph with the default size.
       - [ctx] The context.
