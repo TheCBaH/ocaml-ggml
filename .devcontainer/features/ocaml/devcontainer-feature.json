@@ -1,7 +1,7 @@
 {
     "name": "ocaml/opam toolchains",
     "id": "ocaml",
-    "version": "0.0.1",
+    "version": "0.0.2",
     "description": "Install ocaml/opam toolchains",
     "options": {
         "packages": {
@@ -23,6 +23,11 @@
             "type": "string",
             "default": "",
             "description": "additional system packages"
+        },
+        "pin-packages": {
+            "type": "string",
+            "default": "",
+            "description": "comma-separated list of 'name url' pairs to pin via opam pin add (e.g. 'pkg1 https://repo.git#branch,pkg2 https://repo2.git')"
         }
     },
     "installsAfter": [

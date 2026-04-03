@@ -5,6 +5,7 @@ set -x
 echo "Activating feature 'OCaml'"
 PACKAGES=${PACKAGES:-$@}
 SYSTEM_PACKAGES=${SYSTEM_PACKAGES:-}
+PIN_PACKAGES=${PINPACKAGES:-}
 OCAML_VERSION=${VERSION:-4.14.1}
 OPAM_OPTIONS=''
 if [ -n "${OPTIONS:-}" ]; then
@@ -91,7 +92,23 @@ BASE_PACKAGES="\
  ocamlformat\
  ocamlformat-rpc\
 "
-ALL_PACKAGES="${BASE_PACKAGES} ${PACKAGES}"
+PINNED=""
+if [ -n "${PIN_PACKAGES}" ]; then
+    OLDIFS="$IFS"
+    IFS=','
+    for entry in ${PIN_PACKAGES}; do
+        IFS="$OLDIFS"
+        entry=$(echo "$entry" | xargs)
+        if [ -n "$entry" ]; then
+            pkg_name=$(echo "$entry" | awk '{print $1}')
+            opam pin add --no-action $entry
+            PINNED="${PINNED} ${pkg_name}"
+        fi
+    done
+    IFS="$OLDIFS"
+fi
+
+ALL_PACKAGES="${BASE_PACKAGES} ${PACKAGES} ${PINNED}"
 
 opam install ${ALL_PACKAGES}
 
