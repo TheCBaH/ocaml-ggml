@@ -83,6 +83,7 @@ check_packages\
  ${SYSTEM_PACKAGES}\
  opam\
 
+export OPAMJOBS="$(getconf _NPROCESSORS_ONLN)"
 opam init --no-setup --disable-sandboxing --bare
 eval $(opam env)
 opam switch create $OCAML_VERSION ${OPAM_OPTIONS}
