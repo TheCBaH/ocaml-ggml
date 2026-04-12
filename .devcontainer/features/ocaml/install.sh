@@ -93,7 +93,21 @@ BASE_PACKAGES="\
  ocamlformat\
  ocamlformat-rpc\
 "
-PINNED=""
+OPAM_PACKAGES="${BASE_PACKAGES}"
+for pkg in ${PACKAGES}; do
+    case "$pkg" in
+        *#*)
+            pkg_name=$(echo "$pkg" | cut -d'#' -f1)
+            pkg_ver=$(echo "$pkg" | cut -d'#' -f2)
+            opam pin add --no-action "$pkg_name" "$pkg_ver"
+            OPAM_PACKAGES="${OPAM_PACKAGES} ${pkg_name}"
+            ;;
+        *)
+            OPAM_PACKAGES="${OPAM_PACKAGES} ${pkg}"
+            ;;
+    esac
+done
+
 if [ -n "${PIN_PACKAGES}" ]; then
     OLDIFS="$IFS"
     IFS=','
@@ -101,17 +115,24 @@ if [ -n "${PIN_PACKAGES}" ]; then
         IFS="$OLDIFS"
         entry=$(echo "$entry" | xargs)
         if [ -n "$entry" ]; then
-            pkg_name=$(echo "$entry" | awk '{print $1}')
-            opam pin add --no-action $entry
-            PINNED="${PINNED} ${pkg_name}"
+            case "$entry" in
+                *#*)
+                    pkg_name=$(echo "$entry" | cut -d'#' -f1)
+                    pkg_ver=$(echo "$entry" | cut -d'#' -f2)
+                    opam pin add --no-action "$pkg_name" "$pkg_ver"
+                    ;;
+                *)
+                    pkg_name=$(echo "$entry" | awk '{print $1}')
+                    opam pin add --no-action $entry
+                    ;;
+            esac
+            OPAM_PACKAGES="${OPAM_PACKAGES} ${pkg_name}"
         fi
     done
     IFS="$OLDIFS"
 fi
 
-ALL_PACKAGES="${BASE_PACKAGES} ${PACKAGES} ${PINNED}"
-
-opam install ${ALL_PACKAGES}
+opam install ${OPAM_PACKAGES}
 
 opam clean --repo-cache
 opam list

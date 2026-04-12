@@ -7,7 +7,7 @@
         "packages": {
             "type": "string",
             "default": "",
-            "description": "additional packages"
+            "description": "space-separated packages to install; use 'name#version' to pin a specific version (e.g. 'utop ocamlformat#0.28.0')"
         },
         "version": {
             "type": "string",
@@ -27,7 +27,7 @@
         "pin-packages": {
             "type": "string",
             "default": "",
-            "description": "comma-separated list of 'name url' pairs to pin via opam pin add (e.g. 'pkg1 https://repo.git#branch,pkg2 https://repo2.git')"
+            "description": "comma-separated packages to pin: use 'name#version' to pin a specific version, 'name url' or 'name version' to pin via opam pin add (e.g. 'pkg1#1.0.0,pkg2 https://repo.git#branch')"
         }
     },
     "installsAfter": [
