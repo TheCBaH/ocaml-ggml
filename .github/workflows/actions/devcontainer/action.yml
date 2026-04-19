@@ -10,6 +10,10 @@ inputs:
     description: 'Extra tag appended to the image name (e.g. an OCaml version); empty string omits it'
     required: false
     default: ''
+  platform:
+    description: 'Target platform for the build (e.g. linux/amd64, linux/i386, linux/arm64, linux/arm/v7); empty means native'
+    required: false
+    default: ''
   registry:
     description: 'Server address of Docker registry. If not set then will default to Docker Hub'
     required: false
@@ -35,7 +39,13 @@ runs:
       run: |
         echo "::group::cache"
         npm install -g @devcontainers/cli
-        ARCH=$(uname -m)
+        PLATFORM='${{ inputs.platform }}'
+        if [ -n "$PLATFORM" ]; then
+          ARCH=$(echo "$PLATFORM" | sed 's|linux/||; s|/||g')
+          export DOCKER_DEFAULT_PLATFORM="$PLATFORM"
+        else
+          ARCH=$(uname -m)
+        fi
         VARIANT='${{ inputs.variant }}'
         VARIANT_SUFFIX="${VARIANT:+-${VARIANT}}"
         IMAGE_ID=${{ inputs.registry }}/$GITHUB_REPOSITORY/${{ inputs.name }}${VARIANT_SUFFIX}-${ARCH}
