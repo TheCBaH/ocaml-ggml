@@ -6,7 +6,7 @@ echo "Activating feature 'OCaml'"
 PACKAGES=${PACKAGES:-$@}
 SYSTEM_PACKAGES=${SYSTEM_PACKAGES:-}
 PIN_PACKAGES=${PIN_PACKAGES:-}
-OCAML_VERSION=${VERSION:-4.14.1}
+OCAML_VERSION=${VERSION:-4.14.3}
 OPAM_OPTIONS=''
 if [ -n "${OPTIONS:-}" ]; then
     OPAM_OPTIONS="--packages=ocaml-variants.${OCAML_VERSION}+options,${OPTIONS}"

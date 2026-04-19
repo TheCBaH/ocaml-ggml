@@ -11,7 +11,7 @@
         },
         "version": {
             "type": "string",
-            "default": "4.14.2",
+            "default": "4.14.3",
             "description": "OCaml version"
         },
         "options": {
