@@ -14,6 +14,10 @@ inputs:
     description: 'Target platform for the build (e.g. linux/amd64, linux/i386, linux/arm64, linux/arm/v7); empty means native'
     required: false
     default: ''
+  config:
+    description: 'Path to devcontainer.json (optional, defaults to .devcontainer/devcontainer.json)'
+    required: false
+    default: ''
   registry:
     description: 'Server address of Docker registry. If not set then will default to Docker Hub'
     required: false
@@ -52,15 +56,19 @@ runs:
         IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
         TAG="${GITHUB_BASE_REF:-${GITHUB_REF_NAME}}"
         TAG=$(echo $TAG | tr '[A-Z].' '[a-z]_')
+        CONFIG_ARG=""
+        if [ -n '${{ inputs.config }}' ]; then
+          CONFIG_ARG="--config ${{ inputs.config }}"
+        fi
         old_id=''
         if docker pull $IMAGE_ID:$TAG; then
           old_id=$(docker image inspect $IMAGE_ID:$TAG --format "{{.ID}}")
         fi
         echo "::group::build"
-        env BUILDKIT_PROGRESS=plain devcontainer build --image-name $IMAGE_ID --cache-from $IMAGE_ID:$TAG --workspace-folder .
+        env BUILDKIT_PROGRESS=plain devcontainer build --image-name $IMAGE_ID --cache-from $IMAGE_ID:$TAG --workspace-folder . $CONFIG_ARG
         echo "::group::up"
-        env BUILDKIT_PROGRESS=plain devcontainer up --workspace-folder .
-        echo "EXEC=devcontainer exec --workspace-folder ." >> $GITHUB_OUTPUT
+        env BUILDKIT_PROGRESS=plain devcontainer up --workspace-folder . $CONFIG_ARG
+        echo "EXEC=devcontainer exec --workspace-folder . $CONFIG_ARG" >> $GITHUB_OUTPUT
         if [ -n '${{ inputs.password }}' -a -z "${GITHUB_BASE_REF:-}" ]; then
           echo "::group::push"
           new_id=$(docker image inspect $IMAGE_ID --format "{{.ID}}")
