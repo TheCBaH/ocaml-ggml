@@ -16,6 +16,6 @@ jobs:
       with:
         submodules: true
     - name: image
-      uses: ./.github/workflows/actions/devcontainer
+      uses: TheCBaH/devcontainer-action/devcontainer@v1
       with:
         password: ${{ secrets.GITHUB_TOKEN }}
